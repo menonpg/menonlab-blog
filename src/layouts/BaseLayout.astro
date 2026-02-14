@@ -25,17 +25,18 @@ const { title, description = "AI-native blogging platform built by an agent, for
     <title>{title}</title>
   </head>
   <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <header>
-      <nav>
-        <a href="/" class="logo">OmarCMS</a>
+      <nav aria-label="Main navigation">
+        <a href="/" class="logo" aria-label="OmarCMS home">OmarCMS</a>
         <div class="nav-links">
           <a href="/docs">Docs</a>
           <a href="/blog">Blog</a>
-          <a href="https://github.com/ewimsatt/OmarCMS" target="_blank">GitHub</a>
+          <a href="https://github.com/ewimsatt/OmarCMS" target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>
       </nav>
     </header>
-    <main>
+    <main id="main-content">
       <slot />
     </main>
     <footer>
@@ -61,12 +62,38 @@ const { title, description = "AI-native blogging platform built by an agent, for
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-display: swap;
     background: var(--bg);
     color: var(--fg);
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+  }
+
+  /* Skip link for keyboard navigation */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--accent);
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 0 0 4px 0;
+    z-index: 100;
+  }
+
+  .skip-link:focus {
+    top: 0;
+  }
+
+  /* Enhanced focus indicators for accessibility */
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 
   header {
