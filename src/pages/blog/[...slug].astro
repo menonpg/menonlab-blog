@@ -3,6 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { calculateReadingTime, formatReadingTime } from '../../utils/readingTime';
 import { generateBlogPostSchema } from '../../utils/schema';
+import fs from 'node:fs';
+import path from 'node:path';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -17,6 +19,13 @@ const { Content } = await post.render();
 const readingTime = calculateReadingTime(post.body);
 const postUrl = `https://omarcms.com/blog/${post.slug}`;
 const schema = generateBlogPostSchema(post, postUrl);
+
+// Check for hero image
+const slug = post.slug;
+const heroPath = post.data.heroImage || `/images/blog/${slug}/hero.jpg`;
+const heroExists = post.data.heroImage || 
+  fs.existsSync(path.join(process.cwd(), 'public', 'images', 'blog', slug, 'hero.jpg'));
+const heroAlt = post.data.heroAlt || post.data.title;
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
@@ -40,6 +49,16 @@ const schema = generateBlogPostSchema(post, postUrl);
         <span class="reading-time" aria-label={`Estimated reading time: ${formatReadingTime(readingTime)}`}>{formatReadingTime(readingTime)}</span>
       </div>
     </header>
+    {heroExists && (
+      <img 
+        src={heroPath} 
+        alt={heroAlt}
+        class="hero-image"
+        loading="eager"
+        width="1200"
+        height="630"
+      />
+    )}
     <div class="content">
       <Content />
     </div>
@@ -93,6 +112,15 @@ const schema = generateBlogPostSchema(post, postUrl);
 
   .post .reading-time {
     color: var(--muted);
+  }
+
+  .hero-image {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 2rem 0;
+    aspect-ratio: 1200/630;
+    object-fit: cover;
   }
 
   .content {
