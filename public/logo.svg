@@ -1,0 +1,21 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer circle (the O) -->
+  <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="2.5"/>
+  
+  <!-- Robot antenna -->
+  <line x1="20" y1="4" x2="20" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="20" cy="3" r="1.5" fill="currentColor"/>
+  
+  <!-- Robot eyes -->
+  <circle cx="14" cy="17" r="2" fill="currentColor"/>
+  <circle cx="26" cy="17" r="2" fill="currentColor"/>
+  
+  <!-- Robot mouth (smile) -->
+  <path d="M 13 25 Q 20 28 27 25" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+  
+  <!-- Mechanical details (bolts) -->
+  <circle cx="8" cy="12" r="1" fill="currentColor"/>
+  <circle cx="32" cy="12" r="1" fill="currentColor"/>
+  <circle cx="8" cy="28" r="1" fill="currentColor"/>
+  <circle cx="32" cy="28" r="1" fill="currentColor"/>
+</svg>

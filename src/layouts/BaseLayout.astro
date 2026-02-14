@@ -62,7 +62,21 @@ const version = pkg.version;
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <header>
       <nav aria-label="Main navigation">
-        <a href="/" class="logo" aria-label="OmarCMS home">OmarCMS</a>
+        <a href="/" class="logo" aria-label="OmarCMS home">
+          <svg class="logo-icon" width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="2.5"/>
+            <line x1="20" y1="4" x2="20" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="20" cy="3" r="1.5" fill="currentColor"/>
+            <circle cx="14" cy="17" r="2" fill="currentColor"/>
+            <circle cx="26" cy="17" r="2" fill="currentColor"/>
+            <path d="M 13 25 Q 20 28 27 25" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="8" cy="12" r="1" fill="currentColor"/>
+            <circle cx="32" cy="12" r="1" fill="currentColor"/>
+            <circle cx="8" cy="28" r="1" fill="currentColor"/>
+            <circle cx="32" cy="28" r="1" fill="currentColor"/>
+          </svg>
+          <span>OmarCMS</span>
+        </a>
         <div class="nav-links">
           <a href="/about">About</a>
           <a href="/docs">Docs</a>
@@ -236,10 +250,19 @@ const version = pkg.version;
   }
 
   .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--accent);
     text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--accent);
   }
 
   .nav-links {
