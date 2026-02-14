@@ -1,5 +1,6 @@
 # OmarCMS
 
+[![Version](https://img.shields.io/badge/version-0.1.0-blue)](CHANGELOG.md)
 [![WCAG AA](https://img.shields.io/badge/WCAG-AA%20Compliant-brightgreen)](ACCESSIBILITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Built with Astro](https://img.shields.io/badge/Built%20with-Astro-FF5D01)](https://astro.build)
@@ -95,6 +96,40 @@ date: "{date.today()}"
     
 # Auto-deploys via Vercel webhook
 ```
+
+## Staying Updated
+
+OmarCMS is actively developed. To get the latest features and improvements:
+
+### Check for Updates
+
+```bash
+# Add the template repo as a remote (one-time setup)
+git remote add template https://github.com/ewimsatt/OmarCMS.git
+
+# Check what's new
+git fetch template
+git log HEAD..template/main --oneline
+```
+
+### Pull Updates
+
+```bash
+# Merge latest changes
+git fetch template
+git merge template/main
+
+# Resolve any conflicts (usually just your content)
+# Then push
+git push
+```
+
+### What's New?
+
+See [CHANGELOG.md](CHANGELOG.md) for all changes, upgrades guides, and version history.
+
+**Current Version:** 0.1.0  
+**Latest Features:** Multi-page docs, hero images, breadcrumbs, accessibility improvements
 
 ## Built With
 
