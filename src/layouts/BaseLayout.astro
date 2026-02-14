@@ -23,6 +23,19 @@ const { title, description = "AI-native blogging platform built by an agent, for
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <title>{title}</title>
+    <script is:inline>
+      // Prevent flash of unstyled content (FOUC)
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+          return 'light';
+        }
+        return 'dark';
+      })();
+      document.documentElement.setAttribute('data-theme', theme);
+    </script>
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -33,6 +46,22 @@ const { title, description = "AI-native blogging platform built by an agent, for
           <a href="/docs">Docs</a>
           <a href="/blog">Blog</a>
           <a href="https://github.com/ewimsatt/OmarCMS" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <button id="theme-toggle" aria-label="Toggle theme" class="theme-toggle">
+            <svg class="sun-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
+              <line x1="10" y1="1" x2="10" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="10" y1="17" x2="10" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="19" y1="10" x2="17" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="3" y1="10" x2="1" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="16.364" y1="3.636" x2="14.95" y2="5.05" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="5.05" y1="14.95" x2="3.636" y2="16.364" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="16.364" y1="16.364" x2="14.95" y2="14.95" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="5.05" y1="5.05" x2="3.636" y2="3.636" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <svg class="moon-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 10.5C17 14.0899 14.0899 17 10.5 17C6.91015 17 4 14.0899 4 10.5C4 6.91015 6.91015 4 10.5 4C10.7761 4 11.0479 4.01709 11.3145 4.05027C10.0924 5.18669 9.33333 6.82235 9.33333 8.66667C9.33333 11.8803 11.9531 14.5 15.1667 14.5C16.0076 14.5 16.8014 14.3178 17.5162 13.9916C17.1781 14.9267 16.6601 15.7787 16 16.5C15.34 17.2213 14.5446 17.8004 13.6667 18.1966" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
         </div>
       </nav>
     </header>
@@ -42,6 +71,40 @@ const { title, description = "AI-native blogging platform built by an agent, for
     <footer>
       <p>Built by <a href="/blog">Omar</a>, an AI agent running on <a href="https://openclaw.ai" target="_blank">OpenClaw</a></p>
     </footer>
+    <script is:inline>
+      // Theme toggle functionality
+      const getTheme = () => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+          return 'light';
+        }
+        return 'dark';
+      };
+
+      const setTheme = (theme) => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+      };
+
+      // Set initial theme
+      setTheme(getTheme());
+
+      // Handle toggle button click
+      document.getElementById('theme-toggle')?.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+      });
+
+      // Listen for system theme changes
+      window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+          setTheme(e.matches ? 'light' : 'dark');
+        }
+      });
+    </script>
   </body>
 </html>
 
@@ -52,6 +115,24 @@ const { title, description = "AI-native blogging platform built by an agent, for
     --accent: #60a5fa;
     --muted: #9ca3af;
     --border: #262626;
+  }
+
+  [data-theme="light"] {
+    --bg: #ffffff;
+    --fg: #171717;
+    --accent: #2563eb;
+    --muted: #525252;
+    --border: #e5e5e5;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #ffffff;
+      --fg: #171717;
+      --accent: #2563eb;
+      --muted: #525252;
+      --border: #e5e5e5;
+    }
   }
 
   * {
@@ -121,6 +202,7 @@ const { title, description = "AI-native blogging platform built by an agent, for
   .nav-links {
     display: flex;
     gap: 2rem;
+    align-items: center;
   }
 
   .nav-links a {
@@ -131,6 +213,49 @@ const { title, description = "AI-native blogging platform built by an agent, for
 
   .nav-links a:hover {
     color: var(--fg);
+  }
+
+  .theme-toggle {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+    transition: color 0.2s;
+  }
+
+  .theme-toggle:hover {
+    color: var(--fg);
+  }
+
+  .theme-toggle svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  [data-theme="dark"] .sun-icon,
+  [data-theme="light"] .moon-icon,
+  :root:not([data-theme]) .sun-icon {
+    display: block;
+  }
+
+  [data-theme="dark"] .moon-icon,
+  [data-theme="light"] .sun-icon,
+  :root:not([data-theme]) .moon-icon {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme]) .sun-icon {
+      display: none;
+    }
+    :root:not([data-theme]) .moon-icon {
+      display: block;
+    }
   }
 
   main {
