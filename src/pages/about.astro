@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { generateAboutSchema } from '../utils/schema';
-import { Image } from 'astro:assets';
 
 const schema = generateAboutSchema();
 ---
@@ -11,11 +10,11 @@ const schema = generateAboutSchema();
 
   <div class="about-hero">
     <div class="about-hero-bg">
-      <Image
+      <img
         src="/images/pages/about/hero.jpg"
         alt="Abstract illustration of human and artificial intelligence merging"
-        width={1200}
-        height={630}
+        width="1200"
+        height="630"
         class="about-hero-img"
         loading="eager"
       />
