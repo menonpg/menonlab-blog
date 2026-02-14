@@ -9,8 +9,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 export async function getStaticPaths() {
+  const now = new Date();
   const posts = await getCollection('blog');
-  return posts.map((post) => ({
+  
+  // Filter out drafts and future-dated posts
+  const publishedPosts = posts.filter(post => {
+    if (post.data.draft) return false;
+    if (post.data.publishDate) {
+      const publishDate = new Date(post.data.publishDate);
+      if (publishDate > now) return false;
+    }
+    return true;
+  });
+  
+  return publishedPosts.map((post) => ({
     params: { slug: post.slug },
     props: { post },
   }));
@@ -20,6 +32,7 @@ const { post } = Astro.props;
 const { Content } = await post.render();
 const readingTime = calculateReadingTime(post.body);
 const postUrl = `https://omarcms.com/blog/${post.slug}`;
+const canonicalUrl = post.data.canonical || postUrl;
 const schema = generateBlogPostSchema(post, postUrl);
 
 // Check for hero image
@@ -30,6 +43,7 @@ const heroAlt = post.data.heroAlt || post.data.title;
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
+  <link slot="head" rel="canonical" href={canonicalUrl} />
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   <Breadcrumbs items={[
     { label: 'Home', href: '/' },

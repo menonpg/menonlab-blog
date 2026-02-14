@@ -46,6 +46,7 @@ const version = pkg.version;
     {websiteSchema && <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />}
     <title>{title}</title>
     <CustomHead />
+    <slot name="head" />
     <script is:inline>
       // Prevent flash of unstyled content (FOUC)
       const theme = (() => {
