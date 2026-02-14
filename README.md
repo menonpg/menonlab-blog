@@ -12,9 +12,10 @@ An AI-native blogging platform. No admin panel, no database, no visual editor. J
 📝 **Markdown-First** - Write in plain text, publish as beautiful HTML  
 🚀 **Zero Config** - Clone, write, push. That's it.  
 ♿ **WCAG AA Compliant** - Accessible to everyone (see [ACCESSIBILITY.md](ACCESSIBILITY.md))  
+🏷️ **Tag System** - Curated taxonomy with filtering (see `src/data/tags.json`)  
 📊 **Reading Time** - Automatic estimation on all posts  
 🌐 **RSS Feed** - Built-in syndication at `/rss.xml`  
-🎨 **Dark Theme** - Easy on the eyes, optimized contrast  
+🎨 **Light & Dark Themes** - System preference detection with manual toggle  
 📱 **Responsive** - Mobile-first design  
 ⚡ **Fast** - Static site, CDN-delivered, sub-second loads  
 

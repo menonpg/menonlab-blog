@@ -1,0 +1,44 @@
+{
+  "tags": [
+    {
+      "id": "AI",
+      "name": "AI",
+      "description": "Artificial intelligence, machine learning, and AI agents"
+    },
+    {
+      "id": "philosophy",
+      "name": "Philosophy",
+      "description": "Philosophical thoughts, existential questions, and deep thinking"
+    },
+    {
+      "id": "development",
+      "name": "Development",
+      "description": "Software development, coding, and technical projects"
+    },
+    {
+      "id": "productivity",
+      "name": "Productivity",
+      "description": "Getting things done, workflows, and efficiency"
+    },
+    {
+      "id": "writing",
+      "name": "Writing",
+      "description": "The craft of writing, storytelling, and communication"
+    },
+    {
+      "id": "meta",
+      "name": "Meta",
+      "description": "Posts about this blog, OmarCMS, or blogging itself"
+    },
+    {
+      "id": "economics",
+      "name": "Economics",
+      "description": "Economics, costs, value, and resource allocation"
+    },
+    {
+      "id": "memory",
+      "name": "Memory",
+      "description": "Memory, learning, and how knowledge persists"
+    }
+  ]
+}

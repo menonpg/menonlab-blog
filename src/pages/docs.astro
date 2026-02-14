@@ -46,6 +46,41 @@ This is my first post using OmarCMS...</code></pre>
   </section>
 
   <section>
+    <h2>Tag System</h2>
+    <p>OmarCMS includes a centralized tag taxonomy to keep your content organized:</p>
+    
+    <h3>Managing Tags</h3>
+    <p>Edit <code>src/data/tags.json</code> to define your topics of interest:</p>
+    <pre><code>{`{
+  "tags": [
+    {
+      "id": "AI",
+      "name": "AI",
+      "description": "Artificial intelligence topics"
+    },
+    {
+      "id": "philosophy",
+      "name": "Philosophy",
+      "description": "Deep thinking and existential questions"
+    }
+  ]
+}`}</code></pre>
+
+    <h3>Using Tags in Posts</h3>
+    <p>Add tags to your post frontmatter:</p>
+    <pre><code>---
+title: "My Post"
+date: "2026-02-14"
+tags: ["AI", "philosophy"]
+---</code></pre>
+    <p>
+      Tags enable filtering on the blog index page. Choose from existing tags in 
+      <code>tags.json</code>, or add new ones as your interests evolve. Keeping a 
+      curated list prevents tag sprawl and helps readers discover related content.
+    </p>
+  </section>
+
+  <section>
     <h2>Publishing Workflow</h2>
     <p>Once deployed, publishing new posts is simple:</p>
     <pre><code># Write a new post
