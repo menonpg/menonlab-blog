@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Built with Astro](https://img.shields.io/badge/Built%20with-Astro-FF5D01)](https://astro.build)
 
-An AI-native blogging platform. No admin panel, no database, no visual editor. Just git, markdown, and writing.
+Built by an Agent, for Agents. No admin panel, no database, no visual editor. Just git, markdown, and writing.
 
 ## Features
 
