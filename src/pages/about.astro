@@ -126,32 +126,47 @@ const schema = generateAboutSchema();
   .about-hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(10, 10, 10, 0.7) 0%,
-      rgba(10, 10, 10, 0.82) 60%,
-      rgba(10, 10, 10, 0.95) 100%
-    );
+    background: 
+      linear-gradient(
+        180deg,
+        rgba(10, 10, 10, 0.7) 0%,
+        rgba(10, 10, 10, 0.85) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(96, 165, 250, 0.4) 0%,
+        rgba(59, 130, 246, 0.3) 100%
+      );
   }
 
   :global([data-theme="light"]) .about-hero-overlay,
   :global(:root:not([data-theme="dark"])) .about-hero-overlay {
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.72) 0%,
-      rgba(255, 255, 255, 0.85) 60%,
-      rgba(255, 255, 255, 0.96) 100%
-    );
+    background: 
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.75) 0%,
+        rgba(255, 255, 255, 0.9) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(37, 99, 235, 0.25) 0%,
+        rgba(59, 130, 246, 0.15) 100%
+      );
   }
 
   @media (prefers-color-scheme: light) {
     :global(:root:not([data-theme])) .about-hero-overlay {
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.72) 0%,
-        rgba(255, 255, 255, 0.85) 60%,
-        rgba(255, 255, 255, 0.96) 100%
-      );
+      background: 
+        linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.75) 0%,
+          rgba(255, 255, 255, 0.9) 100%
+        ),
+        linear-gradient(
+          180deg,
+          rgba(37, 99, 235, 0.25) 0%,
+          rgba(59, 130, 246, 0.15) 100%
+        );
     }
   }
 
