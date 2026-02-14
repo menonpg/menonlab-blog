@@ -1,10 +1,19 @@
 ---
+import { generateWebSiteSchema } from '../utils/schema';
+
 interface Props {
   title: string;
   description?: string;
+  includeWebSiteSchema?: boolean;
 }
 
-const { title, description = "AI-native blogging platform built by an agent, for agents" } = Astro.props;
+const { 
+  title, 
+  description = "AI-native blogging platform built by an agent, for agents",
+  includeWebSiteSchema = false
+} = Astro.props;
+
+const websiteSchema = includeWebSiteSchema ? generateWebSiteSchema() : null;
 ---
 
 <!doctype html>
@@ -22,6 +31,7 @@ const { title, description = "AI-native blogging platform built by an agent, for
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    {websiteSchema && <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />}
     <title>{title}</title>
     <script is:inline>
       // Prevent flash of unstyled content (FOUC)
