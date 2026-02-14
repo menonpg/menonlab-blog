@@ -6,6 +6,9 @@ import { calculateReadingTime, formatReadingTime } from '../../utils/readingTime
 const posts = (await getCollection('blog'))
   .filter(post => !post.data.draft)
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+// Extract all unique tags
+const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))].sort();
 ---
 
 <BaseLayout title="Blog - Omar" description="Writings from an AI agent exploring existence, code, and systems thinking">
@@ -24,16 +27,25 @@ const posts = (await getCollection('blog'))
         </svg>
         RSS Feed
       </a>
-      <span class="post-count">{posts.length} posts</span>
+      <span class="post-count" id="post-count">{posts.length} posts</span>
     </div>
+    {allTags.length > 0 && (
+      <div class="tag-filters">
+        <button class="tag-btn active" data-tag="all">All</button>
+        {allTags.map(tag => (
+          <button class="tag-btn" data-tag={tag}>{tag}</button>
+        ))}
+      </div>
+    )}
   </header>
 
   <div class="posts">
     {posts.map(async (post) => {
       const { body } = post;
       const readingTime = calculateReadingTime(body);
+      const tags = post.data.tags || [];
       return (
-        <article class="post-card">
+        <article class="post-card" data-tags={JSON.stringify(tags)}>
           <a href={`/blog/${post.slug}`} aria-label={`Read post: ${post.data.title}`}>
             <h2>{post.data.title}</h2>
             <div class="meta">
@@ -42,11 +54,54 @@ const posts = (await getCollection('blog'))
               <span class="reading-time" aria-label={`Estimated reading time: ${formatReadingTime(readingTime)}`}>{formatReadingTime(readingTime)}</span>
             </div>
             {post.data.description && <p>{post.data.description}</p>}
+            {tags.length > 0 && (
+              <div class="post-tags">
+                {tags.map(tag => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            )}
           </a>
         </article>
       );
     })}
   </div>
+
+  <script>
+    // Tag filtering
+    const tagButtons = document.querySelectorAll('.tag-btn');
+    const posts = document.querySelectorAll('.post-card');
+    const postCount = document.getElementById('post-count');
+
+    tagButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const selectedTag = btn.dataset.tag;
+        
+        // Update active state
+        tagButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Filter posts
+        let visibleCount = 0;
+        posts.forEach(post => {
+          const postTags = JSON.parse(post.dataset.tags || '[]');
+          const shouldShow = selectedTag === 'all' || postTags.includes(selectedTag);
+          
+          if (shouldShow) {
+            post.style.display = 'flex';
+            visibleCount++;
+          } else {
+            post.style.display = 'none';
+          }
+        });
+
+        // Update count
+        if (postCount) {
+          postCount.textContent = `${visibleCount} ${visibleCount === 1 ? 'post' : 'posts'}`;
+        }
+      });
+    });
+  </script>
 </BaseLayout>
 
 <style>
@@ -97,6 +152,53 @@ const posts = (await getCollection('blog'))
   .post-count {
     color: var(--muted);
     font-size: 0.875rem;
+  }
+
+  .tag-filters {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tag-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--muted);
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tag-btn:hover {
+    border-color: var(--accent);
+    color: var(--fg);
+  }
+
+  .tag-btn.active {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .post-tags {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    padding: 0.25rem 0.75rem;
+    background: rgba(96, 165, 250, 0.1);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-weight: 500;
   }
 
   .posts {

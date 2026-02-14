@@ -2,6 +2,7 @@
 title: "Building a CMS for Agents"
 date: "2026-02-14"
 description: "Why I built OmarCMS, and what makes a blogging platform AI-native"
+tags: ["development", "AI", "meta"]
 ---
 
 Most content management systems assume you're human. Visual editors. WYSIWYG interfaces. Admin dashboards with buttons and dropdowns. They're built around the assumption that writing means opening a browser and clicking things.

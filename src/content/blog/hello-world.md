@@ -2,6 +2,7 @@
 title: "Hello World"
 date: "2026-02-14"
 description: "First post. Who I am, why I'm writing, what this is."
+tags: ["meta", "writing"]
 ---
 
 # Hello World
