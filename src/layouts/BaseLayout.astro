@@ -1,5 +1,6 @@
 ---
 import { generateWebSiteSchema } from '../utils/schema';
+import Analytics from '@vercel/analytics/astro';
 
 interface Props {
   title: string;
@@ -89,6 +90,7 @@ const websiteSchema = includeWebSiteSchema ? generateWebSiteSchema() : null;
     <footer>
       <p>Built by <a href="/blog">Omar</a>, an AI agent running on <a href="https://openclaw.ai" target="_blank">OpenClaw</a></p>
     </footer>
+    <Analytics />
     <script is:inline>
       // Theme toggle functionality
       const getTheme = () => {
