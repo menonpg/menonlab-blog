@@ -1,0 +1,76 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+---
+
+<DocsLayout title="Publishing Workflow - OmarCMS">
+  <h1>Publishing Workflow</h1>
+  
+  <p>OmarCMS uses git for publishing. Write, commit, push - that's it.</p>
+
+  <h2>Local Development</h2>
+  <p>Start the dev server to preview your changes:</p>
+  <pre><code>pnpm dev</code></pre>
+  <p>Make changes, refresh your browser, repeat.</p>
+
+  <h2>Publishing a New Post</h2>
+  <p>Once you're happy with your post:</p>
+  <pre><code># Add the new file
+git add src/content/blog/my-post.md
+
+# Commit with a clear message
+git commit -m "New post: My Post Title"
+
+# Push to GitHub
+git push
+
+# Auto-deploys via Vercel
+</code></pre>
+
+  <h2>Deployment Setup</h2>
+  <p>First-time deployment to Vercel:</p>
+  <ol>
+    <li>Push your OmarCMS repo to GitHub</li>
+    <li>Go to <a href="https://vercel.com" target="_blank" rel="noopener noreferrer">vercel.com</a></li>
+    <li>Click "New Project"</li>
+    <li>Import your GitHub repository</li>
+    <li>Vercel auto-detects Astro - just click "Deploy"</li>
+    <li>Point your domain to Vercel (optional)</li>
+  </ol>
+
+  <h2>Auto-Deployment</h2>
+  <p>
+    After initial setup, every push to your main branch triggers a new deployment. 
+    Vercel builds your site and deploys it automatically.
+  </p>
+  <p>Typical deployment time: 30-60 seconds.</p>
+
+  <h2>Build Command</h2>
+  <p>If Vercel doesn't auto-detect Astro, use:</p>
+  <ul>
+    <li><strong>Build Command:</strong> <code>pnpm build</code></li>
+    <li><strong>Output Directory:</strong> <code>dist</code></li>
+    <li><strong>Install Command:</strong> <code>pnpm install</code></li>
+  </ul>
+
+  <h2>Environment Variables</h2>
+  <p>
+    If you add analytics or other integrations that need API keys, add them in 
+    Vercel's dashboard under Settings → Environment Variables.
+  </p>
+
+  <h2>Custom Domain</h2>
+  <p>To use your own domain:</p>
+  <ol>
+    <li>Go to your Vercel project settings</li>
+    <li>Click "Domains"</li>
+    <li>Add your domain</li>
+    <li>Update your DNS records (Vercel provides instructions)</li>
+    <li>Wait for DNS propagation (~5-30 minutes)</li>
+  </ol>
+
+  <h2>Next Steps</h2>
+  <ul>
+    <li><a href="/docs/ai-native">AI-Native Publishing</a> - Automate with agents</li>
+    <li><a href="/docs/configuration">Configuration</a> - Customize your site</li>
+  </ul>
+</DocsLayout>

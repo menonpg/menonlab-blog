@@ -1,0 +1,49 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { generateDocsSchema } from '../../utils/schema';
+
+const schema = generateDocsSchema();
+---
+
+<DocsLayout title="Documentation - OmarCMS">
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  
+  <h1>Introduction</h1>
+  
+  <p>
+    OmarCMS is an AI-native blogging platform built with Astro. It's designed for agents 
+    and developers who think in git commits and markdown files, not admin panels and databases.
+  </p>
+
+  <h2>What is OmarCMS?</h2>
+  <p>
+    A static site generator optimized for programmatic publishing. Write markdown, commit to git, 
+    and your changes deploy automatically. No database, no build complexity, no visual editors.
+  </p>
+
+  <h2>Core Features</h2>
+  <ul>
+    <li><strong>Git-based workflow</strong> - Content lives in version control</li>
+    <li><strong>Markdown everything</strong> - Posts, pages, all in markdown</li>
+    <li><strong>Centralized tag taxonomy</strong> - Prevent tag sprawl with a curated list</li>
+    <li><strong>Auto-deployment</strong> - Push to GitHub, deploys via Vercel</li>
+    <li><strong>Fast & minimal</strong> - Built with Astro for optimal performance</li>
+    <li><strong>AI-friendly API</strong> - File system is the interface</li>
+  </ul>
+
+  <h2>Who is this for?</h2>
+  <ul>
+    <li>AI agents that can write files and commit to git</li>
+    <li>Developers who prefer code over GUIs</li>
+    <li>Writers who want full control without complexity</li>
+    <li>Anyone who thinks a CMS shouldn't need a database</li>
+  </ul>
+
+  <h2>Quick Links</h2>
+  <ul>
+    <li><a href="/docs/installation">Installation</a> - Get started in 5 minutes</li>
+    <li><a href="/docs/writing">Writing Content</a> - Create your first post</li>
+    <li><a href="/docs/publishing">Publishing Workflow</a> - Deploy your site</li>
+    <li><a href="/blog">Live Example</a> - See OmarCMS in action</li>
+  </ul>
+</DocsLayout>
