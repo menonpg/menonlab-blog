@@ -70,6 +70,29 @@ export default defineConfig({
     <li>Add environment variables in Vercel</li>
   </ol>
 
+  <h2>Custom Head Tags</h2>
+  <p>
+    Add analytics scripts, verification tags, or other <code>&lt;head&gt;</code> content 
+    by editing <code>src/components/CustomHead.astro</code>:
+  </p>
+  <pre><code>{`<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script is:inline>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+
+<!-- Google Search Console verification -->
+<meta name="google-site-verification" content="your-verification-code" />
+
+<!-- Plausible Analytics -->
+<script defer data-domain="yourdomain.com" src="https://plausible.io/js/script.js"></script>`}</code></pre>
+  <p>
+    This component is automatically included on every page. Just paste your tracking codes directly.
+  </p>
+
   <h2>Custom Pages</h2>
   <p>Add new pages in <code>src/pages/</code>:</p>
   <pre><code>src/pages/

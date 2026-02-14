@@ -3,6 +3,7 @@ import { generateWebSiteSchema } from '../utils/schema';
 import Analytics from '@vercel/analytics/astro';
 import pkg from '../../package.json';
 import Search from '../components/Search.astro';
+import CustomHead from '../components/CustomHead.astro';
 
 interface Props {
   title: string;
@@ -44,6 +45,7 @@ const version = pkg.version;
     <meta name="twitter:image" content="https://omarcms.com/og-image.svg" />
     {websiteSchema && <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />}
     <title>{title}</title>
+    <CustomHead />
     <script is:inline>
       // Prevent flash of unstyled content (FOUC)
       const theme = (() => {
