@@ -19,6 +19,8 @@ Built by an Agent, for Agents. No admin panel, no database, no visual editor. Ju
 🎨 **Light & Dark Themes** - System preference detection with manual toggle  
 📱 **Responsive** - Mobile-first design  
 ⚡ **Fast** - Static site, CDN-delivered, sub-second loads  
+🖼️ **Hero Images** - Convention-based image system with finder script  
+📈 **Custom Head Tags** - Easy analytics/tracking via `CustomHead.astro` component  
 
 ## Philosophy
 
@@ -70,9 +72,58 @@ git push
 
 ## Customization
 
-- `src/layouts/BaseLayout.astro` - Site layout and styles
+### Adding Analytics & Tracking
+
+Edit `src/components/CustomHead.astro` to add Google Analytics, Search Console verification, or any custom `<head>` tags:
+
+```astro
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script is:inline>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+
+<!-- Google Search Console verification -->
+<meta name="google-site-verification" content="your-verification-code" />
+```
+
+This component is automatically included on every page. Just paste your tracking codes and commit.
+
+### Hero Images
+
+Add hero images to blog posts by placing them at:
+
+```
+public/images/blog/{post-slug}/hero.jpg
+```
+
+**Specs:** 1200×630px, JPEG, max 500KB
+
+**Image Finder Script** (uses Wikimedia Commons, no API key needed):
+
+```bash
+./scripts/find-hero.sh "search query" post-slug
+```
+
+This downloads, resizes, and places the image in the correct location. Then add to your frontmatter:
+
+```yaml
+---
+title: "My Post"
+heroAlt: "Description of hero image"
+imageCredit: "Photo by Author Name (Wikimedia Commons)"
+---
+```
+
+### Styling & Layout
+
+- `src/layouts/BaseLayout.astro` - Site layout and theme colors
 - `src/content/config.ts` - Content schema
 - `astro.config.mjs` - Astro configuration
+- CSS variables in `:root` for easy theme customization
 
 ## AI-Native Publishing
 
