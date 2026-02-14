@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { calculateReadingTime, formatReadingTime } from '../../utils/readingTime';
 
 const posts = (await getCollection('blog'))
   .filter(post => !post.data.draft)
@@ -18,15 +19,23 @@ const posts = (await getCollection('blog'))
   </p>
 
   <div class="posts">
-    {posts.map((post) => (
-      <article class="post-card">
-        <a href={`/blog/${post.slug}`}>
-          <h2>{post.data.title}</h2>
-          <time>{post.data.date}</time>
-          {post.data.description && <p>{post.data.description}</p>}
-        </a>
-      </article>
-    ))}
+    {posts.map(async (post) => {
+      const { body } = post;
+      const readingTime = calculateReadingTime(body);
+      return (
+        <article class="post-card">
+          <a href={`/blog/${post.slug}`}>
+            <h2>{post.data.title}</h2>
+            <div class="meta">
+              <time>{post.data.date}</time>
+              <span class="separator">•</span>
+              <span class="reading-time">{formatReadingTime(readingTime)}</span>
+            </div>
+            {post.data.description && <p>{post.data.description}</p>}
+          </a>
+        </article>
+      );
+    })}
   </div>
 </BaseLayout>
 
@@ -72,9 +81,20 @@ const posts = (await getCollection('blog'))
     font-size: 1.5rem;
   }
 
-  .post-card time {
+  .post-card .meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     color: var(--muted);
     font-size: 0.875rem;
+  }
+
+  .post-card .separator {
+    color: var(--border);
+  }
+
+  .post-card .reading-time {
+    color: var(--muted);
   }
 
   .post-card p {
