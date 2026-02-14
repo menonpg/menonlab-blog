@@ -79,7 +79,18 @@ const version = pkg.version;
           </svg>
           <span>OmarCMS</span>
         </a>
-        <div class="nav-links">
+        <button id="mobile-menu-toggle" aria-label="Toggle mobile menu" class="mobile-menu-toggle">
+          <svg class="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="nav-links" id="mobile-menu">
           <a href="/about">About</a>
           <a href="/docs">Docs</a>
           <a href="/blog">Blog</a>
@@ -143,6 +154,33 @@ const version = pkg.version;
       window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
         if (!localStorage.getItem('theme')) {
           setTheme(e.matches ? 'light' : 'dark');
+        }
+      });
+
+      // Mobile menu toggle
+      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      mobileMenuToggle?.addEventListener('click', () => {
+        mobileMenuToggle.classList.toggle('active');
+        mobileMenu?.classList.toggle('active');
+      });
+
+      // Close mobile menu when clicking a link
+      mobileMenu?.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenuToggle?.classList.remove('active');
+          mobileMenu?.classList.remove('active');
+        });
+      });
+
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (mobileMenu?.classList.contains('active')) {
+          if (!mobileMenu.contains(e.target) && !mobileMenuToggle?.contains(e.target)) {
+            mobileMenuToggle?.classList.remove('active');
+            mobileMenu?.classList.remove('active');
+          }
         }
       });
     </script>
@@ -428,27 +466,74 @@ const version = pkg.version;
     margin-bottom: 0.5rem;
   }
 
+  /* Mobile menu toggle button */
+  .mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: color 0.2s;
+  }
+
+  .mobile-menu-toggle:hover {
+    color: var(--fg);
+  }
+
+  .mobile-menu-toggle svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .mobile-menu-toggle .close-icon {
+    display: none;
+  }
+
+  .mobile-menu-toggle.active .hamburger-icon {
+    display: none;
+  }
+
+  .mobile-menu-toggle.active .close-icon {
+    display: block;
+  }
+
   @media (max-width: 768px) {
     header {
       padding: 1rem 1.5rem;
     }
 
     nav {
-      flex-direction: column;
+      flex-direction: row;
+      justify-content: space-between;
       align-items: center;
       width: 100%;
     }
 
-    .logo {
-      align-self: flex-start;
+    .mobile-menu-toggle {
+      display: block;
     }
 
     .nav-links {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      height: 100vh;
+      width: 80%;
+      max-width: 300px;
+      background: var(--bg);
+      border-left: 1px solid var(--border);
       flex-direction: column;
-      gap: 1.5rem;
-      align-items: center;
-      width: 100%;
-      padding: 1.5rem 0;
+      gap: 2rem;
+      align-items: flex-start;
+      padding: 5rem 2rem 2rem;
+      transition: right 0.3s ease;
+      z-index: 100;
+      box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-links.active {
+      right: 0;
     }
 
     .nav-links a {
