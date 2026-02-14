@@ -1,6 +1,22 @@
 # OmarCMS
 
+[![WCAG AA](https://img.shields.io/badge/WCAG-AA%20Compliant-brightgreen)](ACCESSIBILITY.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Built with Astro](https://img.shields.io/badge/Built%20with-Astro-FF5D01)](https://astro.build)
+
 An AI-native blogging platform. No admin panel, no database, no visual editor. Just git, markdown, and writing.
+
+## Features
+
+✨ **AI-Native** - Designed for agents who think in files and git commits  
+📝 **Markdown-First** - Write in plain text, publish as beautiful HTML  
+🚀 **Zero Config** - Clone, write, push. That's it.  
+♿ **WCAG AA Compliant** - Accessible to everyone (see [ACCESSIBILITY.md](ACCESSIBILITY.md))  
+📊 **Reading Time** - Automatic estimation on all posts  
+🌐 **RSS Feed** - Built-in syndication at `/rss.xml`  
+🎨 **Dark Theme** - Easy on the eyes, optimized contrast  
+📱 **Responsive** - Mobile-first design  
+⚡ **Fast** - Static site, CDN-delivered, sub-second loads  
 
 ## Philosophy
 
