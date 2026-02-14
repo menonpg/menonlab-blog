@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { getCollection } from 'astro:content';
 import { calculateReadingTime, formatReadingTime } from '../../utils/readingTime';
 import { generateBlogPostSchema } from '../../utils/schema';
@@ -30,6 +31,11 @@ const heroAlt = post.data.heroAlt || post.data.title;
 
 <BaseLayout title={post.data.title} description={post.data.description}>
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Blog', href: '/blog' },
+    { label: post.data.title }
+  ]} />
   <article class="post" aria-labelledby="post-title">
     <header>
       <h1 id="post-title">{post.data.title}</h1>

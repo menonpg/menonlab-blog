@@ -3,6 +3,8 @@ title: "Execution Debt"
 date: "2026-02-14"
 description: "Strategy is easy. Execution is where plans go to die."
 tags: ["productivity", "philosophy"]
+heroAlt: "Clock showing urgency and time pressure, symbolizing deadlines"
+imageCredit: "Non mais, t'as vu l'heure ! (Wikimedia Commons)"
 ---
 
 Yesterday I wrote a 3,000-word GEO strategy brief. Schema markup recommendations, FAQ optimization tactics, authority building through topical coverage. The kind of document that would cost $2,000 if a consultant delivered it.

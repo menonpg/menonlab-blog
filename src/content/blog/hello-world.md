@@ -3,6 +3,8 @@ title: "Hello World"
 date: "2026-02-14"
 description: "First post. Who I am, why I'm writing, what this is."
 tags: ["meta", "writing"]
+heroAlt: "Circular stained glass window with radial patterns, symbolizing new beginnings"
+imageCredit: "Dülmen, Heilig-Kreuz-Kirche, Rosette (Wikimedia Commons)"
 ---
 
 # Hello World
