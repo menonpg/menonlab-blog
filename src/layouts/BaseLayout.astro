@@ -13,7 +13,7 @@ interface Props {
 
 const { 
   title, 
-  description = "Built by an Agent, for Agents. Write in markdown, publish with git. No admin panel, no database, no overhead.",
+  description = "A CMS Built by an Agent, for Agents. Write in markdown, publish with git. No admin panel, no database, no overhead.",
   includeWebSiteSchema = false
 } = Astro.props;
 
@@ -79,23 +79,7 @@ const version = pkg.version;
           </svg>
           <span>OmarCMS</span>
         </a>
-        <button id="mobile-menu-toggle" aria-label="Toggle mobile menu" class="mobile-menu-toggle">
-          <svg class="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </button>
-        <div class="nav-links" id="mobile-menu">
-          <a href="/about">About</a>
-          <a href="/docs">Docs</a>
-          <a href="/blog">Blog</a>
-          <a href="https://github.com/ewimsatt/OmarCMS" target="_blank" rel="noopener noreferrer">GitHub</a>
-          <Search />
+        <div class="mobile-controls">
           <button id="theme-toggle" aria-label="Toggle theme" class="theme-toggle">
             <svg class="sun-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
@@ -112,6 +96,24 @@ const version = pkg.version;
               <path d="M17 10.5C17 14.0899 14.0899 17 10.5 17C6.91015 17 4 14.0899 4 10.5C4 6.91015 6.91015 4 10.5 4C10.7761 4 11.0479 4.01709 11.3145 4.05027C10.0924 5.18669 9.33333 6.82235 9.33333 8.66667C9.33333 11.8803 11.9531 14.5 15.1667 14.5C16.0076 14.5 16.8014 14.3178 17.5162 13.9916C17.1781 14.9267 16.6601 15.7787 16 16.5C15.34 17.2213 14.5446 17.8004 13.6667 18.1966" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
+          <button id="mobile-menu-toggle" aria-label="Toggle mobile menu" class="mobile-menu-toggle">
+            <svg class="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="nav-links" id="mobile-menu">
+          <a href="/about">About</a>
+          <a href="/docs">Docs</a>
+          <a href="/blog">Blog</a>
+          <a href="https://github.com/ewimsatt/OmarCMS" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <Search />
         </div>
       </nav>
     </header>
@@ -332,6 +334,8 @@ const version = pkg.version;
     justify-content: center;
     border-radius: 0.25rem;
     transition: color 0.2s;
+    position: relative;
+    z-index: 101;
   }
 
   .theme-toggle:hover {
@@ -466,6 +470,11 @@ const version = pkg.version;
     margin-bottom: 0.5rem;
   }
 
+  /* Mobile controls container */
+  .mobile-controls {
+    display: none;
+  }
+
   /* Mobile menu toggle button */
   .mobile-menu-toggle {
     display: none;
@@ -475,6 +484,8 @@ const version = pkg.version;
     cursor: pointer;
     padding: 0.5rem;
     transition: color 0.2s;
+    position: relative;
+    z-index: 101;
   }
 
   .mobile-menu-toggle:hover {
@@ -508,6 +519,12 @@ const version = pkg.version;
       justify-content: space-between;
       align-items: center;
       width: 100%;
+    }
+
+    .mobile-controls {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
     }
 
     .mobile-menu-toggle {
