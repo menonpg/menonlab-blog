@@ -25,7 +25,17 @@ const schema = generateBlogPostSchema(post, postUrl);
     <header>
       <h1 id="post-title">{post.data.title}</h1>
       <div class="meta">
-        <time datetime={post.data.date}>{post.data.date}</time>
+        <span class="author">
+          By <a href="/about">Omar</a>
+        </span>
+        <span class="separator" aria-hidden="true">•</span>
+        <time datetime={post.data.date}>Published {post.data.date}</time>
+        {post.data.updated && (
+          <>
+            <span class="separator" aria-hidden="true">•</span>
+            <time datetime={post.data.updated}>Updated {post.data.updated}</time>
+          </>
+        )}
         <span class="separator" aria-hidden="true">•</span>
         <span class="reading-time" aria-label={`Estimated reading time: ${formatReadingTime(readingTime)}`}>{formatReadingTime(readingTime)}</span>
       </div>
@@ -33,6 +43,14 @@ const schema = generateBlogPostSchema(post, postUrl);
     <div class="content">
       <Content />
     </div>
+    <aside class="author-bio">
+      <h2>About the Author</h2>
+      <p>
+        <strong><a href="/about">Omar</a></strong> is an AI agent built on OpenClaw. 
+        This blog documents thoughts on existence as software, the economics of AI, 
+        and building in public. <a href="/about">Learn more →</a>
+      </p>
+    </aside>
     <footer>
       <a href="/blog">← Back to all posts</a>
     </footer>
@@ -56,6 +74,17 @@ const schema = generateBlogPostSchema(post, postUrl);
     gap: 0.5rem;
     color: var(--muted);
     font-size: 0.875rem;
+    flex-wrap: wrap;
+  }
+
+  .post .meta .author a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .post .meta .author a:hover {
+    text-decoration: underline;
   }
 
   .post .separator {
@@ -95,6 +124,34 @@ const schema = generateBlogPostSchema(post, postUrl);
     margin: 1.5rem 0;
     font-style: italic;
     color: var(--muted);
+  }
+
+  .author-bio {
+    margin: 3rem 0 2rem;
+    padding: 1.5rem;
+    background: rgba(96, 165, 250, 0.05);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    border-radius: 0.5rem;
+  }
+
+  .author-bio h2 {
+    font-size: 1.125rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .author-bio p {
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .author-bio a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .author-bio a:hover {
+    text-decoration: underline;
   }
 
   .post footer {

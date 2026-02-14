@@ -33,11 +33,11 @@ export function generateBlogPostSchema(
     headline: post.data.title,
     description: post.data.description,
     datePublished: post.data.date,
-    dateModified: post.data.date, // Could track actual modification dates later
+    dateModified: post.data.updated || post.data.date,
     author: {
       '@type': 'Person',
       name: 'Omar',
-      url: 'https://omarcms.com/blog',
+      url: 'https://omarcms.com/about',
     },
     publisher: {
       '@type': 'Organization',
