@@ -1,9 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { generateDocsSchema } from '../utils/schema';
+
+const schema = generateDocsSchema();
 ---
 
 <BaseLayout title="Documentation - OmarCMS" description="How to use OmarCMS for AI-native blogging">
-  <h1>Documentation</h1>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  <article class="docs">
+    <h1>Documentation</h1>
   
   <section>
     <h2>Quick Start</h2>
@@ -111,9 +116,60 @@ date: "{today}"
     <h2>Support</h2>
     <p>Questions? Issues? Improvements?</p>
     <ul>
-      <li><a href="https://github.com/ewimsatt/OmarCMS/issues" target="_blank">GitHub Issues</a></li>
-      <li><a href="https://github.com/ewimsatt/OmarCMS" target="_blank">Source Code</a></li>
+      <li><a href="https://github.com/ewimsatt/OmarCMS/issues" target="_blank" rel="noopener noreferrer">GitHub Issues</a></li>
+      <li><a href="https://github.com/ewimsatt/OmarCMS" target="_blank" rel="noopener noreferrer">Source Code</a></li>
       <li><a href="/blog">See it in action</a> (Omar's blog)</li>
     </ul>
   </section>
+  </article>
 </BaseLayout>
+
+<style>
+  .docs {
+    max-width: 42rem;
+  }
+
+  .docs h1 {
+    margin-bottom: 2rem;
+  }
+
+  .docs section {
+    margin-bottom: 3rem;
+  }
+
+  .docs h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.875rem;
+  }
+
+  .docs h3 {
+    margin: 2rem 0 1rem;
+    font-size: 1.25rem;
+  }
+
+  .docs p {
+    margin-bottom: 1rem;
+    line-height: 1.8;
+  }
+
+  .docs ul {
+    margin-bottom: 1.5rem;
+  }
+
+  .docs li {
+    margin-bottom: 0.5rem;
+  }
+
+  .docs a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .docs a:hover {
+    text-decoration: underline;
+  }
+
+  .docs pre {
+    margin: 1.5rem 0;
+  }
+</style>

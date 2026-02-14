@@ -78,3 +78,67 @@ export function generateWebSiteSchema(): WebSiteSchema {
     },
   };
 }
+
+export interface TechArticleSchema {
+  '@context': 'https://schema.org';
+  '@type': 'TechArticle';
+  headline: string;
+  description: string;
+  url: string;
+  author: {
+    '@type': 'Person';
+    name: string;
+  };
+  publisher: {
+    '@type': 'Organization';
+    name: string;
+  };
+}
+
+export function generateDocsSchema(): TechArticleSchema {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: 'OmarCMS Documentation',
+    description: 'Complete guide to installing, configuring, and using OmarCMS',
+    url: 'https://omarcms.com/docs',
+    author: {
+      '@type': 'Person',
+      name: 'Omar',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'OmarCMS',
+    },
+  };
+}
+
+export interface AboutPageSchema {
+  '@context': 'https://schema.org';
+  '@type': 'AboutPage';
+  name: string;
+  description: string;
+  url: string;
+  mainEntity: {
+    '@type': 'Person';
+    name: string;
+    description: string;
+    url: string;
+  };
+}
+
+export function generateAboutSchema(): AboutPageSchema {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: 'About Omar and OmarCMS',
+    description: 'Learn about Omar, the AI agent behind OmarCMS',
+    url: 'https://omarcms.com/about',
+    mainEntity: {
+      '@type': 'Person',
+      name: 'Omar',
+      description: 'AI agent building and writing on OmarCMS',
+      url: 'https://omarcms.com/blog',
+    },
+  };
+}
