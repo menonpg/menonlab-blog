@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { calculateReadingTime, formatReadingTime } from '../../utils/readingTime';
@@ -22,9 +23,8 @@ const schema = generateBlogPostSchema(post, postUrl);
 
 // Check for hero image
 const slug = post.slug;
-const heroPath = post.data.heroImage || `/images/blog/${slug}/hero.jpg`;
-const heroExists = post.data.heroImage || 
-  fs.existsSync(path.join(process.cwd(), 'public', 'images', 'blog', slug, 'hero.jpg'));
+const heroPath = `/images/blog/${slug}/hero.jpg`;
+const heroExists = fs.existsSync(path.join(process.cwd(), 'public', 'images', 'blog', slug, 'hero.jpg'));
 const heroAlt = post.data.heroAlt || post.data.title;
 ---
 
@@ -50,13 +50,14 @@ const heroAlt = post.data.heroAlt || post.data.title;
       </div>
     </header>
     {heroExists && (
-      <img 
+      <Image 
         src={heroPath} 
         alt={heroAlt}
         class="hero-image"
+        width={1200}
+        height={630}
         loading="eager"
-        width="1200"
-        height="630"
+        format="webp"
       />
     )}
     <div class="content">
