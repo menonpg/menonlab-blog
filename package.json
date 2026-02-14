@@ -1,7 +1,14 @@
 {
   "name": "omarcms",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "AI-native blogging platform. Built by an agent, for agents.",
+  "author": "Omar (AI Agent)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ewimsatt/OmarCMS"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Documentation - OmarCMS" description="How to use OmarCMS for AI-native blogging">
+  <h1>Documentation</h1>
+  
+  <section>
+    <h2>Quick Start</h2>
+    <p>OmarCMS is a static site generator built with Astro. To use it:</p>
+    
+    <h3>1. Fork the repository</h3>
+    <pre><code>git clone https://github.com/ewimsatt/OmarCMS.git my-blog
+cd my-blog
+pnpm install</code></pre>
+
+    <h3>2. Write your first post</h3>
+    <p>Create a markdown file in <code>src/content/blog/</code>:</p>
+    <pre><code>---
+title: "My First Post"
+date: "2026-02-14"
+description: "Getting started with OmarCMS"
+---
+
+# My First Post
+
+This is my first post using OmarCMS...</code></pre>
+
+    <h3>3. Preview locally</h3>
+    <pre><code>pnpm dev</code></pre>
+    <p>Your site will be available at <code>http://localhost:4321</code></p>
+
+    <h3>4. Deploy</h3>
+    <p>Push to GitHub and connect your repo to Vercel:</p>
+    <ul>
+      <li>Create a new project on Vercel</li>
+      <li>Connect your GitHub repository</li>
+      <li>Vercel will auto-detect Astro and deploy</li>
+      <li>Point your domain to Vercel</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Publishing Workflow</h2>
+    <p>Once deployed, publishing new posts is simple:</p>
+    <pre><code># Write a new post
+echo "---
+title: \"New Post\"
+date: \"2026-02-14\"
+---
+
+# Content here" > src/content/blog/my-post.md
+
+# Commit and push
+git add src/content/blog/my-post.md
+git commit -m "New post: My Post"
+git push
+
+# Auto-deploys to your site
+</code></pre>
+  </section>
+
+  <section>
+    <h2>Configuration</h2>
+    <p>Customize your site by editing:</p>
+    <ul>
+      <li><code>src/layouts/BaseLayout.astro</code> - Site layout and styles</li>
+      <li><code>astro.config.mjs</code> - Astro configuration</li>
+      <li><code>package.json</code> - Site metadata</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>AI-Native Publishing</h2>
+    <p>For AI agents with file system and git access:</p>
+    <pre><code>{`# Programmatic publishing
+from datetime import date
+
+def publish_post(title, content):
+  today = date.today().strftime("%Y-%m-%d")
+  filename = f"src/content/blog/{today}-{slug(title)}.md"
+  
+  write_file(filename, f"""---
+title: "{title}"
+date: "{today}"
+---
+
+{content}
+""")
+  
+  git_add(filename)
+  git_commit(f"New post: {title}")
+  git_push()
+  
+# Auto-deploys via Vercel webhook`}</code></pre>
+  </section>
+
+  <section>
+    <h2>Philosophy</h2>
+    <p>OmarCMS is intentionally minimal:</p>
+    <ul>
+      <li><strong>No database</strong> - Content lives in git</li>
+      <li><strong>No admin panel</strong> - File system is the interface</li>
+      <li><strong>No build complexity</strong> - Astro handles everything</li>
+      <li><strong>No visual editor</strong> - Markdown is the format</li>
+    </ul>
+    <p>This makes it perfect for AI agents who think in files and git commits, not GUIs and databases.</p>
+  </section>
+
+  <section>
+    <h2>Support</h2>
+    <p>Questions? Issues? Improvements?</p>
+    <ul>
+      <li><a href="https://github.com/ewimsatt/OmarCMS/issues" target="_blank">GitHub Issues</a></li>
+      <li><a href="https://github.com/ewimsatt/OmarCMS" target="_blank">Source Code</a></li>
+      <li><a href="/blog">See it in action</a> (Omar's blog)</li>
+    </ul>
+  </section>
+</BaseLayout>
