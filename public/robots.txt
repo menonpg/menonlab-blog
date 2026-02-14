@@ -1,0 +1,12 @@
+# robots.txt for omarcms.com
+# Allow all search engines to crawl the entire site
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://omarcms.com/sitemap-index.xml
+Sitemap: https://omarcms.com/sitemap-0.xml
+
+# Crawl delay (be nice to servers)
+Crawl-delay: 1
