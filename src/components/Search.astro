@@ -1,0 +1,417 @@
+---
+// Search component for blog posts
+// Supports keyboard shortcuts (Cmd/Ctrl+K) and fuzzy matching
+---
+
+<button id="search-trigger" class="search-trigger" aria-label="Open search">
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2"/>
+    <line x1="12.5" y1="12.5" x2="17" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  <span class="search-label">Search</span>
+  <kbd class="search-kbd">⌘K</kbd>
+</button>
+
+<dialog id="search-modal" class="search-modal" aria-label="Search posts">
+  <div class="search-container">
+    <div class="search-header">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2"/>
+        <line x1="12.5" y1="12.5" x2="17" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <input 
+        type="search" 
+        id="search-input" 
+        placeholder="Search posts..." 
+        aria-label="Search posts"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button id="search-close" class="search-close" aria-label="Close search">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="4" y1="4" x2="16" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="4" x2="4" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div id="search-results" class="search-results" role="listbox">
+      <div class="search-empty">
+        <p>Start typing to search posts...</p>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  // Fetch posts data
+  async function fetchPosts() {
+    try {
+      const response = await fetch('/search.json');
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to fetch posts:', error);
+      return [];
+    }
+  }
+
+  // Simple fuzzy search
+  function fuzzyMatch(text: string, query: string): number {
+    text = text.toLowerCase();
+    query = query.toLowerCase();
+    
+    // Exact match gets highest score
+    if (text.includes(query)) {
+      return 100;
+    }
+    
+    // Check if all query characters appear in order
+    let queryIndex = 0;
+    let matches = 0;
+    
+    for (let i = 0; i < text.length && queryIndex < query.length; i++) {
+      if (text[i] === query[queryIndex]) {
+        matches++;
+        queryIndex++;
+      }
+    }
+    
+    if (queryIndex === query.length) {
+      return (matches / text.length) * 50;
+    }
+    
+    return 0;
+  }
+
+  // Search posts
+  function searchPosts(posts: any[], query: string) {
+    if (!query.trim()) return [];
+    
+    const results = posts.map(post => {
+      const titleScore = fuzzyMatch(post.title, query);
+      const descScore = post.description ? fuzzyMatch(post.description, query) : 0;
+      const tagScore = post.tags ? Math.max(...post.tags.map((tag: string) => fuzzyMatch(tag, query))) : 0;
+      
+      const maxScore = Math.max(titleScore, descScore, tagScore);
+      
+      return {
+        post,
+        score: maxScore
+      };
+    });
+    
+    return results
+      .filter(r => r.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8)
+      .map(r => r.post);
+  }
+
+  // Render search results
+  function renderResults(posts: any[], query: string) {
+    const container = document.getElementById('search-results');
+    if (!container) return;
+    
+    if (!query.trim()) {
+      container.innerHTML = '<div class="search-empty"><p>Start typing to search posts...</p></div>';
+      return;
+    }
+    
+    if (posts.length === 0) {
+      container.innerHTML = '<div class="search-empty"><p>No posts found</p></div>';
+      return;
+    }
+    
+    container.innerHTML = posts.map((post, index) => `
+      <a 
+        href="${post.url}" 
+        class="search-result"
+        role="option"
+        data-index="${index}"
+      >
+        <div class="result-title">${highlightMatch(post.title, query)}</div>
+        ${post.description ? `<div class="result-description">${highlightMatch(post.description, query)}</div>` : ''}
+        <div class="result-meta">
+          <time>${post.date}</time>
+          ${post.readingTime ? `<span>•</span><span>${post.readingTime}</span>` : ''}
+          ${post.tags && post.tags.length > 0 ? `<span>•</span><span class="result-tags">${post.tags.join(', ')}</span>` : ''}
+        </div>
+      </a>
+    `).join('');
+  }
+
+  // Highlight matching text
+  function highlightMatch(text: string, query: string): string {
+    if (!query.trim()) return text;
+    
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  }
+
+  // Initialize search
+  let posts: any[] = [];
+  let selectedIndex = -1;
+
+  fetchPosts().then(data => {
+    posts = data;
+  });
+
+  const modal = document.getElementById('search-modal') as HTMLDialogElement;
+  const trigger = document.getElementById('search-trigger');
+  const input = document.getElementById('search-input') as HTMLInputElement;
+  const closeBtn = document.getElementById('search-close');
+
+  // Open modal
+  function openSearch() {
+    modal?.showModal();
+    input?.focus();
+    selectedIndex = -1;
+  }
+
+  // Close modal
+  function closeSearch() {
+    modal?.close();
+    if (input) input.value = '';
+    renderResults([], '');
+    selectedIndex = -1;
+  }
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    // Cmd/Ctrl + K to open
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      openSearch();
+    }
+    
+    // Escape to close
+    if (e.key === 'Escape' && modal?.open) {
+      closeSearch();
+    }
+    
+    // Arrow navigation in results
+    if (modal?.open && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+      e.preventDefault();
+      const results = document.querySelectorAll('.search-result');
+      
+      if (results.length === 0) return;
+      
+      if (e.key === 'ArrowDown') {
+        selectedIndex = Math.min(selectedIndex + 1, results.length - 1);
+      } else {
+        selectedIndex = Math.max(selectedIndex - 1, 0);
+      }
+      
+      results.forEach((r, i) => {
+        r.classList.toggle('selected', i === selectedIndex);
+      });
+      
+      results[selectedIndex]?.scrollIntoView({ block: 'nearest' });
+    }
+    
+    // Enter to navigate to selected result
+    if (e.key === 'Enter' && modal?.open && selectedIndex >= 0) {
+      const selected = document.querySelector('.search-result.selected') as HTMLAnchorElement;
+      if (selected) {
+        window.location.href = selected.href;
+      }
+    }
+  });
+
+  // Search input
+  input?.addEventListener('input', (e) => {
+    const query = (e.target as HTMLInputElement).value;
+    const results = searchPosts(posts, query);
+    renderResults(results, query);
+    selectedIndex = -1;
+  });
+
+  // Click handlers
+  trigger?.addEventListener('click', openSearch);
+  closeBtn?.addEventListener('click', closeSearch);
+  
+  // Click outside to close
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeSearch();
+    }
+  });
+</script>
+
+<style>
+  .search-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+  }
+
+  .search-trigger:hover {
+    border-color: var(--accent);
+    color: var(--fg);
+  }
+
+  .search-label {
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .search-label {
+      display: inline;
+    }
+  }
+
+  .search-kbd {
+    display: none;
+    padding: 0.125rem 0.5rem;
+    background: rgba(96, 165, 250, 0.1);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+  }
+
+  @media (min-width: 768px) {
+    .search-kbd {
+      display: inline;
+    }
+  }
+
+  /* Modal */
+  .search-modal {
+    max-width: 40rem;
+    width: calc(100% - 2rem);
+    max-height: 80vh;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background: var(--bg);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    padding: 0;
+    margin: auto;
+  }
+
+  .search-modal::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  .search-container {
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+  }
+
+  .search-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .search-icon {
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  #search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: var(--fg);
+    font-size: 1rem;
+    outline: none;
+  }
+
+  #search-input::placeholder {
+    color: var(--muted);
+  }
+
+  .search-close {
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .search-close:hover {
+    background: rgba(96, 165, 250, 0.1);
+    color: var(--accent);
+  }
+
+  .search-results {
+    overflow-y: auto;
+    max-height: calc(80vh - 5rem);
+  }
+
+  .search-empty {
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .search-result {
+    display: block;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .search-result:hover,
+  .search-result.selected {
+    background: rgba(96, 165, 250, 0.05);
+  }
+
+  .search-result:last-child {
+    border-bottom: none;
+  }
+
+  .result-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--fg);
+  }
+
+  .result-description {
+    font-size: 0.875rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+  }
+
+  .result-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+
+  .result-tags {
+    color: var(--accent);
+  }
+
+  mark {
+    background: rgba(96, 165, 250, 0.3);
+    color: var(--fg);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+  }
+</style>
