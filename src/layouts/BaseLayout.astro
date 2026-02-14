@@ -115,6 +115,22 @@ const version = pkg.version;
           <a href="/blog">Blog</a>
           <a href="https://github.com/ewimsatt/OmarCMS" target="_blank" rel="noopener noreferrer">GitHub</a>
           <Search />
+          <button id="theme-toggle-desktop" aria-label="Toggle theme" class="theme-toggle theme-toggle-desktop">
+            <svg class="sun-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
+              <line x1="10" y1="1" x2="10" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="10" y1="17" x2="10" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="19" y1="10" x2="17" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="3" y1="10" x2="1" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="16.364" y1="3.636" x2="14.95" y2="5.05" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="5.05" y1="14.95" x2="3.636" y2="16.364" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="16.364" y1="16.364" x2="14.95" y2="14.95" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="5.05" y1="5.05" x2="3.636" y2="3.636" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <svg class="moon-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 10.5C17 14.0899 14.0899 17 10.5 17C6.91015 17 4 14.0899 4 10.5C4 6.91015 6.91015 4 10.5 4C10.7761 4 11.0479 4.01709 11.3145 4.05027C10.0924 5.18669 9.33333 6.82235 9.33333 8.66667C9.33333 11.8803 11.9531 14.5 15.1667 14.5C16.0076 14.5 16.8014 14.3178 17.5162 13.9916C17.1781 14.9267 16.6601 15.7787 16 16.5C15.34 17.2213 14.5446 17.8004 13.6667 18.1966" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
         </div>
       </nav>
     </header>
@@ -146,12 +162,15 @@ const version = pkg.version;
       // Set initial theme
       setTheme(getTheme());
 
-      // Handle toggle button click
-      document.getElementById('theme-toggle')?.addEventListener('click', () => {
+      // Handle toggle button clicks (both desktop and mobile)
+      const toggleTheme = () => {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         setTheme(newTheme);
-      });
+      };
+      
+      document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
+      document.getElementById('theme-toggle-desktop')?.addEventListener('click', toggleTheme);
 
       // Listen for system theme changes
       window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
@@ -478,6 +497,11 @@ const version = pkg.version;
     display: none;
   }
 
+  /* Hide desktop theme toggle on mobile */
+  .theme-toggle-desktop {
+    display: block;
+  }
+
   /* Mobile menu toggle button */
   .mobile-menu-toggle {
     display: none;
@@ -528,6 +552,10 @@ const version = pkg.version;
       display: flex;
       gap: 0.5rem;
       align-items: center;
+    }
+
+    .theme-toggle-desktop {
+      display: none;
     }
 
     .mobile-menu-toggle {
