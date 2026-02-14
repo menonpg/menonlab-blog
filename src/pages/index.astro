@@ -148,6 +148,20 @@ git push
   .hero {
     text-align: center;
     padding: 4rem 0 6rem;
+    position: relative;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(96, 165, 250, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
   }
 
   .hero-badge {
@@ -155,11 +169,13 @@ git push
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: var(--border);
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    border: 1px solid rgba(96, 165, 250, 0.2);
     border-radius: 2rem;
     font-size: 0.875rem;
     margin-bottom: 2rem;
-    color: var(--muted);
+    color: var(--accent);
+    font-weight: 500;
   }
 
   .badge-icon {
@@ -170,6 +186,10 @@ git push
     font-size: 3.5rem;
     margin-bottom: 1.5rem;
     line-height: 1.1;
+    background: linear-gradient(135deg, var(--fg) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .subtitle {
@@ -199,30 +219,49 @@ git push
   }
 
   .button-primary {
-    background: var(--accent);
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
     color: white;
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
   }
 
   .button-primary:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(96, 165, 250, 0.4);
     text-decoration: none;
   }
 
   .button-secondary {
     border: 2px solid var(--border);
     color: var(--fg);
+    background: var(--bg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .button-secondary:hover {
     border-color: var(--accent);
+    background: rgba(96, 165, 250, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.15);
     text-decoration: none;
   }
 
   /* Features Grid */
   .features {
     padding: 4rem 0;
-    background: linear-gradient(180deg, transparent 0%, var(--border) 50%, transparent 100%);
+    position: relative;
+  }
+
+  .features::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    height: 100%;
+    background: linear-gradient(180deg, transparent 0%, rgba(96, 165, 250, 0.05) 50%, transparent 100%);
+    z-index: -1;
   }
 
   .feature-grid {
@@ -250,6 +289,7 @@ git push
   .feature-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
+    filter: drop-shadow(0 2px 8px rgba(96, 165, 250, 0.3));
   }
 
   .feature h3 {
@@ -290,7 +330,7 @@ git push
   .step-number {
     width: 3rem;
     height: 3rem;
-    background: var(--accent);
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
     color: white;
     border-radius: 50%;
     display: flex;
@@ -299,6 +339,7 @@ git push
     font-size: 1.5rem;
     font-weight: bold;
     margin: 0 auto 1rem;
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
   }
 
   .step h3 {
@@ -313,7 +354,19 @@ git push
   /* Code Example */
   .code-example {
     padding: 4rem 0;
-    background: linear-gradient(180deg, transparent 0%, var(--border) 50%, transparent 100%);
+    position: relative;
+  }
+
+  .code-example::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    height: 100%;
+    background: linear-gradient(180deg, transparent 0%, rgba(96, 165, 250, 0.05) 50%, transparent 100%);
+    z-index: -1;
   }
 
   .code-example h2 {
@@ -402,7 +455,10 @@ git push
   .stat-value {
     font-size: 3rem;
     font-weight: bold;
-    color: var(--accent);
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: 0.5rem;
   }
 
@@ -416,8 +472,20 @@ git push
   /* Final CTA */
   .final-cta {
     padding: 6rem 0 4rem;
-    background: linear-gradient(180deg, transparent 0%, var(--border) 100%);
+    position: relative;
     text-align: center;
+  }
+
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    height: 100%;
+    background: linear-gradient(180deg, transparent 0%, rgba(96, 165, 250, 0.08) 100%);
+    z-index: -1;
   }
 
   .final-cta h2 {
