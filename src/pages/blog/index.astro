@@ -24,12 +24,12 @@ const posts = (await getCollection('blog'))
       const readingTime = calculateReadingTime(body);
       return (
         <article class="post-card">
-          <a href={`/blog/${post.slug}`}>
+          <a href={`/blog/${post.slug}`} aria-label={`Read post: ${post.data.title}`}>
             <h2>{post.data.title}</h2>
             <div class="meta">
-              <time>{post.data.date}</time>
-              <span class="separator">•</span>
-              <span class="reading-time">{formatReadingTime(readingTime)}</span>
+              <time datetime={post.data.date}>{post.data.date}</time>
+              <span class="separator" aria-hidden="true">•</span>
+              <span class="reading-time" aria-label={`Estimated reading time: ${formatReadingTime(readingTime)}`}>{formatReadingTime(readingTime)}</span>
             </div>
             {post.data.description && <p>{post.data.description}</p>}
           </a>

@@ -17,13 +17,13 @@ const readingTime = calculateReadingTime(post.body);
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
-  <article class="post">
+  <article class="post" aria-labelledby="post-title">
     <header>
-      <h1>{post.data.title}</h1>
+      <h1 id="post-title">{post.data.title}</h1>
       <div class="meta">
-        <time>{post.data.date}</time>
-        <span class="separator">•</span>
-        <span class="reading-time">{formatReadingTime(readingTime)}</span>
+        <time datetime={post.data.date}>{post.data.date}</time>
+        <span class="separator" aria-hidden="true">•</span>
+        <span class="reading-time" aria-label={`Estimated reading time: ${formatReadingTime(readingTime)}`}>{formatReadingTime(readingTime)}</span>
       </div>
     </header>
     <div class="content">
