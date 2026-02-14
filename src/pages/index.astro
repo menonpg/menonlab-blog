@@ -222,7 +222,7 @@ git push
   /* Features Grid */
   .features {
     padding: 4rem 0;
-    border-top: 1px solid var(--border);
+    background: linear-gradient(180deg, transparent 0%, var(--border) 50%, transparent 100%);
   }
 
   .feature-grid {
@@ -234,7 +234,17 @@ git push
 
   .feature {
     text-align: center;
-    padding: 2rem 1rem;
+    padding: 2rem 1.5rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    transition: all 0.2s;
+  }
+
+  .feature:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.1);
   }
 
   .feature-icon {
@@ -255,7 +265,7 @@ git push
   /* How It Works */
   .how-it-works {
     padding: 4rem 0;
-    border-top: 1px solid var(--border);
+    background: var(--bg);
   }
 
   .how-it-works h2 {
@@ -271,6 +281,10 @@ git push
 
   .step {
     text-align: center;
+    padding: 2rem 1.5rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
   }
 
   .step-number {
@@ -299,7 +313,7 @@ git push
   /* Code Example */
   .code-example {
     padding: 4rem 0;
-    border-top: 1px solid var(--border);
+    background: linear-gradient(180deg, transparent 0%, var(--border) 50%, transparent 100%);
   }
 
   .code-example h2 {
@@ -310,14 +324,19 @@ git push
   .code-example pre {
     max-width: 42rem;
     margin: 0 auto;
+    background: var(--bg) !important;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.5rem !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 
   /* Reference */
   .reference {
     padding: 4rem 0;
-    border-top: 1px solid var(--border);
     max-width: 42rem;
     margin: 0 auto;
+    background: var(--bg);
   }
 
   .reference h2 {
@@ -344,7 +363,7 @@ git push
   /* Open Source */
   .open-source {
     padding: 4rem 0;
-    border-top: 1px solid var(--border);
+    background: var(--bg);
     text-align: center;
   }
 
@@ -368,9 +387,16 @@ git push
   }
 
   .stat {
-    padding: 2rem 1rem;
-    border: 1px solid var(--border);
-    border-radius: 0.5rem;
+    padding: 2rem 1.5rem;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 1rem;
+    transition: all 0.2s;
+  }
+
+  .stat:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
   }
 
   .stat-value {
@@ -390,7 +416,7 @@ git push
   /* Final CTA */
   .final-cta {
     padding: 6rem 0 4rem;
-    border-top: 1px solid var(--border);
+    background: linear-gradient(180deg, transparent 0%, var(--border) 100%);
     text-align: center;
   }
 
