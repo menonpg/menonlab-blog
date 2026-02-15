@@ -11,14 +11,27 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/check-bundle-size.js",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "prepare": "husky",
+    "lint:md": "markdownlint 'src/content/blog/**/*.md' 'README.md'",
+    "check:budgets": "node scripts/check-bundle-size.js",
+    "check:a11y": "node scripts/check-accessibility.js"
+  },
+  "lint-staged": {
+    "*.md": "markdownlint"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.15",
     "@astrojs/sitemap": "^3.7.0",
     "@vercel/analytics": "^1.6.1",
     "astro": "^5.17.1"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "markdownlint-cli": "^0.47.0",
+    "pa11y": "^9.1.0"
   }
 }
