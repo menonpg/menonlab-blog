@@ -1,2 +1,4 @@
 #!/bin/sh
+# Note: requires node in PATH
+# If this fails, ensure node is available or run: git commit --no-verify
 pnpm lint-staged
