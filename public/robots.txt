@@ -7,13 +7,16 @@ Allow: /
 
 # Disallow admin/dev files (if they ever exist)
 Disallow: /*.json$
-Disallow: /*.xml$
 Disallow: /api/
 Disallow: /_*
 
-# Allow specific sitemaps
+# Allow specific XML files
+Allow: /rss.xml
 Allow: /sitemap-index.xml
 Allow: /sitemap-0.xml
+
+# Disallow other XML files
+Disallow: /*.xml$
 
 # Sitemap locations
 Sitemap: https://omarcms.com/sitemap-index.xml

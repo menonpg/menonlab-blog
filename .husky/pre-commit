@@ -1,3 +1,2 @@
 #!/bin/sh
-PATH="/usr/local/Cellar/node@22/22.22.0/bin:$PATH"
 pnpm lint-staged
