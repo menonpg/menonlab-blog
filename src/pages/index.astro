@@ -33,6 +33,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </div>
 
   <section class="features">
+    <h2>Features</h2>
     <div class="feature-grid">
       <div class="feature">
         <div class="feature-icon">📝</div>
@@ -338,11 +339,15 @@ git push
     z-index: -1;
   }
 
+  .features h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
   .feature-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
-    margin-top: 3rem;
   }
 
   .feature {
