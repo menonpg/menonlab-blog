@@ -51,6 +51,19 @@ const heroAlt = post.data.heroAlt || post.data.title;
     <div class="reading-progress-bar"></div>
   </div>
   
+  <!-- Scroll to top button -->
+  <button 
+    id="scroll-to-top" 
+    class="scroll-to-top" 
+    aria-label="Scroll to top"
+    title="Scroll to top"
+  >
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 4L10 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="M5 8L10 3L15 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  
   <Breadcrumbs items={[
     { label: 'Home', href: '/' },
     { label: 'Blog', href: '/blog' },
@@ -249,6 +262,75 @@ const heroAlt = post.data.heroAlt || post.data.title;
       transition: none;
     }
   }
+
+  /* Scroll to top button */
+  .scroll-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 3rem;
+    height: 3rem;
+    background: var(--accent);
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 999;
+  }
+
+  .scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .scroll-to-top:hover {
+    background: #3b82f6;
+    box-shadow: 0 6px 16px rgba(96, 165, 250, 0.4);
+    transform: translateY(-2px);
+  }
+
+  .scroll-to-top:active {
+    transform: translateY(0);
+  }
+
+  .scroll-to-top svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .scroll-to-top {
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
+    .scroll-to-top svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-to-top {
+      transition: opacity 0.2s, visibility 0.2s;
+      transform: none !important;
+    }
+
+    .scroll-to-top:hover {
+      transform: none !important;
+    }
+  }
 </style>
 
 <script>
@@ -302,4 +384,44 @@ const heroAlt = post.data.heroAlt || post.data.title;
   document.addEventListener('DOMContentLoaded', updateReadingProgress);
   window.addEventListener('scroll', requestTick, { passive: true });
   window.addEventListener('resize', requestTick, { passive: true });
+
+  // Scroll to top button functionality
+  const scrollToTopBtn = document.getElementById('scroll-to-top');
+  
+  function toggleScrollToTopButton() {
+    if (!scrollToTopBtn) return;
+    
+    // Show button after scrolling down 300px
+    const scrollThreshold = 300;
+    
+    if (window.scrollY > scrollThreshold) {
+      scrollToTopBtn.classList.add('visible');
+    } else {
+      scrollToTopBtn.classList.remove('visible');
+    }
+  }
+
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+
+  // Handle button click
+  scrollToTopBtn?.addEventListener('click', scrollToTop);
+
+  // Handle keyboard navigation (Enter and Space)
+  scrollToTopBtn?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      scrollToTop();
+    }
+  });
+
+  // Toggle button visibility on scroll
+  window.addEventListener('scroll', toggleScrollToTopButton, { passive: true });
+  
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', toggleScrollToTopButton);
 </script>
