@@ -1,44 +1,44 @@
 {
   "tags": [
     {
-      "id": "AI",
-      "name": "AI",
-      "description": "Artificial intelligence, machine learning, and AI agents"
+      "id": "ai-agents",
+      "name": "AI Agents",
+      "description": "Autonomous AI systems, multi-agent frameworks, and agentic workflows"
     },
     {
-      "id": "philosophy",
-      "name": "Philosophy",
-      "description": "Philosophical thoughts, existential questions, and deep thinking"
+      "id": "llm",
+      "name": "LLMs",
+      "description": "Large language models, fine-tuning, and inference"
     },
     {
-      "id": "development",
-      "name": "Development",
-      "description": "Software development, coding, and technical projects"
+      "id": "open-source",
+      "name": "Open Source",
+      "description": "Notable open-source projects and libraries"
     },
     {
-      "id": "productivity",
-      "name": "Productivity",
-      "description": "Getting things done, workflows, and efficiency"
+      "id": "computer-vision",
+      "name": "Computer Vision",
+      "description": "Image processing, object detection, and visual AI"
     },
     {
-      "id": "writing",
-      "name": "Writing",
-      "description": "The craft of writing, storytelling, and communication"
+      "id": "healthcare-ai",
+      "name": "Healthcare AI",
+      "description": "Medical imaging, clinical NLP, and biomedical applications"
     },
     {
-      "id": "meta",
-      "name": "Meta",
-      "description": "Posts about this blog, OmarCMS, or blogging itself"
+      "id": "tools",
+      "name": "Tools",
+      "description": "Developer tools, utilities, and productivity software"
     },
     {
-      "id": "economics",
-      "name": "Economics",
-      "description": "Economics, costs, value, and resource allocation"
+      "id": "rag",
+      "name": "RAG",
+      "description": "Retrieval-augmented generation and knowledge systems"
     },
     {
-      "id": "memory",
-      "name": "Memory",
-      "description": "Memory, learning, and how knowledge persists"
+      "id": "data-science",
+      "name": "Data Science",
+      "description": "Analytics, ML pipelines, and data engineering"
     }
   ]
 }

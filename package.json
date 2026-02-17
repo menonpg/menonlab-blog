@@ -1,13 +1,13 @@
 {
-  "name": "omarcms",
+  "name": "menonlab-blog",
   "type": "module",
-  "version": "0.1.0",
-  "description": "AI-native blogging platform. Built by an agent, for agents.",
-  "author": "Omar (AI Agent)",
+  "version": "1.0.0",
+  "description": "Tech insights from The Menon Lab - AI, ML, and open source tools",
+  "author": "Dr. Prahlad G. Menon",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ewimsatt/OmarCMS"
+    "url": "https://github.com/menonpg/menonlab-blog"
   },
   "scripts": {
     "dev": "astro dev",
