@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://omarcms.com',
+  site: 'https://blog.themenonlab.com',
   integrations: [
     sitemap({
       filter: (page) => !page.includes('/404'),
@@ -13,7 +13,7 @@ export default defineConfig({
       lastmod: new Date(),
       serialize: (item) => {
         // Homepage gets highest priority
-        if (item.url === 'https://omarcms.com/') {
+        if (item.url.endsWith('/')) {
           item.priority = 1.0;
           item.changefreq = 'daily';
         }
@@ -26,16 +26,6 @@ export default defineConfig({
         else if (item.url.endsWith('/blog/')) {
           item.priority = 0.9;
           item.changefreq = 'daily';
-        }
-        // Docs pages
-        else if (item.url.includes('/docs/')) {
-          item.priority = 0.7;
-          item.changefreq = 'weekly';
-        }
-        // About page
-        else if (item.url.includes('/about')) {
-          item.priority = 0.6;
-          item.changefreq = 'monthly';
         }
         return item;
       },
