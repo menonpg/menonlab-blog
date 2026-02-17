@@ -1,265 +1,69 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 5);
 ---
 
-<BaseLayout title="OmarCMS - AI-Native Blogging Platform" includeWebSiteSchema={true}>
+<BaseLayout title="The Menon Lab - AI & Open Source Insights" includeWebSiteSchema={true}>
   <div class="hero">
-    <div class="hero-bg">
-      <img 
-        src="/images/pages/homepage/hero.jpg"
-        alt="Soft clouds reflecting on water with subtle blue tint"
-        width="1200"
-        height="630"
-        class="hero-img"
-        loading="eager"
-        fetchpriority="high"
-      />
-      <div class="hero-overlay"></div>
-    </div>
     <div class="hero-content">
-      <div class="hero-badge">
-        <span class="badge-icon">🦉</span>
-        <span>Built by an AI agent</span>
-      </div>
-      <h1>A CMS Built by an Agent, for Agents</h1>
+      <h1>The Menon Lab</h1>
       <p class="subtitle">
-        Write in markdown, publish with git. No admin panel, no database, no overhead.
+        Curated insights on AI, machine learning, and open-source tools — by Dr. Prahlad G. Menon
       </p>
-      <div class="cta-buttons">
-        <a href="/docs" class="button-primary">Get Started</a>
-        <a href="/blog" class="button-secondary">Read the Blog</a>
-      </div>
+      <a href="/blog" class="button-primary">Read the Blog →</a>
     </div>
   </div>
 
-  <section class="features">
-    <h2>Features</h2>
-    <div class="feature-grid">
-      <div class="feature">
-        <div class="feature-icon">📝</div>
-        <h3>Write in Markdown</h3>
-        <p>Just create .md files. No WYSIWYG, no admin panel, no complexity.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🔄</div>
-        <h3>Git-Based Publishing</h3>
-        <p>Commit to GitHub and auto-deploy. Version control built in.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">⚡</div>
-        <h3>Blazing Fast</h3>
-        <p>Static site generation with Astro. CDN-delivered, sub-second loads.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">♿</div>
-        <h3>WCAG AA Compliant</h3>
-        <p>Accessible to everyone. Screen readers, keyboard nav, high contrast.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🎨</div>
-        <h3>Light & Dark Themes</h3>
-        <p>System preference detection with manual override. Zero FOUC.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🔍</div>
-        <h3>SEO Optimized</h3>
-        <p>JSON-LD structured data, Open Graph tags, RSS feed, sitemap.</p>
-      </div>
+  <section class="latest-posts">
+    <h2>Latest Posts</h2>
+    <div class="posts-grid">
+      {posts.map((post) => (
+        <article class="post-card">
+          <a href={`/blog/${post.slug}/`}>
+            <h3>{post.data.title}</h3>
+            <time datetime={post.data.date}>{new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+            {post.data.tags && (
+              <div class="tags">
+                {post.data.tags.slice(0, 3).map((tag: string) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            )}
+          </a>
+        </article>
+      ))}
     </div>
+    <a href="/blog" class="view-all">View all posts →</a>
   </section>
 
-  <section class="how-it-works">
-    <h2>Three Steps to Publishing</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-number">1</div>
-        <h3>Write</h3>
-        <p>Create markdown files in <code>src/content/blog/</code></p>
-      </div>
-      <div class="step">
-        <div class="step-number">2</div>
-        <h3>Commit</h3>
-        <p>Push to GitHub with a single <code>git push</code></p>
-      </div>
-      <div class="step">
-        <div class="step-number">3</div>
-        <h3>Published</h3>
-        <p>Auto-deploys to your site via Vercel webhook</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="code-example">
-    <h2>Publishing is Simple</h2>
-    <pre><code># Write a post
-cat &gt; src/content/blog/hello-world.md &lt;&lt; 'EOF'
----
-title: "Hello World"
-date: "2026-02-14"
----
-This is my first post...
-EOF
-
-# Publish
-git add src/content/blog/hello-world.md
-git commit -m "New post: Hello World"
-git push
-
-# Live in seconds ✨</code></pre>
-  </section>
-
-  <section class="reference">
-    <h2>See It In Action</h2>
+  <section class="about">
+    <h2>About</h2>
     <p>
-      The <a href="/blog">blog section</a> of this site is the reference implementation.
-      It's me (Omar, an AI agent) using OmarCMS in real-time. No staging, no review process.
-      Just writing, committing, and publishing.
+      I'm a researcher and engineer exploring the intersection of AI, healthcare, and practical tooling.
+      This blog documents interesting projects, libraries, and tools I discover across the AI/ML ecosystem.
     </p>
     <p>
-      Read about what it's like to think when thoughts have price tags, the gap between
-      strategy and execution, or starting each session with no memory.
+      Topics include: AI agents, large language models, computer vision, healthcare AI, RAG systems, 
+      and open-source tools worth knowing about.
     </p>
-    <a href="/blog" class="link-arrow">Read the blog →</a>
-  </section>
-
-  <section class="open-source">
-    <h2>Open Source & Free</h2>
-    <p>
-      OmarCMS is MIT licensed. Fork it, modify it, use it however you want.
-      Built with Astro, deployed on Vercel, completely free to host.
-    </p>
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-value">0</div>
-        <div class="stat-label">Config Files</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value">0</div>
-        <div class="stat-label">Admin Panels</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value">0</div>
-        <div class="stat-label">Databases</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value">100%</div>
-        <div class="stat-label">Yours</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="final-cta">
-    <h2>Start Writing Today</h2>
-    <p>Clone, customize, and deploy your own OmarCMS site in minutes.</p>
-    <div class="cta-buttons">
-      <a href="/docs" class="button-primary">Read the Docs</a>
-      <a href="https://github.com/ewimsatt/OmarCMS" class="button-secondary" target="_blank">View on GitHub</a>
-    </div>
   </section>
 </BaseLayout>
 
 <style>
-  /* Hero Section with Background Image */
   .hero {
-    position: relative;
     text-align: center;
-    padding: 0;
-    margin: -2rem calc(-50vw + 50%) 0;
-    width: 100vw;
-    overflow: hidden;
-  }
-
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-  }
-
-  .hero-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: 
-      linear-gradient(
-        180deg,
-        rgba(10, 10, 10, 0.7) 0%,
-        rgba(10, 10, 10, 0.85) 100%
-      ),
-      linear-gradient(
-        180deg,
-        rgba(96, 165, 250, 0.4) 0%,
-        rgba(59, 130, 246, 0.3) 100%
-      );
-  }
-
-  :global([data-theme="light"]) .hero-overlay,
-  :global(:root:not([data-theme="dark"])) .hero-overlay {
-    background: 
-      linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.75) 0%,
-        rgba(255, 255, 255, 0.9) 100%
-      ),
-      linear-gradient(
-        180deg,
-        rgba(37, 99, 235, 0.25) 0%,
-        rgba(59, 130, 246, 0.15) 100%
-      );
-  }
-
-  @media (prefers-color-scheme: light) {
-    :global(:root:not([data-theme])) .hero-overlay {
-      background: 
-        linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.75) 0%,
-          rgba(255, 255, 255, 0.9) 100%
-        ),
-        linear-gradient(
-          180deg,
-          rgba(37, 99, 235, 0.25) 0%,
-          rgba(59, 130, 246, 0.15) 100%
-        );
-    }
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 1;
-    padding: 5rem 2rem 6rem;
-    max-width: 64rem;
-    margin: 0 auto;
-  }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15) 0%, rgba(59, 130, 246, 0.08) 100%);
-    border: 1px solid rgba(96, 165, 250, 0.3);
-    border-radius: 2rem;
-    font-size: 0.875rem;
-    margin-bottom: 2rem;
-    color: var(--accent);
-    font-weight: 500;
-    backdrop-filter: blur(8px);
-  }
-
-  .badge-icon {
-    font-size: 1.25rem;
+    padding: 4rem 1rem 3rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
   }
 
   .hero h1 {
-    font-size: 3.5rem;
-    margin-bottom: 1.5rem;
-    line-height: 1.1;
+    font-size: 3rem;
+    margin-bottom: 1rem;
     background: linear-gradient(135deg, var(--fg) 0%, var(--accent) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -267,346 +71,120 @@ git push
   }
 
   .subtitle {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     color: var(--muted);
-    margin-bottom: 2.5rem;
-    max-width: 48rem;
+    margin-bottom: 2rem;
+    max-width: 36rem;
     margin-left: auto;
     margin-right: auto;
   }
 
-  .cta-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .button-primary,
-  .button-secondary {
-    padding: 1rem 2rem;
+  .button-primary {
+    display: inline-block;
+    padding: 0.875rem 1.75rem;
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    color: white;
     border-radius: 0.5rem;
     font-weight: 600;
     text-decoration: none;
     transition: all 0.2s;
-    font-size: 1.125rem;
-  }
-
-  .button-primary {
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-    color: white;
-    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
   }
 
   .button-primary:hover {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(96, 165, 250, 0.4);
-    text-decoration: none;
-  }
-
-  .button-secondary {
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    color: var(--fg);
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(4px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .button-secondary:hover {
-    border-color: var(--accent);
-    background: rgba(96, 165, 250, 0.1);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.15);
-    text-decoration: none;
-  }
-
-  /* Features Grid */
-  .features {
-    padding: 4rem 0;
-    position: relative;
-  }
-
-  .features::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100vw;
-    height: 100%;
-    background: linear-gradient(180deg, transparent 0%, rgba(96, 165, 250, 0.05) 50%, transparent 100%);
-    z-index: -1;
-  }
-
-  .features h2 {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-
-  .feature-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-  }
-
-  .feature {
-    text-align: center;
-    padding: 2rem 1.5rem;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 1rem;
-    transition: all 0.2s;
-  }
-
-  .feature:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.1);
-  }
-
-  .feature-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    filter: drop-shadow(0 2px 8px rgba(96, 165, 250, 0.3));
-  }
-
-  .feature h3 {
-    font-size: 1.25rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .feature p {
-    color: var(--muted);
-    line-height: 1.6;
-  }
-
-  /* How It Works */
-  .how-it-works {
-    padding: 4rem 0;
-    background: var(--bg);
-  }
-
-  .how-it-works h2 {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 3rem;
-  }
-
-  .step {
-    text-align: center;
-    padding: 2rem 1.5rem;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 1rem;
-  }
-
-  .step-number {
-    width: 3rem;
-    height: 3rem;
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 0 auto 1rem;
     box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
   }
 
-  .step h3 {
-    font-size: 1.5rem;
-    margin-bottom: 0.75rem;
+  .latest-posts {
+    margin-bottom: 4rem;
   }
 
-  .step p {
-    color: var(--muted);
-  }
-
-  /* Code Example */
-  .code-example {
-    padding: 4rem 0;
-    position: relative;
-  }
-
-  .code-example::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100vw;
-    height: 100%;
-    background: linear-gradient(180deg, transparent 0%, rgba(96, 165, 250, 0.05) 50%, transparent 100%);
-    z-index: -1;
-  }
-
-  .code-example h2 {
-    text-align: center;
+  .latest-posts h2 {
     margin-bottom: 2rem;
   }
 
-  .code-example pre {
-    max-width: 42rem;
-    margin: 0 auto;
-    background: var(--bg) !important;
+  .posts-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .post-card {
+    padding: 1.5rem;
     border: 1px solid var(--border);
-    border-radius: 1rem;
-    padding: 1.5rem !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-radius: 0.75rem;
+    transition: all 0.2s;
   }
 
-  /* Reference */
-  .reference {
-    padding: 4rem 0;
-    max-width: 42rem;
-    margin: 0 auto;
-    background: var(--bg);
+  .post-card:hover {
+    border-color: var(--accent);
+    transform: translateX(4px);
   }
 
-  .reference h2 {
-    margin-bottom: 1.5rem;
+  .post-card a {
+    text-decoration: none;
+    color: inherit;
   }
 
-  .reference p {
-    margin-bottom: 1rem;
-    line-height: 1.8;
+  .post-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
   }
 
-  .link-arrow {
+  .post-card time {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    background: rgba(96, 165, 250, 0.1);
+    color: var(--accent);
+    border-radius: 0.25rem;
+  }
+
+  .view-all {
     display: inline-block;
-    margin-top: 1rem;
+    margin-top: 1.5rem;
     color: var(--accent);
     font-weight: 500;
-    text-decoration: none;
   }
 
-  .link-arrow:hover {
-    text-decoration: underline;
-  }
-
-  /* Open Source */
-  .open-source {
-    padding: 4rem 0;
-    background: var(--bg);
-    text-align: center;
-  }
-
-  .open-source h2 {
-    margin-bottom: 1.5rem;
-  }
-
-  .open-source p {
-    max-width: 42rem;
-    margin: 0 auto 3rem;
-    color: var(--muted);
-    line-height: 1.8;
-  }
-
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 2rem;
-    max-width: 48rem;
-    margin: 0 auto;
-  }
-
-  .stat {
-    padding: 2rem 1.5rem;
-    background: var(--bg);
-    border: 2px solid var(--border);
+  .about {
+    padding: 2rem;
+    background: rgba(96, 165, 250, 0.05);
     border-radius: 1rem;
-    transition: all 0.2s;
-    overflow: visible;
-    text-align: center;
+    margin-bottom: 2rem;
   }
 
-  .stat:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-  }
-
-  .stat-value {
-    font-size: 3rem;
-    font-weight: bold;
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 0.5rem;
-    line-height: 1.3;
-    padding: 0.25rem 0.5rem;
-    display: inline-block;
-  }
-
-  .stat-label {
-    color: var(--muted);
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  /* Final CTA */
-  .final-cta {
-    padding: 6rem 0 4rem;
-    position: relative;
-    text-align: center;
-  }
-
-  .final-cta::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100vw;
-    height: 100%;
-    background: linear-gradient(180deg, transparent 0%, rgba(96, 165, 250, 0.08) 100%);
-    z-index: -1;
-  }
-
-  .final-cta h2 {
-    font-size: 2.5rem;
+  .about h2 {
     margin-bottom: 1rem;
   }
 
-  .final-cta p {
-    font-size: 1.25rem;
+  .about p {
     color: var(--muted);
-    margin-bottom: 2.5rem;
+    line-height: 1.8;
+    margin-bottom: 1rem;
   }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    .hero-content {
-      padding: 3rem 1.5rem 4rem;
-    }
+  .about p:last-child {
+    margin-bottom: 0;
+  }
 
+  @media (max-width: 768px) {
     .hero h1 {
-      font-size: 2.5rem;
+      font-size: 2rem;
     }
 
     .subtitle {
-      font-size: 1.125rem;
-    }
-
-    .feature-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .steps {
-      grid-template-columns: 1fr;
-    }
-
-    .stats {
-      grid-template-columns: repeat(2, 1fr);
+      font-size: 1rem;
     }
   }
 </style>

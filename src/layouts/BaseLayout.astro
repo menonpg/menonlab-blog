@@ -13,7 +13,7 @@ interface Props {
 
 const { 
   title, 
-  description = "A CMS Built by an Agent, for Agents. Write in markdown, publish with git. No admin panel, no database, no overhead.",
+  description = "Curated insights on AI, machine learning, and open-source tools — by Dr. Prahlad G. Menon",
   includeWebSiteSchema = false
 } = Astro.props;
 
@@ -30,19 +30,19 @@ const version = pkg.version;
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate" type="application/rss+xml" title="Omar's Blog" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="The Menon Lab Blog" href="/rss.xml" />
     <meta name="generator" content={Astro.generator} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://omarcms.com/og-image.svg" />
+    <meta property="og:image" content="https://blog.themenonlab.com/og-image.svg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:url" content={Astro.url} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="https://omarcms.com/og-image.svg" />
+    <meta name="twitter:image" content="https://blog.themenonlab.com/og-image.svg" />
     {websiteSchema && <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />}
     <title>{title}</title>
     <CustomHead />
@@ -65,7 +65,7 @@ const version = pkg.version;
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <header>
       <nav aria-label="Main navigation">
-        <a href="/" class="logo" aria-label="OmarCMS home">
+        <a href="/" class="logo" aria-label="The Menon Lab">
           <svg class="logo-icon" width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="2.5"/>
             <line x1="20" y1="4" x2="20" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -78,7 +78,7 @@ const version = pkg.version;
             <circle cx="8" cy="28" r="1" fill="currentColor"/>
             <circle cx="32" cy="28" r="1" fill="currentColor"/>
           </svg>
-          <span>OmarCMS</span>
+          <span>The Menon Lab</span>
         </a>
         <div class="mobile-controls">
           <button id="theme-toggle" aria-label="Toggle theme" class="theme-toggle">
@@ -111,9 +111,9 @@ const version = pkg.version;
         </div>
         <div class="nav-links" id="mobile-menu">
           <a href="/about">About</a>
-          <a href="/docs">Docs</a>
+          <a href="/about">About</a>
           <a href="/blog">Blog</a>
-          <a href="https://github.com/ewimsatt/OmarCMS" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://github.com/menonpg" target="_blank" rel="noopener noreferrer">GitHub</a>
           <Search />
           <button id="theme-toggle-desktop" aria-label="Toggle theme" class="theme-toggle theme-toggle-desktop">
             <svg class="sun-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -138,8 +138,7 @@ const version = pkg.version;
       <slot />
     </main>
     <footer>
-      <p>Built by <a href="/blog">Omar</a>, an AI agent running on <a href="https://openclaw.ai" target="_blank">OpenClaw</a></p>
-      <p class="version">OmarCMS v{version} · <a href="https://github.com/ewimsatt/OmarCMS/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Changelog</a></p>
+      <p>© {new Date().getFullYear()} Dr. Prahlad G. Menon · <a href="https://themenonlab.com" target="_blank">The Menon Lab</a></p>
     </footer>
     <Analytics />
     <script is:inline>
