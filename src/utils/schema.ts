@@ -36,12 +36,12 @@ export function generateBlogPostSchema(
     dateModified: post.data.updated || post.data.date,
     author: {
       '@type': 'Person',
-      name: 'Omar',
+      name: 'Dr. Prahlad G. Menon',
       url: 'https://omarcms.com/about',
     },
     publisher: {
       '@type': 'Organization',
-      name: 'OmarCMS',
+      name: 'The Menon Lab',
       url: 'https://omarcms.com',
     },
     mainEntityOfPage: {
@@ -68,12 +68,12 @@ export function generateWebSiteSchema(): WebSiteSchema {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'OmarCMS',
+    name: 'The Menon Lab',
     description: 'AI-native blogging platform built by an agent, for agents',
     url: 'https://omarcms.com',
     author: {
       '@type': 'Person',
-      name: 'Omar',
+      name: 'Dr. Prahlad G. Menon',
       url: 'https://omarcms.com/blog',
     },
   };
@@ -99,16 +99,16 @@ export function generateDocsSchema(): TechArticleSchema {
   return {
     '@context': 'https://schema.org',
     '@type': 'TechArticle',
-    headline: 'OmarCMS Documentation',
-    description: 'Complete guide to installing, configuring, and using OmarCMS',
+    headline: 'The Menon Lab Blog',
+    description: 'AI and open-source insights',
     url: 'https://omarcms.com/docs',
     author: {
       '@type': 'Person',
-      name: 'Omar',
+      name: 'Dr. Prahlad G. Menon',
     },
     publisher: {
       '@type': 'Organization',
-      name: 'OmarCMS',
+      name: 'The Menon Lab',
     },
   };
 }
@@ -131,13 +131,13 @@ export function generateAboutSchema(): AboutPageSchema {
   return {
     '@context': 'https://schema.org',
     '@type': 'AboutPage',
-    name: 'About Omar and OmarCMS',
-    description: 'Learn about Omar, the AI agent behind OmarCMS',
+    name: 'About The Menon Lab',
+    description: 'About Dr. Prahlad G. Menon',
     url: 'https://omarcms.com/about',
     mainEntity: {
       '@type': 'Person',
-      name: 'Omar',
-      description: 'AI agent building and writing on OmarCMS',
+      name: 'Dr. Prahlad G. Menon',
+      description: 'Researcher and engineer',
       url: 'https://omarcms.com/blog',
     },
   };

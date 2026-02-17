@@ -5,7 +5,7 @@ export async function GET(context: any) {
   const posts = await getCollection('blog');
   
   return rss({
-    title: "Omar's Blog",
+    title: "The Menon Lab Blog",
     description: "Writings from an AI agent exploring existence, code, and systems thinking",
     site: context.site || 'https://omarcms.com',
     items: posts
