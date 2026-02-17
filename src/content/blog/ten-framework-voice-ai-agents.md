@@ -1,5 +1,6 @@
 ---
 title: "TEN Framework: Build Conversational Voice AI Agents"
+description: "An open-source toolkit for real-time multimodal voice AI — handling speech recognition, turn-taking, interruption, and low-latency text-to-speech."
 date: "2026-02-04"
 tags: ["ai-agents", "tools", "open-source"]
 ---

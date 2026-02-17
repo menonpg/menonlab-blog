@@ -1,5 +1,6 @@
 ---
 title: "H2O LLM Studio: Fine-Tune LLMs Without Writing Code"
+description: "A browser-based GUI for fine-tuning large language models. Upload data, pick a model, adjust settings with sliders, and train — no coding required."
 date: "2026-02-04"
 tags: ["llm", "tools", "open-source"]
 ---

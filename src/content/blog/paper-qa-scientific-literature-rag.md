@@ -1,5 +1,6 @@
 ---
 title: "Paper-QA: Superhuman RAG for Scientific Literature"
+description: "A RAG system built specifically for scientific papers — with structure-aware retrieval, high-accuracy citations, and the ability to detect contradictions across your paper collection."
 date: "2024-12-03"
 tags: ["rag", "ai-agents", "tools", "open-source"]
 ---

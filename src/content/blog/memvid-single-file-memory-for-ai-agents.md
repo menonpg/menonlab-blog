@@ -1,5 +1,6 @@
 ---
 title: "Memvid: Single-File Memory for AI Agents"
+description: "Package embeddings, data, and search structures into a single portable file. No vector database needed — just self-contained memory for your AI agents."
 date: "2026-02-17"
 tags: ["ai-agents", "rag", "tools", "open-source"]
 ---

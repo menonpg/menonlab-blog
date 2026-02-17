@@ -1,5 +1,6 @@
 ---
 title: "Medical SAM 2: 3D Medical Image Segmentation with Meta's Foundation Model"
+description: "Adapts Meta's SAM2 for medical imaging by treating 3D CT/MRI scans as videos — enabling automatic propagation of segmentations through entire volumes."
 date: "2024-11-12"
 tags: ["healthcare-ai", "computer-vision", "open-source"]
 ---

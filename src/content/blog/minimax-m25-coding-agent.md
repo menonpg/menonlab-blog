@@ -1,5 +1,6 @@
 ---
 title: "MiniMax M2.5: A Coding Agent That's Actually Affordable"
+description: "State-of-the-art on SWE-Bench at 80.2%, trained on 200K real coding environments, and priced at $1/hour. The economics of AI coding just changed."
 date: "2026-02-17"
 tags: ["llm", "ai-agents", "tools"]
 ---

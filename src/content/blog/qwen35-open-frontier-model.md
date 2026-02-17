@@ -1,5 +1,6 @@
 ---
 title: "Qwen3.5: The Open Frontier Model with 397B Parameters"
+description: "Alibaba's massive open-weights model brings 397B parameters, native multimodal capabilities, and support for 201 languages — with efficient MoE inference."
 date: "2026-02-17"
 tags: ["llm", "open-source", "computer-vision"]
 ---

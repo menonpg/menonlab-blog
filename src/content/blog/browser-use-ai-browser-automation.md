@@ -1,5 +1,6 @@
 ---
 title: "Browser-Use: AI Agents That Actually Use the Web"
+description: "An open-source library that gives LLMs direct browser control — letting AI agents navigate websites, fill forms, and complete tasks that require human-like interaction."
 date: "2024-12-23"
 tags: ["ai-agents", "tools", "open-source"]
 ---

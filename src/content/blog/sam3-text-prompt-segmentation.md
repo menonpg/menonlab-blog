@@ -1,5 +1,6 @@
 ---
 title: "SAM 3: Meta's Segment Anything Now Understands Text"
+description: "No more clicking on objects — describe what you want to segment in plain English. Trained on 4 million unique concepts with 50x the vocabulary of existing datasets."
 date: "2026-02-17"
 tags: ["computer-vision", "ai-agents", "open-source"]
 ---

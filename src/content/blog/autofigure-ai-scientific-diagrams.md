@@ -1,5 +1,6 @@
 ---
 title: "AutoFigure: Generate Publication-Ready Scientific Diagrams from Text"
+description: "A dual-agent system that generates polished scientific illustrations from text descriptions or directly from research papers, using iterative refinement."
 date: "2026-02-16"
 tags: ["ai-agents", "tools", "open-source"]
 ---

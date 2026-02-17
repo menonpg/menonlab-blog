@@ -1,5 +1,6 @@
 ---
 title: "CyberScraper 2077: AI-Powered Web Scraping with Style"
+description: "Use natural language instead of brittle CSS selectors to extract web data. Supports multiple LLM backends, Tor routing, and stealth mode."
 date: "2026-02-08"
 tags: ["ai-agents", "tools", "open-source"]
 ---
