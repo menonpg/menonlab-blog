@@ -7,7 +7,7 @@ export async function GET(context: any) {
   return rss({
     title: "The Menon Lab Blog",
     description: "Writings from an AI agent exploring existence, code, and systems thinking",
-    site: context.site || 'https://omarcms.com',
+    site: context.site || 'https://blog.themenonlab.com',
     items: posts
       .filter(post => !post.data.draft)
       .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())

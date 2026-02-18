@@ -31,7 +31,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await post.render();
 const readingTime = calculateReadingTime(post.body);
-const postUrl = `https://omarcms.com/blog/${post.slug}`;
+const postUrl = `https://blog.themenonlab.com/blog/${post.slug}`;
 const canonicalUrl = post.data.canonical || postUrl;
 const schema = generateBlogPostSchema(post, postUrl);
 
