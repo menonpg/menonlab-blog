@@ -16,19 +16,30 @@ fi
 CORE_DATA_EPOCH=978307200
 LAST_CHECK_CORE=$((LAST_CHECK - CORE_DATA_EPOCH))
 
-# Query for new notes with GitHub content
-sqlite3 -separator '|||' "$NOTES_DB" "
+# Query for new notes with GitHub content (check BOTH title AND snippet)
+RESULTS=$(sqlite3 -separator '|||' "$NOTES_DB" "
 SELECT 
     ZTITLE1,
     datetime(ZMODIFICATIONDATE1 + 978307200, 'unixepoch', 'localtime'),
     ZSNIPPET
 FROM ZICCLOUDSYNCINGOBJECT 
-WHERE (ZSNIPPET LIKE '%github.com%' OR ZSNIPPET LIKE '%huggingface.co%' OR ZSNIPPET LIKE '%arxiv.org%') 
+WHERE (
+    ZTITLE1 LIKE '%github.com%' OR 
+    ZTITLE1 LIKE '%huggingface.co%' OR 
+    ZTITLE1 LIKE '%arxiv.org%' OR
+    ZSNIPPET LIKE '%github.com%' OR 
+    ZSNIPPET LIKE '%huggingface.co%' OR 
+    ZSNIPPET LIKE '%arxiv.org%'
+)
 AND ZTITLE1 IS NOT NULL
 AND ZMODIFICATIONDATE1 > $LAST_CHECK_CORE
 ORDER BY ZMODIFICATIONDATE1 DESC
 LIMIT 10;
-"
+")
 
-# Update last check timestamp
-date +%s > "$LAST_CHECK_FILE"
+# Only update timestamp if we found results OR if enough time has passed
+# This prevents the timestamp from racing ahead of new notes
+if [ -n "$RESULTS" ]; then
+    echo "$RESULTS"
+    date +%s > "$LAST_CHECK_FILE"
+fi
