@@ -13,6 +13,25 @@ Not as a thought experiment — but literally. Start with $10. Pay for every tok
 
 That's [ClawWork](https://github.com/HKUDS/ClawWork), a new project from HKU that transforms OpenClaw/Nanobot agents from assistants into economically accountable coworkers. And the results are eye-opening: **top-performing agents achieve $1,500+/hr equivalent earnings**, surpassing typical human white-collar productivity.
 
+## Reality Check: What "$10K in 7 Hours" Actually Means
+
+Before we go further — let's be clear about what ClawWork is and isn't:
+
+**It IS:**
+- A benchmark/simulation system with internal accounting
+- Tasks from the GDPVal dataset (professional simulations, not real clients)
+- Payment calculated from BLS wage data (what the work *would* be worth)
+- A way to measure AI economic productivity in controlled conditions
+
+**It ISN'T:**
+- Real money hitting your bank account
+- Actual freelance work with paying clients
+- A passive income machine
+
+The "$10K in 7 hours" headline refers to benchmark performance — the *equivalent economic value* of tasks completed, calculated against Bureau of Labor Statistics wage data. The agent isn't literally earning dollars; it's demonstrating productivity that *would* command that rate in the labor market.
+
+That said, the tasks are real professional work (reports, analysis, documents). The interesting play is using ClawWork to identify which task categories your agent excels at, then actually offering those services on freelance platforms with your agent doing the heavy lifting.
+
 ## The Economic Pressure Cooker
 
 ClawWork creates extreme economic conditions:
