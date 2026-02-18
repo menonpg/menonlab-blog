@@ -1,7 +1,7 @@
 ---
 title: "PaperBanana: Google's Multi-Agent System for Publication-Ready Academic Illustrations"
 description: "Google introduces an agentic framework that automatically generates methodology diagrams and statistical plots from text descriptions—no design skills required."
-pubDate: 2026-02-18
+date: "2026-02-18"
 tags: ["ai-agents", "academic-tools", "google", "research", "automation"]
 ---
 
