@@ -1,7 +1,7 @@
 ---
 title: "Clawe: Trello for AI Agents — Multi-Agent Coordination Done Right"
 description: "Deploy a squad of AI agents that wake on schedules, claim tasks from a shared board, and collaborate through files and real-time notifications."
-pubDate: 2026-02-18
+date: "2026-02-18"
 tags: ["ai-agents", "multi-agent", "openclaw", "automation", "coordination"]
 ---
 
