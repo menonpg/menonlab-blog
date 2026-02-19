@@ -69,7 +69,7 @@ The onboarding wizard walks you through:
 3. Workspace configuration
 4. Security policies
 
-For **Windows users**, there's a [Docker-based setup](https://github.com/francismdpro/openclaw_docker_windows) with batch scripts that handle container management.
+For **Windows users**, there's a [Docker-based setup](https://github.com/francismdpro/openclaw_docker_windows) with batch scripts that handle container management (more on this below).
 
 ## Channel Setup Examples
 
@@ -157,6 +157,96 @@ Add custom skills by dropping a `SKILL.md` into your workspace. The skill system
 **Monitoring**: The web UI (`http://localhost:18789`) shows active sessions, channel status, and logs.
 
 **Backups**: Your config and session data live in `~/.openclaw`. Back up this directory.
+
+## Docker Containerization on Windows
+
+Running OpenClaw in a Docker container adds an important security layer—especially on Windows where the assistant has access to your file system and can execute commands.
+
+The [openclaw_docker_windows](https://github.com/francismdpro/openclaw_docker_windows) project provides simple utilities to run OpenClaw safely in containers:
+
+```bash
+# Clone OpenClaw
+git clone https://github.com/openclaw/openclaw.git
+cd openclaw
+
+# Download the Docker utilities
+# Copy OpenClaw_Launcher.bat and OpenClaw_Pairing.bat to the openclaw folder
+```
+
+**Why containerize?**
+
+- **Isolation**: The agent can only access files and resources you explicitly mount
+- **Reproducibility**: Same environment across machines
+- **Easy cleanup**: Delete the container, start fresh
+- **Network control**: Restrict what the agent can reach
+
+**Setup:**
+
+1. Run `OpenClaw_Launcher.bat` — it creates the Docker containers automatically
+2. Access the interface at `http://localhost:18789/`
+3. For pairing issues, use `OpenClaw_Pairing.bat`
+
+The config directory lives in `config/` (not `~/.openclaw`) when running containerized, making it easy to version control your setup separately from the application.
+
+For production Windows deployments where security matters, Docker containerization is the recommended approach.
+
+## Memory: From Stateless to Compounding
+
+Here's what separates a useful assistant from a truly powerful one: **persistent memory**.
+
+Out of the box, most AI assistants are stateless—each conversation starts fresh. OpenClaw supports a memory protocol that transforms your agent into a compounding system that gets better over time.
+
+### The Cognitive Infrastructure Protocol
+
+This memory structure turns your workspace into persistent cognition:
+
+```
+/mind/
+    /logs/
+        YYYY-MM-DD.md    # Daily activity logs
+    PROFILE.md           # Who you are, preferences, context
+    PROJECTS.md          # Active work, goals, status
+    DECISIONS.md         # Past decisions and rationale
+    ERRORS.md            # What went wrong, lessons learned
+```
+
+**All files are mandatory. All sessions begin by loading them.**
+
+### Session Boot Sequence
+
+Before the agent responds to anything, it should:
+
+1. Read `PROFILE.md` — understand who it's helping
+2. Read `PROJECTS.md` — know what's active
+3. Read `DECISIONS.md` — remember what was decided
+4. Read `ERRORS.md` — avoid repeating mistakes
+5. Read today's log file (or create it)
+
+**No execution before context. No advice without state awareness.**
+
+### Why This Matters
+
+Without structured memory:
+- You repeat yourself constantly
+- The agent forgets decisions you made together
+- There's no learning from mistakes
+- Every session starts at zero
+
+With structured memory:
+- Context compounds over time
+- Decisions are documented and retrievable
+- Errors become lessons, not repeated failures
+- The agent develops genuine understanding of your work
+
+### The Core Principles
+
+> If it is not written, it does not exist.
+> If it is not reviewed, it does not compound.
+> If it is not structured, it cannot scale.
+
+This isn't just about the agent remembering things—it's about building a knowledge system where human and AI collaborate with shared persistent state.
+
+Set up the `/mind/` directory in your OpenClaw workspace, and you'll notice the difference within days. Your assistant stops feeling like autocomplete and starts feeling like a partner who actually knows your work.
 
 ## When OpenClaw Makes Sense
 
