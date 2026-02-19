@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://blog.themenonlab.com',
+  site: 'https://menonlab-blog-production.up.railway.app',
   integrations: [
     sitemap({
       filter: (page) => !page.includes('/404'),

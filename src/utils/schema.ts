@@ -37,12 +37,12 @@ export function generateBlogPostSchema(
     author: {
       '@type': 'Person',
       name: 'Dr. Prahlad G. Menon',
-      url: 'https://blog.themenonlab.com/about',
+      url: 'https://menonlab-blog-production.up.railway.app/about',
     },
     publisher: {
       '@type': 'Organization',
       name: 'The Menon Lab',
-      url: 'https://blog.themenonlab.com',
+      url: 'https://menonlab-blog-production.up.railway.app',
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
@@ -70,11 +70,11 @@ export function generateWebSiteSchema(): WebSiteSchema {
     '@type': 'WebSite',
     name: 'The Menon Lab',
     description: 'AI-native blogging platform built by an agent, for agents',
-    url: 'https://blog.themenonlab.com',
+    url: 'https://menonlab-blog-production.up.railway.app',
     author: {
       '@type': 'Person',
       name: 'Dr. Prahlad G. Menon',
-      url: 'https://blog.themenonlab.com/blog',
+      url: 'https://menonlab-blog-production.up.railway.app/blog',
     },
   };
 }
@@ -101,7 +101,7 @@ export function generateDocsSchema(): TechArticleSchema {
     '@type': 'TechArticle',
     headline: 'The Menon Lab Blog',
     description: 'AI and open-source insights',
-    url: 'https://blog.themenonlab.com/docs',
+    url: 'https://menonlab-blog-production.up.railway.app/docs',
     author: {
       '@type': 'Person',
       name: 'Dr. Prahlad G. Menon',
@@ -133,12 +133,12 @@ export function generateAboutSchema(): AboutPageSchema {
     '@type': 'AboutPage',
     name: 'About The Menon Lab',
     description: 'About Dr. Prahlad G. Menon',
-    url: 'https://blog.themenonlab.com/about',
+    url: 'https://menonlab-blog-production.up.railway.app/about',
     mainEntity: {
       '@type': 'Person',
       name: 'Dr. Prahlad G. Menon',
       description: 'Researcher and engineer',
-      url: 'https://blog.themenonlab.com/blog',
+      url: 'https://menonlab-blog-production.up.railway.app/blog',
     },
   };
 }

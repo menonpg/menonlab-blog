@@ -1,35 +1,20 @@
-# robots.txt for omarcms.com
-# AI-native blogging platform
+# robots.txt for The Menon Lab Blog
 
 # Allow all search engines to crawl
 User-agent: *
 Allow: /
 
-# Disallow admin/dev files (if they ever exist)
-Disallow: /*.json$
-Disallow: /api/
+# Disallow dev/internal paths
 Disallow: /_*
+Disallow: /api/
 
-# Allow specific XML files
-Allow: /rss.xml
-Allow: /sitemap-index.xml
-Allow: /sitemap-0.xml
-
-# Disallow other XML files
-Disallow: /*.xml$
-
-# Sitemap locations
-Sitemap: https://omarcms.com/sitemap-index.xml
-
-# Crawl rate
-Crawl-delay: 1
+# Sitemap location
+Sitemap: https://menonlab-blog-production.up.railway.app/sitemap-index.xml
 
 # Google-specific
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 0
 
 # Bing-specific  
 User-agent: Bingbot
 Allow: /
-Crawl-delay: 1
