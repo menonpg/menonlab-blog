@@ -1,7 +1,7 @@
 ---
 title: "Code vs JSON: The Evolution of LLM Tool Calling"
 description: "From academic research to production systems, why the AI industry is converging on code-based tool calling over JSON schemas"
-pubDate: 2026-02-19
+date: "2026-02-19"
 tags: ["ai-agents", "llm", "anthropic", "huggingface", "tool-calling"]
 ---
 
