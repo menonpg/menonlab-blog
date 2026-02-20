@@ -1,7 +1,7 @@
 ---
 title: "Zvec: The SQLite of Vector Databases Has Arrived"
 description: "Alibaba open-sources Zvec, an embedded vector database that runs in-process with zero infrastructure. Over 8,000 QPS, 2x faster than the previous leader."
-pubDate: 2026-02-20
+date: "2026-02-20"
 tags: ["vector-database", "rag", "embeddings", "alibaba", "open-source"]
 ---
 
