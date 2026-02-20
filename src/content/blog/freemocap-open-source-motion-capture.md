@@ -31,17 +31,38 @@ That's it. A graphical interface appears where you can configure cameras, record
 
 The system supports Python 3.10 through 3.12, with 3.12 recommended for best performance.
 
-## How It Works
+## The Technical Stack
 
-FreeMoCap uses modern computer vision techniques to extract 3D pose data from 2D camera feeds:
+FreeMoCap combines several proven computer vision components into a cohesive pipeline:
 
-1. **Multi-camera recording**: Capture synchronized video from multiple angles
-2. **2D pose estimation**: Detect body keypoints in each camera view
-3. **3D reconstruction**: Triangulate the 2D detections into 3D coordinates
-4. **Skeleton fitting**: Map the points to a biomechanically accurate skeleton model
-5. **Data export**: Output formats compatible with animation software and analysis tools
+### 2D Pose Estimation: MediaPipe BlazePose
 
-The more cameras you use, the better the reconstruction quality. But even a two-camera setup can produce usable results for many applications.
+The core pose detection uses Google's **MediaPipe** framework, specifically the **BlazePose** model. BlazePose detects 33 body landmarks per frame — joints, extremities, and key reference points across the full body. It's the same technology that powers pose detection in Google Meet and various fitness apps.
+
+BlazePose runs efficiently on CPU (no GPU required), which is why FreeMoCap works on standard laptops. The model was trained on a large dataset of human poses and handles varied lighting, clothing, and body types reasonably well.
+
+### Camera Calibration: CharuCo + Anipose
+
+Before triangulating 3D positions, FreeMoCap needs to know exactly where each camera is in space. This is handled through **CharuCo board calibration** — you wave a special checkerboard pattern (combining a chessboard with ArUco markers) in front of all cameras.
+
+The calibration system is built on **Anipose**, an open-source library developed for animal pose estimation that provides robust multi-camera calibration. It computes both intrinsic parameters (lens distortion, focal length) and extrinsic parameters (camera position and orientation relative to each other).
+
+### 3D Triangulation
+
+Once cameras are calibrated and 2D poses are detected in each view, FreeMoCap triangulates the corresponding points into 3D space. If a landmark is visible in two or more cameras, basic geometry determines where in 3D that point must be.
+
+The Anipose library handles this triangulation, including filtering for outliers and smoothing noisy detections. The math is straightforward (intersection of rays from each camera), but robust implementation with real-world noise is where the engineering matters.
+
+### The Full Pipeline
+
+1. **Record** synchronized video from multiple webcams
+2. **Calibrate** camera positions using CharuCo board
+3. **Detect** 2D poses in each frame using MediaPipe BlazePose
+4. **Triangulate** corresponding points into 3D coordinates
+5. **Filter** and smooth the trajectory data
+6. **Export** to standard formats (BVH, CSV, Blender-compatible)
+
+The more cameras with overlapping views, the better the reconstruction quality. Two cameras can work, but three or four significantly improve accuracy and handle occlusion better.
 
 ## Why This Matters
 
@@ -63,14 +84,17 @@ The project explicitly targets several communities:
 
 **Animation**: Indie game developers and small studios can capture reference animation or create motion data for rigging without professional mocap budgets.
 
-## Technical Architecture
+## Design Philosophy
 
-The software is designed to be modular and extensible:
+The architecture reflects practical tradeoffs:
 
-- **Hardware-agnostic**: Works with any cameras that provide video input
-- **Software-agnostic**: Outputs standard formats compatible with Blender, Unity, research tools
-- **Minimal dependencies**: Built on well-maintained Python libraries
-- **GUI and CLI**: Graphical interface for ease of use, command line for automation
+- **MediaPipe over OpenPose**: OpenPose was the original choice, but its development stalled. MediaPipe is actively maintained by Google, runs faster, and doesn't require GPU.
+
+- **Anipose for calibration**: Rather than building calibration from scratch, FreeMoCap leverages Anipose's battle-tested implementation. Anipose was designed for neuroscience labs tracking animal movement — if it handles mice in complex rigs, it handles humans in living rooms.
+
+- **Post-processing, not real-time**: Running pose detection, triangulation, and filtering live would require significant compute. By processing after recording, FreeMoCap works on modest hardware.
+
+- **Standard outputs**: BVH files work in Blender, Maya, Unity. CSV exports feed into MATLAB, Python analysis scripts, or R. No vendor lock-in.
 
 For developers who want to integrate motion capture into their own applications, FreeMoCap can be used as a library rather than a standalone tool.
 
