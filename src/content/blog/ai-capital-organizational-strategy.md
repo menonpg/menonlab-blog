@@ -190,3 +190,5 @@ Human capital changed how organizations thought about people. AI capital will ch
 ---
 
 *The Menon Lab explores the intersection of AI systems and organizational design. [Get in touch](mailto:prahlad.menon@gmail.com) if you're thinking about AI strategy.*
+
+*Also published on [Medium](https://medium.com/@menon.prahlad/ai-capital-the-organizational-shift-nobodys-talking-about-b3f215b31706).*
