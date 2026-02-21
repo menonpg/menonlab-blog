@@ -1,7 +1,7 @@
 ---
 title: "The Smart Annotation Strategy: Human-in-the-Loop for Object Detection & Segmentation"
 description: "A practical guide to building production-ready detection and segmentation models with minimal manual labeling using SAM, SAM 2, SAM 3, and active learning workflows."
-pubDate: 2026-02-21
+date: "2026-02-21"
 tags: ["computer-vision", "annotation", "SAM", "machine-learning", "active-learning"]
 ---
 
@@ -110,6 +110,21 @@ This is where human expertise matters. Focus annotator time on:
 [Roboflow Annotate](https://roboflow.com/) has SAM-2 directly integrated into the annotation interface. Click a point, get a mask, accept or refine. It handles export formats, versioning, and can even auto-train models.
 
 **Best for:** Teams that want to move fast, startups, projects where you don't need infrastructure control.
+
+### For Full AI Integration: VisioFirm
+
+[VisioFirm](https://github.com/OschAI/VisioFirm) is a newcomer that deserves attention—fully open-source (Apache 2.0) and built specifically around AI-powered pre-annotation. It's one of the most comprehensive model-in-the-loop tools available:
+
+- **SAM2 in-browser**: WebGPU-accelerated click-to-segment, no server round-trips
+- **YOLO integration**: Supports YOLOv5 through YOLOv12, including YOLOv8-World for open-vocabulary detection
+- **Video with smart propagation**: Frame-to-frame tracking using SAM2-powered SmartPropagator or OpenCV trackers
+- **Cross-domain annotation**: Use detection models to generate segmentation masks, or vice versa
+- **Grounding DINO**: Zero-shot object detection with text prompts
+- **CLIP classification**: Automatic label suggestions for image classification tasks
+
+VisioFirm claims up to 80% reduction in manual effort, and the architecture backs it up. The browser-based SAM2 means instant feedback without GPU server costs.
+
+**Best for:** Teams wanting maximum AI assistance with full code access, video annotation workflows, researchers.
 
 ### For Self-Hosted Control: CVAT
 
