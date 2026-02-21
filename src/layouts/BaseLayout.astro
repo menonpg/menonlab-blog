@@ -142,14 +142,19 @@ const version = pkg.version;
       <slot />
     </main>
     <footer>
-      <div class="footer-links">
-        <a href="https://themenonlab.com" target="_blank">The Menon Lab</a>
-        <span class="footer-divider">·</span>
-        <a href="https://thinkcreateai.com" target="_blank">AI Consulting</a>
-        <span class="footer-divider">·</span>
-        <a href="https://themenonlab.com/learn" target="_blank">Learn AI</a>
+      <div class="footer-author">
+        <h3 class="footer-author-title">About the Author</h3>
+        <p class="footer-author-bio">
+          Dr. Prahlad G. Menon is the founder of <a href="https://themenonlab.com" target="_blank" class="link-quantmd">QuantMD</a> and <a href="https://thinkcreateai.com" target="_blank" class="link-thinkcreate">ThinkCreate.AI</a>. With a PhD from Carnegie Mellon University, PMP certification, and NVIDIA GenAI LLMs credentials, he brings deep expertise in artificial intelligence, machine learning, computer vision, and data science.
+        </p>
+        <div class="footer-cta">
+          <a href="https://themenonlab.com/learn" target="_blank" class="footer-cta-link">📚 Learn AI</a>
+          <a href="https://thinkcreateai.com" target="_blank" class="footer-cta-link">🤝 AI Consulting</a>
+        </div>
       </div>
-      <p>© {new Date().getFullYear()} Dr. Prahlad G. Menon</p>
+      <div class="footer-bottom">
+        <p>© {new Date().getFullYear()} Dr. Prahlad G. Menon · <a href="https://themenonlab.com" target="_blank">themenonlab.com</a></p>
+      </div>
     </footer>
     <Analytics />
     <script is:inline>
@@ -408,31 +413,88 @@ const version = pkg.version;
 
   footer {
     border-top: 1px solid var(--border);
-    padding: 2rem;
-    text-align: center;
+    padding: 3rem 2rem 2rem;
     color: var(--muted);
     font-size: 0.875rem;
+    max-width: 60rem;
+    margin: 0 auto;
   }
 
-  .footer-links {
+  .footer-author {
+    max-width: 42rem;
+    margin: 0 auto 2rem;
+    padding: 1.5rem;
+    background: var(--border);
+    border-radius: 0.75rem;
+  }
+
+  .footer-author-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--fg);
     margin-bottom: 0.75rem;
+  }
+
+  .footer-author-bio {
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .link-quantmd {
+    color: #f97316;
+    text-decoration: none;
+  }
+
+  .link-quantmd:hover {
+    text-decoration: underline;
+  }
+
+  .link-thinkcreate {
+    color: #14b8a6;
+    text-decoration: none;
+  }
+
+  .link-thinkcreate:hover {
+    text-decoration: underline;
+  }
+
+  .footer-cta {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
     flex-wrap: wrap;
   }
 
-  .footer-divider {
-    color: var(--border);
+  .footer-cta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--fg);
+    text-decoration: none;
+    font-weight: 500;
+    transition: border-color 0.2s, background 0.2s;
   }
 
-  footer a {
+  .footer-cta-link:hover {
+    border-color: var(--accent);
+    background: var(--border);
+  }
+
+  .footer-bottom {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-bottom a {
     color: var(--accent);
     text-decoration: none;
   }
 
-  footer a:hover {
+  .footer-bottom a:hover {
     text-decoration: underline;
   }
 
