@@ -145,6 +145,24 @@ Once pretrained, evaluate your foundation model by:
 
 3. **Few-shot learning:** Can you classify with 10 labeled examples per class? 50? This measures practical utility.
 
+## The 2D Limitation: What DINO Actually Learns
+
+Before you start building, there's an important clarification that often gets lost in the excitement around these foundation models: DINO and DINOv2 are fundamentally 2D feature extractors. They don't give you 3D understanding, even when applied to volumetric medical data.
+
+Consider what RedDino actually learned. Blood smears are photographed from above—flat 2D images of cells spread on glass slides. The model sees shapes, textures, and color variations within each image. It learns to distinguish a sickle cell from a normal biconcave disc, or to spot the ring-form of a malaria parasite. But there's no depth perception, no 3D structure. It's pattern recognition on 2D morphology, and that's exactly what makes it powerful for its intended use case.
+
+The same limitation applies when you train on CT or MRI slices. Each axial slice through the ascending aorta is a 2D cross-section, and a DINO-based model treats it as an independent image. It can learn to recognize patterns within that slice—the characteristic circular or elliptical shape of the aorta, wall thickening, calcification deposits, the relationship between the aorta and surrounding mediastinal structures. This is genuinely useful. A slice-level classifier can flag "this cross-section shows abnormal dilation" with high accuracy.
+
+But the model has no concept of how slice 47 relates to slice 48. It doesn't understand that the aorta is a continuous tubular structure extending through multiple slices. The full 3D geometry of an aneurysm—its length, its shape, whether it's fusiform or saccular, how it tapers at the edges—requires reasoning across slices that a 2D model simply cannot provide.
+
+This matters for certain clinical questions more than others. For screening ("does this patient have aortic pathology somewhere?"), aggregating predictions across 2D slices often works well enough. You can train a slice-level classifier and flag studies where multiple slices show abnormality. For precise surgical planning ("what exactly is the geometry of this coarctation?"), you need architectures designed for volumetric reasoning.
+
+True 3D understanding requires different approaches. Volumetric transformers like ViT3D process stacks of slices as unified 3D inputs. 3D convolutional networks have been the traditional approach for volumetric medical imaging. Some hybrid methods use 2D encoders but aggregate information across slices through attention mechanisms or recurrent connections. These approaches are computationally heavier and the self-supervised methods for 3D data are less mature than their 2D counterparts, but they're necessary when the clinical question demands spatial reasoning across the volume.
+
+The practical takeaway is to match your architecture to your clinical question. If you're building a screening tool that asks "is there pathology in this study?" then 2D slice-level models aggregated intelligently may be sufficient—and they're easier to train, require less compute, and benefit from more mature self-supervised techniques. If you're building a tool for measurement, surgical planning, or any task that requires understanding 3D anatomy, you'll need to look beyond the DINO paradigm toward volumetric approaches.
+
+RedDino's success doesn't mean 2D methods solve everything. It means 2D methods, applied thoughtfully to problems where 2D features are discriminative, can achieve state-of-the-art results with accessible methodology. Know which category your problem falls into before you start building.
+
 ## The Broader Pattern
 
 RedDino follows a pattern emerging across medical imaging:
