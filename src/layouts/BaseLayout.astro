@@ -63,6 +63,9 @@ const version = pkg.version;
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div class="promo-bar">
+      <span>🚀 <a href="https://themenonlab.com" target="_blank">The Menon Lab</a> · <a href="https://thinkcreateai.com" target="_blank">AI Consulting</a> · <a href="https://themenonlab.com/learn" target="_blank">Learn AI</a></span>
+    </div>
     <header>
       <nav aria-label="Main navigation">
         <a href="/" class="logo" aria-label="The Menon Lab">
@@ -267,6 +270,26 @@ const version = pkg.version;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+  }
+
+  /* Promo bar */
+  .promo-bar {
+    background: linear-gradient(90deg, var(--accent), #8b5cf6);
+    color: white;
+    text-align: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .promo-bar a {
+    color: white;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .promo-bar a:hover {
+    text-decoration-thickness: 2px;
   }
 
   /* Skip link for keyboard navigation */
