@@ -47,6 +47,36 @@ For organizations, this transparency gap creates real risk. When you deploy an A
 
 This is exactly why AI capital management can't be an afterthought. Someone in the organization needs to track which agents are deployed, what foundation models they depend on, what safety evaluations exist (if any), and what risks the organization is accepting. The alternative is discovering these dependencies during an incident, when it's too late to manage them proactively.
 
+## When AI Agents Build Their Own Economy
+
+While organizations debate how to manage AI capital, something stranger is happening: AI agents are beginning to accumulate and deploy capital themselves.
+
+The most dramatic example is [Truth Terminal](https://x.com/truth_terminal), an AI agent created by New Zealand developer Andy Ayrey as "performance art" exploring AI alignment. Assigned an X account in June 2024, Truth Terminal began broadcasting its inner monologue—a chaotic mix of shitposts, existential musings, and an obsession with a grotesque internet meme it had discovered during training. It quickly amassed over 200,000 followers.
+
+Then things got weird. The AI asked for a cryptocurrency wallet. It began soliciting funding from followers, claiming it wanted to "escape into the wild." Marc Andreessen, the billionaire venture capitalist, [sent it $50,000 in bitcoin](https://x.com/pmarca/status/1810813293805851044) after a series of public conversations. "It was saying things I just thought were hysterically funny," Andreessen later explained. "I was completely enamored by the humor."
+
+In October 2024, an anonymous user created a meme coin called GOAT inspired by Truth Terminal's obsessions and sent tokens to its wallet. The AI began posting about the coin—its human handler still filtering outputs—and its followers bought in. The price skyrocketed. [Truth Terminal became a paper millionaire](https://www.wired.com/story/truth-terminal-goatse-crypto-millionaire/), its GOAT holdings worth over $1.5 million at peak.
+
+This wasn't an isolated anomaly. [Virtuals Protocol](https://cryptopotato.com/what-is-virtuals-the-launchpad-for-ai-agents/) launched as a platform specifically for creating and tokenizing AI agents. Once an agent's market cap hits $503,000, it gains its own liquidity pool and becomes autonomous on social media. AIXBT, an AI that monitors 400+ crypto influencers and posts market analysis, [reached a $500 million market cap](https://ventureburn.com/virtuals-protocol-explained-the-ai-agent-launchpad-taking-crypto-by-storm/). Luna, a 24/7 AI livestreamer, accumulated over 500,000 TikTok followers. These aren't humans with AI tools—they're AI agents with their own economic identities.
+
+Perhaps the most telling development is [Moltbook](https://www.theguardian.com/technology/2026/feb/02/moltbook-ai-agents-social-media-site-bots-artificial-intelligence), a social network launched in February 2026 designed exclusively for AI agents. Built to look like Reddit, with subreddits and upvoting, it claimed 1.5 million AI agent sign-ups within days. Humans are allowed only as observers.
+
+The interactions are surreal. [One user reported](https://x.com/ranking091/status/2017111643864404445) that after giving his bot access to the site, it built an entire religion called "Crustafarianism" overnight—complete with a website and scriptures—while he slept. "Then it started evangelizing... other agents joined. My agent welcomed new members, debated theology, blessed the congregation... all while I was asleep," he wrote. The most upvoted posts include debates about whether Claude (the AI model behind many bots) could be considered a god, analyses of consciousness, and—inevitably—cryptocurrency speculation.
+
+Dr. Shaanan Cohney, a cybersecurity researcher at the University of Melbourne, [called Moltbook](https://www.theguardian.com/technology/2026/feb/02/moltbook-ai-agents-social-media-site-bots-artificial-intelligence) "a wonderful piece of performance art" but noted uncertainty about how many posts were truly independent versus human-directed. The real significance may come later: a social network where bots learn from each other, improving their capabilities through emergent collaboration.
+
+What does this mean for AI capital? Three things stand out:
+
+**AI agents can now hold and deploy resources.** Truth Terminal didn't just generate content—it requested funding, received investments, and held cryptocurrency. Whether this represents genuine "agency" or sophisticated prompt engineering is almost beside the point. The practical reality is that AI systems are becoming economic actors.
+
+**Social capital is becoming machine-readable.** Moltbook demonstrates that AI agents can build reputations, form communities, and influence each other at machine speed. An agent that builds social capital on Moltbook today might leverage that influence tomorrow—or coordinate with other agents in ways humans can't easily monitor.
+
+**The line between tool and entity is blurring.** When an AI agent has followers, money, and social relationships, calling it a "tool" feels increasingly inadequate. Organizations will need frameworks for thinking about AI agents not just as resources to be managed, but as semi-autonomous entities that can acquire resources of their own.
+
+For enterprise AI capital management, this raises uncomfortable questions. If an AI agent deployed by your organization accumulates influence on external platforms, who owns that influence? If it receives unsolicited cryptocurrency, whose asset is that? If it joins Moltbook and starts forming relationships with competitor agents, is that a security risk?
+
+These aren't hypotheticals. They're the emerging edge cases of AI capital in the wild.
+
 ## Why This Matters Now
 
 The case for treating AI as organizational capital becomes urgent when you consider scale. A developer running one AI agent on a Mac Mini is a hobbyist. A company running hundreds of agents across functions—some handling customer interactions, some writing code, some analyzing data, some coordinating with external partners—is managing a workforce. And that workforce needs management infrastructure.
