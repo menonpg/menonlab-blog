@@ -1,0 +1,127 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Contact - The Menon Lab">
+  <article class="contact-page">
+    <h1>Contact</h1>
+    
+    <section>
+      <p>
+        Have a question, suggestion, or want to collaborate? I'd love to hear from you.
+      </p>
+    </section>
+
+    <section class="contact-methods">
+      <div class="contact-card">
+        <h2>📧 Email</h2>
+        <p>Best for detailed inquiries, collaborations, or consulting requests.</p>
+        <a href="mailto:prahlad.menon@gmail.com" class="contact-link">prahlad.menon@gmail.com</a>
+      </div>
+
+      <div class="contact-card">
+        <h2>🐙 GitHub</h2>
+        <p>Found a bug or want to contribute? Open an issue or PR.</p>
+        <a href="https://github.com/menonpg" target="_blank" rel="noopener" class="contact-link">github.com/menonpg</a>
+      </div>
+
+      <div class="contact-card">
+        <h2>🌐 Website</h2>
+        <p>Learn more about my work and other projects.</p>
+        <a href="https://themenonlab.com" target="_blank" rel="noopener" class="contact-link">themenonlab.com</a>
+      </div>
+
+      <div class="contact-card">
+        <h2>🐦 X (Twitter)</h2>
+        <p>Follow for quick updates and AI/ML discussions.</p>
+        <a href="https://x.com/the_ai_scientist" target="_blank" rel="noopener" class="contact-link">@the_ai_scientist</a>
+      </div>
+    </section>
+
+    <section>
+      <h2>What I Can Help With</h2>
+      <ul>
+        <li><strong>AI/ML Consulting</strong> — Strategy, architecture, implementation</li>
+        <li><strong>Technical Writing</strong> — Guest posts, documentation, tutorials</li>
+        <li><strong>Speaking</strong> — Podcasts, webinars, conferences</li>
+        <li><strong>Collaboration</strong> — Open source projects, research partnerships</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Response Time</h2>
+      <p>
+        I typically respond to emails within 1-2 business days. For urgent matters, 
+        please mention "URGENT" in the subject line.
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .contact-page {
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+
+  h1 {
+    margin-bottom: 1.5rem;
+  }
+
+  section {
+    margin-bottom: 2.5rem;
+  }
+
+  p {
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .contact-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .contact-card {
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-secondary, rgba(128, 128, 128, 0.05));
+  }
+
+  .contact-card h2 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .contact-card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .contact-link {
+    color: var(--accent);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .contact-link:hover {
+    text-decoration: underline;
+  }
+
+  h2 {
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+  }
+
+  ul {
+    padding-left: 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+</style>

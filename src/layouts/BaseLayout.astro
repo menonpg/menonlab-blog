@@ -152,6 +152,12 @@ const version = pkg.version;
           <a href="https://thinkcreateai.com" target="_blank" class="footer-cta-link">🤝 AI Consulting</a>
         </div>
       </div>
+      <div class="footer-links">
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+      </div>
       <div class="footer-bottom">
         <p>© {new Date().getFullYear()} Dr. Prahlad G. Menon · <a href="https://themenonlab.com" target="_blank">themenonlab.com</a></p>
       </div>
@@ -481,6 +487,27 @@ const version = pkg.version;
   .footer-cta-link:hover {
     border-color: var(--accent);
     background: var(--border);
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover {
+    color: var(--accent);
   }
 
   .footer-bottom {
