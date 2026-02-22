@@ -43,9 +43,24 @@ Resolve every scale of turbulence without modeling. The gold standard for accura
 **Pros:** No turbulence modeling assumptions
 **Cons:** Computationally brutal—scales as Re³, impractical for most engineering flows
 
+### Immersed Boundary Method (IBM)
+
+The [Immersed Boundary Method](https://en.wikipedia.org/wiki/Immersed_boundary_method), pioneered by **Charles Peskin** in 1972 for simulating blood flow in the heart, offers a clever middle ground.
+
+Instead of fitting the mesh to complex geometries, IBM:
+- Uses a **simple Cartesian background grid** (easy to generate)
+- Represents boundaries as **immersed structures** within the grid
+- Applies **forcing functions** to enforce boundary conditions
+
+**Pros:** No body-fitted mesh needed, handles moving boundaries naturally, existing solvers can be adapted
+**Cons:** Accuracy near boundaries can suffer, still fundamentally grid-based
+**Used in:** Biological flows, fluid-structure interaction, flows with moving bodies
+
+IBM was a precursor to truly mesh-free thinking—it showed you don't need the mesh to conform to geometry. But you still need *a* mesh.
+
 ### The Common Problem
 
-All of these methods require a **mesh**:
+All traditional methods require a **mesh**:
 
 1. Generate geometry → 2. Create mesh → 3. Solve → 4. Geometry changes → 5. Remesh → 6. Solve again
 
@@ -139,8 +154,9 @@ The key innovation: use coarse training data to initialize, then refine with phy
 
 | Method | Mesh Required | Train Per Problem | Parametric | Speed |
 |--------|---------------|-------------------|------------|-------|
-| FDM/FVM/FEM | ✅ Yes | N/A | Solve each | Baseline |
-| DNS | ✅ Yes (fine) | N/A | Solve each | Slow |
+| FDM/FVM/FEM | ✅ Body-fitted | N/A | Solve each | Baseline |
+| DNS | ✅ Fine mesh | N/A | Solve each | Slow |
+| IBM | ✅ Cartesian (simple) | N/A | Solve each | ~Baseline |
 | PINN | ❌ No | ✅ Yes | Train each | ~1x |
 | FNO | ❌ No | ❌ Once | ✅ Yes | 1000x |
 | PINO | ❌ No | ❌ Once | ✅ Yes | 1000x+ |
@@ -176,6 +192,8 @@ Neural operators aren't replacing FEM tomorrow. Here's why:
 But for **inner-loop applications**—optimization, uncertainty quantification, real-time control—neural operators are already winning. Run 10 FEM simulations to train, then evaluate 10,000 configurations in seconds.
 
 ## Key Researchers
+
+**Charles Peskin** (NYU) — Invented the Immersed Boundary Method (1972), foundational work on computational cardiology
 
 **George Karniadakis** (Brown University) — Pioneer of PINNs, coined the term physics-informed neural networks. [Lab](https://www.brown.edu/research/projects/crunch/)
 
