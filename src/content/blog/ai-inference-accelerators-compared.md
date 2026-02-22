@@ -38,7 +38,9 @@ The HC1 chip has Llama 3.1 8B literally hardwired into the hardware. No flexibil
 - **20x cheaper** to build than competing solutions
 - **10x less power** consumption
 
-**How it works:** Traditional chips separate memory and compute. Memory bandwidth is the bottleneck for LLMs—you spend most of your time moving weights around, not computing. Taalas unifies storage and compute on a single chip at DRAM-level density, eliminating the memory wall.
+**How it works:** Traditional chips separate memory and compute. Memory bandwidth is the bottleneck for LLMs—you spend most of your time moving weights around, not computing.
+
+Taalas uses what they call **"mask ROM recall fabric"**—literally etching the model weights directly into the silicon logic. No HBM, no VRAM bottlenecks, just raw hardcoded inference. The chip unifies storage and compute at DRAM-level density, eliminating the memory wall entirely.
 
 **Specs:**
 - TSMC 6nm process
@@ -104,6 +106,24 @@ The Wafer-Scale Engine (WSE-3) is the largest chip ever built:
 
 **Focus:** Enterprise deployments, especially for companies wanting to run models on-premise with better efficiency than NVIDIA.
 
+## Desktop AI Hardware: The Middle Ground
+
+Worth mentioning: there's a growing category of **desktop AI workstations** that sit between consumer GPUs and datacenter accelerators.
+
+**Gigabyte AI TOP ATOM** (NVIDIA Spark / Grace Blackwell architecture):
+- 128GB unified memory
+- Designed for local training and fine-tuning
+- General-purpose but AI-optimized
+
+**Mac Studio M4 Ultra:**
+- Up to 512GB unified memory
+- Metal Performance Shaders (MPS) for PyTorch
+- Great for inference, limited for training
+
+These are the "serious hobbyist" options—powerful for local development, but when a dedicated ASIC hits 15,000+ tok/s, it raises the question: **will specialized silicon make general-purpose desktop AI look like dial-up?**
+
+The answer depends on your workflow. If you need flexibility (fine-tuning, multiple models, experimentation), general-purpose wins. If you're deploying one model at scale, ASICs crush everything.
+
 ## NVIDIA: The General-Purpose Baseline
 
 For comparison, NVIDIA's latest:
@@ -160,6 +180,7 @@ For now, though, the specialists are winning on inference. And inference is wher
 - [Groq API](https://groq.com)
 - [Etched](https://www.etched.com/)
 - [SambaNova](https://sambanova.ai/)
+- [Reddit discussion on ChatJimmy](https://www.reddit.com/r/ollama/comments/1rajqj6/15000_toks_on_chatjimmy_is_the_modelonsilicon_era/)
 
 ---
 
