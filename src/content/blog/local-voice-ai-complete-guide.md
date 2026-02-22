@@ -123,7 +123,7 @@ LiveKit handles DTMF tones, call transfers (cold and warm), SIP REFER, and integ
 
 This is genuinely "local VAPI"—the same capabilities, but you control the infrastructure.
 
-## The Latency Problem (And How Voice-Native Models Solve It)
+## The Latency Problem (And How to Solve It)
 
 Traditional voice AI has a fundamental latency problem:
 
@@ -134,7 +134,38 @@ User speaks → STT (200-400ms) → LLM (500-2000ms) → TTS (200-400ms) → Use
 
 That's noticeable. It's why conversations with voice assistants feel robotic—awkward pauses, no natural interruptions, weird turn-taking.
 
-The solution? **Skip the cascade entirely.**
+There are two approaches to solving this: **optimize the cascade** or **skip it entirely.**
+
+### Flux: Optimizing the Cascade
+
+[Deepgram Flux](https://deepgram.com/learn/introducing-flux-conversational-speech-recognition) is the first STT model built specifically for voice agents. Instead of just transcribing words, Flux understands conversational flow:
+
+**Key features:**
+- **~260ms end-of-turn detection** — Knows when speakers finish talking
+- **EagerEndOfTurn events** — Start LLM processing *before* the user fully finishes speaking
+- **Built-in barge-in handling** — Natural interruptions without VAD hacks
+- **Turn-based transcripts** — Clean conversation structure, not word soup
+- **Nova-3 accuracy** — Best-in-class transcription
+
+The clever trick is **EagerEndOfTurn**: Flux detects when a user is *probably* done (based on prosody and semantics) and fires an early event. Your agent can start generating a response speculatively. If the user keeps talking, Flux sends a `TurnResumed` event and you cancel the draft.
+
+```python
+# Flux with eager turn detection
+async with client.listen.v2.connect(
+    model="flux-general-en",
+    eager_eot_threshold=0.5,  # Fire early events at 50% confidence
+    eot_threshold=0.7,        # Confirm turn at 70% confidence
+) as connection:
+    # Handle EagerEndOfTurn → start LLM call
+    # Handle TurnResumed → cancel draft
+    # Handle EndOfTurn → send final response
+```
+
+This shaves 200-400ms off the cascade by parallelizing STT completion with LLM generation.
+
+**Trade-off:** EagerEndOfTurn can increase LLM API calls by 50-70% due to speculative generation. Worth it for latency-critical applications.
+
+### Voice-Native Models: Skip the Cascade Entirely
 
 ### PersonaPlex: NVIDIA's Audio-Native Model
 
@@ -188,6 +219,7 @@ Think of it as "an LLM that can hear." It processes speech natively rather than 
 |----------|---------|---------------|---------------|-------------|
 | **Traditional (STT→LLM→TTS)** | 900-2800ms | Full control over each component | ✅ Yes | ✅ Yes |
 | **LiveKit local-voice-ai** | 500-1500ms | Swap any component | ✅ Yes | ✅ Yes |
+| **Deepgram Flux + cascade** | 400-800ms | Optimized turn detection | ❌ Cloud STT | ❌ No |
 | **VAPI** | 400-1000ms | Limited | ❌ No | ❌ No |
 | **PersonaPlex** | ~170ms | Voice + persona prompting | ❌ API only | ❌ No |
 | **Moshi** | ~200ms | Full model access | ✅ Yes | ✅ Yes |
@@ -230,6 +262,7 @@ But for now, if you need production voice AI that runs on your hardware, support
 - [local-voice-ai](https://github.com/ShayneP/local-voice-ai) — Docker-based local voice assistant
 - [LiveKit Agents](https://github.com/livekit/agents) — Open-source voice AI framework
 - [LiveKit Telephony](https://docs.livekit.io/telephony/) — SIP/PSTN integration
+- [Deepgram Flux](https://developers.deepgram.com/docs/flux/quickstart) — Conversational STT with turn detection
 - [PersonaPlex](https://research.nvidia.com/labs/adlr/personaplex/) — NVIDIA's 170ms latency voice model
 - [Moshi](https://github.com/kyutai-labs/moshi) — Open-source full-duplex model
 - [Ultravox](https://github.com/fixie-ai/ultravox) — Audio-native LLM from Fixie
