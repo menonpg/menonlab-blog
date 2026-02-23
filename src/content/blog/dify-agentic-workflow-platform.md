@@ -96,6 +96,109 @@ Documentation is solid: [docs.dify.ai](https://docs.dify.ai) covers everything f
 
 If you're building LLM applications and tired of gluing tools together, Dify is worth an afternoon of exploration.
 
+## Real Example: SEC Filing Analyzer
+
+To demonstrate Dify's capabilities, we built an **SEC Filing Analyzer** — an agent that queries live SEC EDGAR data and answers questions about company financials.
+
+### What It Does
+
+Ask natural language questions about any public company's SEC filings:
+
+- **Quick metrics**: "What was Apple's revenue in their latest 10-Q?" → Extracts $143.76B via regex
+- **Deep analysis**: "What are the risk factors?" → RAG semantic search across indexed filings
+- **Comparisons**: "Compare segment performance across last two quarters" → Side-by-side MD&A analysis
+
+### The Architecture
+
+```
+User Query → Dify Agent → Smart Router
+                              │
+              ┌───────────────┴───────────────┐
+              │                               │
+         Metrics?                        Narrative?
+              │                               │
+    fetchFiling(summary_only)          indexFiling → semanticSearch
+              │                               │
+         Regex extraction              Qdrant RAG retrieval
+              │                               │
+              └───────────────┬───────────────┘
+                              │
+                         LLM Synthesis
+                              │
+                          Response
+```
+
+**Custom Tools Connected to Dify:**
+- `searchCompany` — Find company by name/ticker → CIK
+- `getFilings` — List SEC filings with date filters
+- `fetchFiling` — Parse filing with optional `summary_only` mode
+- `indexFiling` — Chunk and embed into Qdrant
+- `semanticSearch` — Query indexed filings by topic
+- `compareFilings` — Side-by-side filing comparison
+
+### The Stack
+
+| Component | Technology |
+|-----------|------------|
+| Orchestration | Dify (ReAct agent) |
+| Custom Tools API | FastAPI on Railway |
+| Vector Store | Qdrant Cloud |
+| Embeddings | Azure text-embedding-3-large |
+| LLM | Azure GPT-5 |
+| Data Source | SEC EDGAR API (free) |
+| Monitoring | Langfuse |
+
+### Try It Live
+
+The agent is deployed and embeddable. Ask it about any public company's SEC filings:
+
+<iframe 
+  src="https://udify.app/chatbot/OCkEUGuuRXM3RNBt" 
+  style="width: 100%; height: 600px; min-height: 600px; border: 1px solid #e5e7eb; border-radius: 8px;" 
+  frameborder="0" 
+  allow="microphone">
+</iframe>
+
+**Example queries to try:**
+- "What was Apple's revenue in Q1 2026?"
+- "Analyze Ingram Micro's latest 10-Q"
+- "Compare Microsoft's last two quarterly filings"
+- "What are the risk factors in Tesla's latest 10-K?"
+
+### Key Learnings
+
+**1. Custom Tools Are First-Class Citizens**
+
+Dify's OpenAPI import made connecting our FastAPI backend trivial. Define your endpoints with proper schemas, expose `/openapi.json`, and Dify auto-generates the tool interface.
+
+**2. ReAct Agent Handles Multi-Step Reasoning**
+
+For the comparison query, the agent autonomously:
+1. Searched for the company
+2. Retrieved the last two filings
+3. Indexed both into the vector store
+4. Ran semantic search for the comparison topic
+5. Synthesized the findings
+
+No explicit orchestration code — just tools and a system prompt.
+
+**3. Dual-Mode Architecture Matters**
+
+Structured data (revenue, EPS) works better with regex extraction. Narrative content (risks, MD&A) needs RAG. Our smart router picks the right approach based on query keywords.
+
+**4. Embedding Is the Real Cost**
+
+Most queries don't need full RAG. The `summary_only` flag returns key metrics via regex in <1 second without touching the vector store. Reserve RAG for narrative questions.
+
+### Source Code
+
+The complete implementation is open source:
+
+- **API + Tools**: [github.com/menonpg/sec-filing-analyzer](https://github.com/menonpg/sec-filing-analyzer)
+- **Architecture docs**: See README for smart router logic and Qdrant scoping
+
+This example shows Dify's sweet spot: complex agentic workflows with multiple tools, where visual orchestration and built-in monitoring accelerate development significantly.
+
 **Links:**
 - [GitHub Repository](https://github.com/langgenius/dify)
 - [Documentation](https://docs.dify.ai)
