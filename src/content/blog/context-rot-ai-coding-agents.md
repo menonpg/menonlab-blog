@@ -340,6 +340,39 @@ The question isn't whether you need structure. It's what kind of structure match
 
 ---
 
+## Beyond Single Agents: SWE-AF and Fleet-Scale Orchestration
+
+While GSD, BMAD, and Taskmaster solve context rot for individual AI agents, a new category of tools takes a different approach entirely: **what if you used hundreds of coordinated agents instead of one?**
+
+[SWE-AF](https://github.com/Agent-Field/SWE-AF) (built on [AgentField](https://github.com/Agent-Field/agentfield)) treats software engineering as a factory problem. Instead of managing one agent's context window, it spins up a full engineering team:
+
+```
+Goal → Product Manager → Architect → Tech Lead → Sprint Planner
+                                                       ↓
+                              ┌─────────────────────────────────────┐
+                              │  Parallel Coders (isolated worktrees)│
+                              └─────────────────────────────────────┘
+                                                       ↓
+                              Code Reviewers → QA → Merger → Verifier
+                                                       ↓
+                                                  Draft PR
+```
+
+Each agent has a focused role with minimal context. Coders work in isolated git worktrees. Reviewers see only what they need to review. The coordination layer (AgentField) handles routing, state, and failure recovery.
+
+The results are striking: SWE-AF scored **95/100** on a benchmark where Claude Code (sonnet) scored 73 and Codex scored 62 — using *cheaper* models (haiku-class). One real-world example: [PR #179](https://github.com/Agent-Field/agentfield/pull/179) was built entirely by SWE-AF — 10 issues, 217 passing tests, $19.23 total cost.
+
+The tradeoff is complexity. SWE-AF requires deploying infrastructure (control plane, database). It's overkill for a weekend project. But for teams building production software, the "fleet of specialized agents" approach may be where AI development is heading.
+
+**When to consider SWE-AF:**
+- You need production-grade output with tests, reviews, and documentation
+- Tasks are complex enough to benefit from parallel execution
+- You're comfortable with infrastructure (or use their one-click Railway deploy)
+
+[Read more about AgentField](/blog/agentfield-ai-agents-as-microservices)
+
+---
+
 ## Getting Started
 
 **GSD:**
