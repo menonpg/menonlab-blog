@@ -1,7 +1,7 @@
 ---
 title: "Claude Code Security: The $10 Billion Wake-Up Call"
 description: "One Anthropic blog post wiped $10B from cybersecurity stocks in an hour. Here's what Claude Code Security means for the future of software security."
-pubDate: 2026-02-23
+date: "2026-02-23"
 tags: ["ai", "cybersecurity", "claude", "anthropic", "market-analysis"]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: "Universal DB MCP: Query Any Database with Natural Language"
 description: "A universal database connector supporting 17 databases and 50+ AI platforms via the Model Context Protocol. Ask questions in plain English, get SQL results."
-pubDate: 2026-02-23
+date: "2026-02-23"
 tags: ["mcp", "database", "ai-tools", "claude", "sql", "open-source"]
 ---
 
