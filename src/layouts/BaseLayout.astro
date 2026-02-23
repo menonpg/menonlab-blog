@@ -9,12 +9,14 @@ interface Props {
   title: string;
   description?: string;
   includeWebSiteSchema?: boolean;
+  showFooterAuthor?: boolean;
 }
 
 const { 
   title, 
   description = "Curated insights on AI, machine learning, and open-source tools — by Dr. Prahlad G. Menon",
-  includeWebSiteSchema = false
+  includeWebSiteSchema = false,
+  showFooterAuthor = false
 } = Astro.props;
 
 const websiteSchema = includeWebSiteSchema ? generateWebSiteSchema() : null;
@@ -142,16 +144,18 @@ const version = pkg.version;
       <slot />
     </main>
     <footer>
-      <div class="footer-author">
-        <h3 class="footer-author-title">About the Author</h3>
-        <p class="footer-author-bio">
-          Dr. Prahlad G. Menon is the founder of <a href="https://themenonlab.com" target="_blank" class="link-quantmd">QuantMD</a> and <a href="https://thinkcreateai.com" target="_blank" class="link-thinkcreate">ThinkCreate.AI</a>. With a PhD from Carnegie Mellon University, PMP certification, and NVIDIA GenAI LLMs credentials, he brings deep expertise in artificial intelligence, machine learning, computer vision, and data science.
-        </p>
-        <div class="footer-cta">
-          <a href="https://themenonlab.com/learn" target="_blank" class="footer-cta-link">📚 Learn AI</a>
-          <a href="https://thinkcreateai.com" target="_blank" class="footer-cta-link">🤝 AI Consulting</a>
+      {showFooterAuthor && (
+        <div class="footer-author">
+          <h3 class="footer-author-title">About the Author</h3>
+          <p class="footer-author-bio">
+            Dr. Prahlad G. Menon is the founder of <a href="https://themenonlab.com" target="_blank" class="link-quantmd">QuantMD</a> and <a href="https://thinkcreateai.com" target="_blank" class="link-thinkcreate">ThinkCreate.AI</a>. With a PhD from Carnegie Mellon University, PMP certification, and NVIDIA GenAI LLMs credentials, he brings deep expertise in artificial intelligence, machine learning, computer vision, and data science.
+          </p>
+          <div class="footer-cta">
+            <a href="https://themenonlab.com/learn" target="_blank" class="footer-cta-link">📚 Learn AI</a>
+            <a href="https://thinkcreateai.com" target="_blank" class="footer-cta-link">🤝 AI Consulting</a>
+          </div>
         </div>
-      </div>
+      )}
       <div class="footer-links">
         <a href="/about">About</a>
         <a href="/contact">Contact</a>

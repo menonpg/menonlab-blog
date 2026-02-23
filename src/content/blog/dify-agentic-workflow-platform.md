@@ -5,8 +5,6 @@ date: "2026-02-21"
 tags: ["ai-agents", "llm", "rag", "open-source", "workflow", "self-hosted"]
 ---
 
-# Dify: The Open-Source Platform for Building Production AI Agents
-
 Building LLM applications typically means stitching together multiple tools: LangChain for orchestration, a vector database for RAG, a separate UI for prompt engineering, monitoring tools for production. [Dify](https://github.com/langgenius/dify) consolidates all of this into a single open-source platform.
 
 The pitch is simple: go from prototype to production without changing tools. Visual workflow builder, RAG pipeline, agent capabilities, model management, and observability—all in one self-hostable package.
