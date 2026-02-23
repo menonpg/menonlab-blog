@@ -237,7 +237,6 @@ curl -X POST https://api.supavec.com/upload \
   -H "Authorization: Bearer $API_KEY" \
   -F "file=@report.pdf"
 
-# Chat with it
 curl -X POST https://api.supavec.com/chat \
   -H "Authorization: Bearer $API_KEY" \
   -d '{"query": "Summarize the key findings", "file_ids": ["..."]}'

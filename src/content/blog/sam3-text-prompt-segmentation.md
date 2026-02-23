@@ -43,7 +43,6 @@ predictor = SAM3Predictor.from_pretrained("sam3-large")
 # Load image
 image = predictor.load_image("photo.jpg")
 
-# Segment by text
 masks = predictor.predict(
     image,
     text_prompt="dogs"

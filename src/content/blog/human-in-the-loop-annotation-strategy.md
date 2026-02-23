@@ -5,7 +5,6 @@ date: "2026-02-21"
 tags: ["computer-vision", "annotation", "SAM", "machine-learning", "active-learning"]
 ---
 
-# The Smart Annotation Strategy: Human-in-the-Loop for Object Detection & Segmentation
 
 Every computer vision team faces the same brutal reality: you need thousands of annotated images, but you have limited time, budget, and patience. The old approach—hiring annotators to draw boxes and polygons around every object—is slow, expensive, and frankly soul-crushing.
 

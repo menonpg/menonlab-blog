@@ -57,13 +57,11 @@ schema = zvec.CollectionSchema(
 # Create collection
 collection = zvec.create_and_open(path="./zvec_example", schema=schema)
 
-# Insert documents
 collection.insert([
     zvec.Doc(id="doc_1", vectors={"embedding": [0.1, 0.2, 0.3, 0.4]}),
     zvec.Doc(id="doc_2", vectors={"embedding": [0.2, 0.3, 0.4, 0.1]}),
 ])
 
-# Search
 results = collection.query(
     zvec.VectorQuery("embedding", vector=[0.4, 0.3, 0.3, 0.1]),
     topk=10

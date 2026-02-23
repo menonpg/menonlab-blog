@@ -5,7 +5,6 @@ date: "2026-02-18"
 tags: ["ai-agents", "web-standards", "browser", "mcp", "chrome"]
 ---
 
-# WebMCP: Chrome's New Standard for Agent-Ready Websites
 
 If you've ever watched an AI agent "use" a website by guessing which button is "Checkout" and fumbling through form fields, you already know the core problem: **web UIs are built for humans, but agents need structure.**
 

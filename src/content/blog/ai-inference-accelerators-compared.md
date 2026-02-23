@@ -5,7 +5,6 @@ date: "2026-02-22"
 tags: ["ai-hardware", "inference", "llm", "accelerators", "nvidia"]
 ---
 
-# The AI Inference Wars: Custom Silicon vs. NVIDIA
 
 NVIDIA dominates AI training. But inference? That's where the challengers are winning.
 

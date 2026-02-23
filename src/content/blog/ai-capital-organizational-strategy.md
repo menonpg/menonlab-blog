@@ -5,7 +5,6 @@ date: "2026-02-21"
 tags: ["ai-agents", "organizational-design", "enterprise-ai", "workforce", "strategy"]
 ---
 
-# AI Capital: The Organizational Shift Nobody's Talking About
 
 Something strange is happening to Mac Mini sales. Apple's smallest computer is flying off shelves so fast that wait times for higher-memory configurations stretch into weeks. The culprit isn't a new Apple product launch—it's developers deploying fleets of AI agents. One developer reportedly runs [12 Mac Minis simultaneously](https://vertu.com/lifestyle/clawdbot-the-7x24-ai-employee-that-made-mac-mini-sell-out-overnight/), each hosting instances of OpenClaw, the open-source AI agent that's sparked what [Business Insider calls a "craze."](https://www.businessinsider.com/apple-mac-mini-having-a-moment-openclaw-craze-2026-2) Store employees are confused. "Is this some AI thing?" one asked a customer in a viral TikTok.
 

@@ -5,7 +5,6 @@ date: "2026-02-22"
 tags: ["voice-ai", "livekit", "self-hosted", "ai-agents", "telephony", "open-source"]
 ---
 
-# Building a Completely Local Voice AI Agent
 
 Voice AI is having a moment. VAPI raised $20M to build voice agents as a service. LiveKit open-sourced their entire agent framework. And NVIDIA just dropped PersonaPlex, a model that makes traditional STT→LLM→TTS pipelines look like antiques.
 
@@ -25,11 +24,9 @@ If you want to build voice AI that runs entirely on your hardware—no cloud API
 ### Getting Started
 
 ```bash
-# Clone the repo
 git clone https://github.com/ShayneP/local-voice-ai.git
 cd local-voice-ai
 
-# Start everything (will prompt for CPU or GPU)
 ./compose-up.sh  # Mac/Linux
 ./compose-up.ps1  # Windows
 ```
@@ -195,7 +192,6 @@ The [API](https://www.personaplex.io/) is available now. Think of it as "convers
 - **Fully open-source** (Apache 2.0)
 
 ```bash
-# Run Moshi locally
 pip install moshi
 python -m moshi.server
 ```

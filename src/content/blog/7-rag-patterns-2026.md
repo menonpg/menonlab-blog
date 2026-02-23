@@ -5,7 +5,6 @@ date: "2026-02-18"
 tags: ["rag", "llm", "ai-architecture", "retrieval", "patterns"]
 ---
 
-# 7 RAG Patterns You Need to Know in 2026
 
 Still using Naive RAG in 2026?
 

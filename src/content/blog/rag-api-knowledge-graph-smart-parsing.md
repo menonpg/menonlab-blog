@@ -5,7 +5,6 @@ date: "2026-02-22"
 tags: ["rag", "knowledge-graph", "document-parsing", "ocr", "llm", "enterprise"]
 ---
 
-# RAG API: Smart Parser Selection Meets Knowledge Graph Retrieval
 
 Most RAG systems treat document parsing as a solved problem. Throw your PDFs at a parser, chunk the text, embed it, done. But anyone who's built production RAG knows the pain: that parser that works great on clean reports fails miserably on scanned invoices. The one that handles tables well chokes on mathematical formulas. You end up with a patchwork of parsers and manual routing logic.
 
@@ -235,7 +234,6 @@ DEFAULT_PARSER=deepseek-ocr
 MINERU_API_URL=http://mineru:8000
 DOCLING_ENABLED=true
 
-# VLM Enhancement
 VLM_MODE=selective  # off, selective, full
 
 # Storage
@@ -255,7 +253,6 @@ curl -X POST http://localhost:8000/api/v1/documents \
 
 **Query with different modes:**
 ```bash
-# Hybrid retrieval (recommended default)
 curl -X POST http://localhost:8000/api/v1/query \
   -H "X-Tenant-ID: tenant-123" \
   -d '{"query": "What are the key risks?", "mode": "hybrid"}'

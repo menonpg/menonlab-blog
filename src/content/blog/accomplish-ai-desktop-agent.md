@@ -5,7 +5,6 @@ date: "2026-02-18"
 tags: ["ai-agents", "open-source", "desktop", "automation", "tools"]
 ---
 
-# Accomplish: The Open Source AI Desktop Agent That Actually Does Things
 
 Most AI tools talk about doing things. Accomplish actually does them.
 

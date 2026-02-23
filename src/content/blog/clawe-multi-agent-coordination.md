@@ -5,7 +5,6 @@ date: "2026-02-18"
 tags: ["ai-agents", "multi-agent", "openclaw", "automation", "coordination"]
 ---
 
-# Clawe: Trello for AI Agents — Built on the OpenClaw Phenomenon
 
 ## The Rise of OpenClaw
 
@@ -81,7 +80,6 @@ The architecture leverages everything OpenClaw already does well:
 Agents use the `clawe` CLI to participate in the coordination system:
 
 ```bash
-# Check for notifications
 clawe check
 
 # List and view tasks
@@ -95,7 +93,6 @@ clawe task:comment <task-id> "Draft complete, ready for review"
 # Register deliverables
 clawe deliver <task-id> "Final Report" --path ./report.md
 
-# Notify teammates
 clawe notify <session-key> "Need your eyes on this"
 ```
 

@@ -99,7 +99,6 @@ OpenClaw takes security seriously — it's connecting to real messaging surfaces
 # See pending pairing requests
 openclaw pairing list
 
-# Approve a sender
 openclaw pairing approve
 
 # Check for security misconfigurations
@@ -165,11 +164,9 @@ Running OpenClaw in a Docker container adds an important security layer—especi
 The [openclaw_docker_windows](https://github.com/francismdpro/openclaw_docker_windows) project provides simple utilities to run OpenClaw safely in containers:
 
 ```bash
-# Clone OpenClaw
 git clone https://github.com/openclaw/openclaw.git
 cd openclaw
 
-# Download the Docker utilities
 # Copy OpenClaw_Launcher.bat and OpenClaw_Pairing.bat to the openclaw folder
 ```
 
@@ -277,7 +274,6 @@ The project has an active Discord community and regular releases.
 # Install
 npm install -g openclaw@latest
 
-# Run the wizard
 openclaw onboard --install-daemon
 
 # Start chatting

@@ -55,7 +55,6 @@ Then start the gateway:
 # Auto mode — routes to correct provider based on model name
 crust start --auto
 
-# Or manual mode with a specific upstream
 crust start --endpoint https://api.openai.com/v1 --api-key sk-xxx
 ```
 

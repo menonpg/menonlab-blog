@@ -111,7 +111,6 @@ With Colab Pro (A100):
 ```python
 from unsloth import FastLanguageModel
 
-# Load model in 4-bit (fits in less VRAM)
 model, tokenizer = FastLanguageModel.from_pretrained(
     model_name="unsloth/Llama-3.2-1B",
     max_seq_length=2048,
@@ -127,7 +126,6 @@ model = FastLanguageModel.get_peft_model(
     lora_dropout=0,
 )
 
-# Your training loop here—Unsloth handles the optimization
 ```
 
 The notebooks handle all the boilerplate. Just swap in your dataset.

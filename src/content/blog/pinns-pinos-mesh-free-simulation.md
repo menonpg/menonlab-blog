@@ -5,7 +5,6 @@ date: "2026-02-22"
 tags: ["scientific-computing", "machine-learning", "simulation", "physics", "neural-networks", "cfd"]
 ---
 
-# From Meshes to Neural Operators: The Future of Physics Simulation
 
 Traditional numerical simulation methods have a dirty secret: **you spend 80% of your time on the mesh**.
 

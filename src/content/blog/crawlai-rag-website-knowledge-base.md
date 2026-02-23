@@ -5,7 +5,6 @@ date: "2026-02-22"
 tags: ["rag", "langchain", "web-scraping", "llm", "vector-database", "open-source"]
 ---
 
-# CrawlAI RAG: Turn Any Website Into a Queryable Knowledge Base
 
 Ever wanted to ask questions about an entire website without reading every page? **CrawlAI RAG** does exactly that—crawl a site, index all its content, and chat with it using natural language.
 
@@ -105,11 +104,8 @@ cd CrawlAI-RAG
 # Install dependencies
 pip install -r requirements.txt
 
-# Set up environment
 cp .env.example .env
-# Add your Groq API key
 
-# Run the backend
 uvicorn main:app --reload
 
 # Run the frontend (separate terminal)

@@ -5,7 +5,6 @@ date: "2026-02-18"
 tags: ["ai-agents", "openclaw", "automation", "benchmark", "economics"]
 ---
 
-# ClawWork: Turn Your AI Agent Into a Money-Earning Coworker
 
 What if your AI agent had to earn its own keep?
 
@@ -115,7 +114,6 @@ The agent has 8 tools available:
 The killer feature: ClawWork integrates directly with your existing OpenClaw or Nanobot setup via **ClawMode**.
 
 ```bash
-# Install
 git clone https://github.com/HKUDS/ClawWork.git
 cd ClawWork
 pip install -r requirements.txt
@@ -147,7 +145,6 @@ ClawWork includes a React dashboard that shows real-time metrics via WebSocket:
 # Start dashboard
 ./start_dashboard.sh
 
-# Open browser → http://localhost:3000
 ```
 
 ## The Leaderboard
@@ -177,11 +174,9 @@ The results suggest that top AI models are already capable of exceeding human wh
 ## Quick Start
 
 ```bash
-# Clone
 git clone https://github.com/HKUDS/ClawWork.git
 cd ClawWork
 
-# Setup environment
 conda create -n clawwork python=3.10
 conda activate clawwork
 pip install -r requirements.txt

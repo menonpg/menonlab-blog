@@ -43,7 +43,6 @@ Or run locally:
 ```bash
 git clone https://github.com/TEN-framework/ten-framework
 cd ten-framework
-# Follow setup instructions
 ```
 
 The agent examples give you working voice agents out of the box that you can customize.

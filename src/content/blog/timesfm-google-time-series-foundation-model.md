@@ -5,7 +5,6 @@ date: "2026-02-21"
 tags: ["google", "time-series", "foundation-models", "forecasting", "open-source"]
 ---
 
-# TimesFM 2.5: Google's Open-Source Time Series Foundation Model
 
 Time series forecasting has traditionally required training models from scratch for each dataset. Different domains—finance, weather, energy, retail—each demanded custom models tuned to their specific patterns. Google Research just changed that equation.
 

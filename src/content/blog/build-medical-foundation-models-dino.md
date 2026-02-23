@@ -5,7 +5,6 @@ date: "2026-02-21"
 tags: ["foundation-models", "medical-imaging", "self-supervised-learning", "DINOv2", "computer-vision"]
 ---
 
-# Build Your Own Medical Foundation Model: A DINO-Based Blueprint
 
 A team at University of Cagliari just released [RedDino](https://github.com/Snarci/RedDino)—a foundation model for red blood cell analysis trained on 1.25 million images. It beats DINOv2, ResNet, and every other baseline on RBC classification.
 
@@ -193,7 +192,6 @@ import torch
 # Load pretrained DINOv2
 model = timm.create_model("vit_small_patch14_dinov2.lvd142m", pretrained=True)
 
-# Replace the head for your task
 model.head = torch.nn.Linear(model.head.in_features, num_classes)
 
 # Fine-tune with your data

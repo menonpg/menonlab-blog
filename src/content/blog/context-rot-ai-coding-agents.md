@@ -5,7 +5,6 @@ date: "2026-02-22"
 tags: ["ai-agents", "claude-code", "developer-tools", "coding", "productivity"]
 ---
 
-# Solving Context Rot: GSD vs BMAD vs Taskmaster
 
 If you've used Claude Code, Cursor, or any AI coding agent for complex projects, you've experienced a frustrating pattern. The first few prompts are magical—clear responses, accurate code, the agent remembers your architecture decisions and coding patterns perfectly. But thirty minutes into a complex feature, something shifts. The agent starts forgetting decisions made earlier. Suggestions contradict code it wrote ten prompts ago. You find yourself re-explaining context you've already provided three times.
 
@@ -346,7 +345,6 @@ The question isn't whether you need structure. It's what kind of structure match
 **GSD:**
 ```bash
 npx get-shit-done-cc@latest
-# Then in Claude Code:
 /gsd:new-project
 ```
 
@@ -360,7 +358,6 @@ npx bmad-method install
 **Taskmaster:**
 ```bash
 claude mcp add taskmaster-ai -- npx -y task-master-ai
-# Or one-click install for Cursor users
 ```
 
 All three are free, open-source, and actively maintained. Start with the one that resonates with how you prefer to work.
