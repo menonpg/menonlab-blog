@@ -40,17 +40,6 @@ const posts = (await getCollection('blog'))
     <a href="/blog" class="view-all">View all posts →</a>
   </section>
 
-  <section class="about">
-    <h2>About</h2>
-    <p>
-      I'm a researcher and engineer exploring the intersection of AI, healthcare, and practical tooling.
-      This blog documents interesting projects, libraries, and tools I discover across the AI/ML ecosystem.
-    </p>
-    <p>
-      Topics include: AI agents, large language models, computer vision, healthcare AI, RAG systems, 
-      and open-source tools worth knowing about.
-    </p>
-  </section>
 </BaseLayout>
 
 <style>
@@ -155,27 +144,6 @@ const posts = (await getCollection('blog'))
     margin-top: 1.5rem;
     color: var(--accent);
     font-weight: 500;
-  }
-
-  .about {
-    padding: 2rem;
-    background: rgba(96, 165, 250, 0.05);
-    border-radius: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  .about h2 {
-    margin-bottom: 1rem;
-  }
-
-  .about p {
-    color: var(--muted);
-    line-height: 1.8;
-    margin-bottom: 1rem;
-  }
-
-  .about p:last-child {
-    margin-bottom: 0;
   }
 
   @media (max-width: 768px) {
