@@ -54,7 +54,13 @@ Keep responses under 100 words unless the question requires more detail.`;
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Azure API error:', response.status, errorText);
-      throw new Error(`Azure API error: ${response.status}`);
+      return new Response(JSON.stringify({ 
+        answer: `Azure error (${response.status}): ${errorText.slice(0, 100)}`,
+        error: true
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     const data = await response.json();

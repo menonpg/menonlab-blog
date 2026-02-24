@@ -1001,8 +1001,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     // Try GPT-5 first, fallback to local
     let response;
     try {
-      response = await fetchGPTResponse(question);
+      const gptResult = await fetchGPTResponse(question);
+      if (gptResult && !gptResult.startsWith('Chat is currently unavailable')) {
+        response = gptResult;
+      } else {
+        console.log('GPT unavailable, using local:', gptResult);
+        response = generateLocalResponse(question);
+      }
     } catch (e) {
+      console.error('Chat error:', e);
       response = generateLocalResponse(question);
     }
     
