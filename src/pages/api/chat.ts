@@ -7,8 +7,14 @@ export const POST: APIRoute = async ({ request }) => {
   const apiVersion = '2025-01-01-preview';
 
   if (!endpoint || !apiKey) {
+    console.error('Missing env vars:', { 
+      hasEndpoint: !!endpoint, 
+      hasKey: !!apiKey,
+      envKeys: Object.keys(process.env).filter(k => k.includes('AZURE') || k.includes('OPENAI'))
+    });
     return new Response(JSON.stringify({ 
-      answer: "Chat is currently unavailable. The AI endpoint is not configured." 
+      answer: "Chat is currently unavailable. The AI endpoint is not configured.",
+      debug: { hasEndpoint: !!endpoint, hasKey: !!apiKey }
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
