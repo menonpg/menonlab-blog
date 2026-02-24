@@ -80,6 +80,28 @@ This gives you autoscaling, observability, and managed infrastructure.
 
 You can add your own models by creating a custom repository following the BentoML format. This makes OpenLLM extensible beyond the default model catalog.
 
+## Bonus: Know What Will Actually Run
+
+Before you `openllm serve`, you should know what your hardware can handle. That's where **llmfit** comes in — a companion tool that probes your system and tells you exactly which models will run.
+
+```bash
+curl -fsSL https://llmfit.axjns.dev/install.sh | sh
+llmfit
+```
+
+llmfit detects your CPU, RAM, and GPU (NVIDIA, AMD, Intel Arc, Apple Silicon), then scores 157+ models across quality, speed, fit, and context dimensions. It handles:
+
+- **MoE expert offloading** — Mixtral 8x7B needs 6.6GB with offloading, not 23.9GB
+- **Dynamic quantization** — Picks the best quantization (Q8→Q2_K) that fits your RAM
+- **Speed estimation** — Tokens/sec before you pull the weights
+- **Multi-GPU setups** — Aggregates VRAM across all detected GPUs
+
+The TUI shows a ranked table of what will run well on *your* machine. Filter by fit level (Perfect, Good, Marginal) or use case (Coding, Reasoning, Chat).
+
+**Workflow:** `llmfit` first to pick your model → `openllm serve` to run it.
+
+**GitHub:** [AlexsJones/llmfit](https://github.com/AlexsJones/llmfit)
+
 ## When to Use OpenLLM
 
 **Use OpenLLM when:**
