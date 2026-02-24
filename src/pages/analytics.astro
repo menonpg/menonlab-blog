@@ -595,7 +595,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;display:inline-block"></span>';
 
     try {
-      const response = await fetch(`${WORKER_URL}?days=${currentDays}`);
+      // Current Worker doesn't support params yet - use base URL
+      const response = await fetch(WORKER_URL);
       rawData = await response.json();
       
       if (rawData.errors) throw new Error(rawData.errors[0].message);
@@ -614,13 +615,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     if (!rawData?.data?.viewer?.zones?.[0]) return;
     
     const zone = rawData.data.viewer.zones[0];
-    byHostData = zone.byHost || [];
     
-    // Filter aggregate data by host if needed
-    if (currentHost === 'all') {
-      aggregateData = zone.aggregate;
-    } else {
-      // Aggregate from byHost data for specific host
+    // Support both old Worker (httpRequests1dGroups) and new Worker (aggregate + byHost)
+    byHostData = zone.byHost || [];
+    aggregateData = zone.aggregate || zone.httpRequests1dGroups || [];
+    
+    // If we have byHost data and a specific filter, use it
+    if (byHostData.length > 0 && currentHost !== 'all') {
       const hostData = byHostData.filter(d => d.dimensions.clientRequestHTTPHost === currentHost);
       aggregateData = aggregateByDate(hostData);
     }
@@ -682,14 +683,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     
     insights.push({ icon: '🏆', text: `<strong>${formatDate(peakDay.dimensions.date)}</strong> was peak with <strong>${formatNumber(peakDay.sum.pageViews)}</strong> views.` });
     
-    if (currentHost === 'all' && byHostData.length > 0) {
-      const mainTotal = byHostData.filter(d => d.dimensions.clientRequestHTTPHost === 'themenonlab.com').reduce((s, d) => s + d.sum.pageViews, 0);
-      const blogTotal = byHostData.filter(d => d.dimensions.clientRequestHTTPHost === 'blog.themenonlab.com').reduce((s, d) => s + d.sum.pageViews, 0);
-      const total = mainTotal + blogTotal;
-      if (total > 0) {
-        const blogPct = ((blogTotal / total) * 100).toFixed(0);
-        insights.push({ icon: '📊', text: `Blog accounts for <strong>${blogPct}%</strong> of total traffic.` });
-      }
+    // Only show site comparison if byHost data is available
+    if (currentHost === 'all' && byHostData && byHostData.length > 0) {
+      try {
+        const mainTotal = byHostData.filter(d => d.dimensions?.clientRequestHTTPHost === 'themenonlab.com').reduce((s, d) => s + (d.sum?.pageViews || 0), 0);
+        const blogTotal = byHostData.filter(d => d.dimensions?.clientRequestHTTPHost === 'blog.themenonlab.com').reduce((s, d) => s + (d.sum?.pageViews || 0), 0);
+        const total = mainTotal + blogTotal;
+        if (total > 0) {
+          const blogPct = ((blogTotal / total) * 100).toFixed(0);
+          insights.push({ icon: '📊', text: `Blog accounts for <strong>${blogPct}%</strong> of total traffic.` });
+        }
+      } catch (e) { /* byHost data not in expected format */ }
     }
     
     if (totals.threats > 0) {
@@ -798,7 +802,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const gridColor = isDark ? '#262626' : '#e5e5e5';
     const textColor = isDark ? '#a3a3a3' : '#525252';
     
-    if (compareMode) {
+    // Only use compare mode if we have byHost data
+    if (compareMode && byHostData && byHostData.length > 0) {
       renderComparisonCharts(gridColor, textColor);
     } else {
       renderSingleCharts(gridColor, textColor);
