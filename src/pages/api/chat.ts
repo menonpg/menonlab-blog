@@ -1,9 +1,9 @@
 import type { APIRoute } from 'astro';
 
 export const POST: APIRoute = async ({ request }) => {
-  const endpoint = import.meta.env.AZURE_OPENAI_ENDPOINT;
-  const apiKey = import.meta.env.AZURE_OPENAI_KEY;
-  const deployment = import.meta.env.AZURE_OPENAI_DEPLOYMENT || 'gpt-5-chat';
+  const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
+  const apiKey = process.env.AZURE_OPENAI_KEY;
+  const deployment = process.env.AZURE_OPENAI_DEPLOYMENT || 'gpt-5-chat';
   const apiVersion = '2025-01-01-preview';
 
   if (!endpoint || !apiKey) {
