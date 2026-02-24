@@ -1,7 +1,7 @@
 ---
 title: "OpenLLM: Run Any Open-Source LLM as an API with One Command"
 description: "Host DeepSeek, Llama, Qwen, and more as OpenAI-compatible API endpoints in seconds"
-pubDate: "2026-02-24"
+date: "2026-02-24"
 tags: ["ai", "llm", "api", "self-hosted", "open-source"]
 ---
 
