@@ -2,18 +2,42 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Analytics Dashboard | The Menon Lab" description="Traffic insights and analytics for The Menon Lab blog">
+<BaseLayout title="Analytics Dashboard | The Menon Lab" description="Traffic insights and analytics for The Menon Lab">
   <div class="analytics-hero">
     <div class="hero-content">
       <h1>📊 Analytics Dashboard</h1>
-      <p class="subtitle">Real-time traffic insights for themenonlab.com</p>
+      <p class="subtitle">Traffic insights for The Menon Lab</p>
     </div>
-    <div class="hero-actions">
-      <span class="last-updated" id="lastUpdated">Loading...</span>
-      <button class="button-primary" id="refreshBtn" onclick="fetchAnalytics()">
+    <div class="hero-controls">
+      <div class="filter-group">
+        <label>Date Range</label>
+        <div class="pill-group" id="dateRange">
+          <button class="pill" data-days="7">7 days</button>
+          <button class="pill active" data-days="14">14 days</button>
+          <button class="pill" data-days="30">30 days</button>
+          <button class="pill" data-days="90">90 days</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Site</label>
+        <div class="pill-group" id="siteFilter">
+          <button class="pill active" data-host="all">All Sites</button>
+          <button class="pill" data-host="themenonlab.com">Main Site</button>
+          <button class="pill" data-host="blog.themenonlab.com">Blog</button>
+        </div>
+      </div>
+      <button class="button-primary" id="refreshBtn">
         <span class="btn-icon">↻</span> Refresh
       </button>
     </div>
+  </div>
+
+  <div class="meta-bar">
+    <span id="lastUpdated">Loading...</span>
+    <label class="compare-toggle">
+      <input type="checkbox" id="compareMode" />
+      <span>Compare sites on charts</span>
+    </label>
   </div>
 
   <div id="content">
@@ -42,24 +66,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="chat-messages" id="chatMessages">
         <div class="message assistant">
           <div class="message-content">
-            Hi! I can help you understand your analytics. Ask me about traffic trends, your best performing days, or anything else about your data.
+            Hi! I can help you understand your analytics. Ask me about traffic trends, compare sites, or anything about your data.
           </div>
         </div>
       </div>
       <div class="chat-input-area">
         <div class="suggested-prompts">
-          <button class="prompt-chip" onclick="askPrompt(this)">What's my best day?</button>
+          <button class="prompt-chip" onclick="askPrompt(this)">Compare sites</button>
           <button class="prompt-chip" onclick="askPrompt(this)">Traffic trend?</button>
-          <button class="prompt-chip" onclick="askPrompt(this)">Any concerns?</button>
+          <button class="prompt-chip" onclick="askPrompt(this)">Best day?</button>
         </div>
         <div class="chat-input-row">
-          <input 
-            type="text" 
-            class="chat-input" 
-            id="chatInput" 
-            placeholder="Ask about your analytics..." 
-            onkeypress="if(event.key==='Enter')sendChat()"
-          />
+          <input type="text" class="chat-input" id="chatInput" placeholder="Ask about your analytics..." onkeypress="if(event.key==='Enter')sendChat()" />
           <button class="chat-send" id="chatSend" onclick="sendChat()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
@@ -72,71 +90,118 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </BaseLayout>
 
 <style>
-  /* Hero Section */
+  /* Hero & Controls */
   .analytics-hero {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     flex-wrap: wrap;
     gap: 1.5rem;
-    padding-bottom: 2rem;
+    padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
   }
 
   .analytics-hero h1 {
-    font-size: 2.25rem;
-    margin-bottom: 0.5rem;
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
     background: linear-gradient(135deg, var(--fg) 0%, var(--accent) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .subtitle {
-    color: var(--muted);
-    font-size: 1.1rem;
-    margin: 0;
-  }
+  .subtitle { color: var(--muted); font-size: 1rem; margin: 0; }
 
-  .hero-actions {
+  .hero-controls {
     display: flex;
-    align-items: center;
-    gap: 1rem;
+    align-items: flex-end;
+    gap: 1.5rem;
+    flex-wrap: wrap;
   }
 
-  .last-updated {
+  .filter-group label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     color: var(--muted);
-    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .pill-group {
+    display: flex;
+    background: var(--border);
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+    gap: 0.25rem;
+  }
+
+  .pill {
+    padding: 0.5rem 0.75rem;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .pill:hover { color: var(--fg); }
+  .pill.active {
+    background: var(--accent);
+    color: white;
   }
 
   .button-primary {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
+    padding: 0.625rem 1rem;
     background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
     color: white;
     border: none;
     border-radius: 0.5rem;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .button-primary:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
   }
 
-  .button-primary:disabled {
-    opacity: 0.6;
-    transform: none;
-    cursor: not-allowed;
+  .button-primary:disabled { opacity: 0.6; transform: none; }
+
+  .meta-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--muted);
   }
 
-  /* Loading State */
+  .compare-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
+  .compare-toggle input {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--accent);
+  }
+
+  /* Loading */
   .loading-state {
     display: flex;
     align-items: center;
@@ -155,20 +220,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     animation: spin 0.8s linear infinite;
   }
 
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Stats Grid */
+  /* Stats */
   :global(.stats-grid) {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1.25rem;
-    margin-bottom: 2rem;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
   }
 
   :global(.stat-card) {
-    padding: 1.5rem;
+    padding: 1.25rem;
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 0.75rem;
@@ -181,8 +244,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   :global(.stat-card .label) {
-    font-size: 0.75rem;
-    font-weight: 500;
+    font-size: 0.7rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: var(--muted);
@@ -190,227 +253,151 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   :global(.stat-card .value) {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
     color: var(--fg);
     line-height: 1.2;
   }
 
   :global(.stat-card .change) {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     margin-top: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
   }
 
   :global(.stat-card .change.up) { color: #10b981; }
   :global(.stat-card .change.down) { color: #ef4444; }
   :global(.stat-card .change.neutral) { color: var(--muted); }
 
-  /* Charts Section */
+  /* Charts */
   :global(.charts-section) {
     display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 1.25rem;
-    margin-bottom: 2rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
   }
 
   :global(.chart-card) {
-    padding: 1.5rem;
+    padding: 1.25rem;
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 0.75rem;
   }
 
+  :global(.chart-card.full-width) {
+    grid-column: 1 / -1;
+  }
+
   :global(.chart-card h3) {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--fg);
     margin: 0 0 1rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
   }
 
   :global(.chart-container) {
     position: relative;
-    height: 280px;
+    height: 260px;
   }
 
-  /* Insights Section */
+  /* Insights */
   :global(.insights-card) {
-    padding: 1.5rem;
+    padding: 1.25rem;
     background: linear-gradient(135deg, rgba(96, 165, 250, 0.05) 0%, rgba(59, 130, 246, 0.02) 100%);
     border: 1px solid var(--border);
     border-radius: 0.75rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
 
   :global(.insights-card h3) {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
-    color: var(--fg);
     margin: 0 0 1rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
   }
 
   :global(.insight-item) {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
-    padding: 0.875rem 0;
+    padding: 0.75rem 0;
     border-bottom: 1px solid var(--border);
   }
 
-  :global(.insight-item:last-child) {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
+  :global(.insight-item:last-child) { border-bottom: none; padding-bottom: 0; }
+  :global(.insight-item:first-child) { padding-top: 0; }
+  :global(.insight-icon) { font-size: 1.25rem; }
+  :global(.insight-text) { font-size: 0.875rem; color: var(--muted); margin: 0; }
+  :global(.insight-text strong) { color: var(--fg); }
 
-  :global(.insight-item:first-child) {
-    padding-top: 0;
-  }
-
-  :global(.insight-icon) {
-    font-size: 1.25rem;
-    flex-shrink: 0;
-  }
-
-  :global(.insight-text) {
-    font-size: 0.9rem;
-    color: var(--muted);
-    line-height: 1.5;
-    margin: 0;
-  }
-
-  :global(.insight-text strong) {
-    color: var(--fg);
-  }
-
-  /* Data Table */
+  /* Table */
   :global(.table-card) {
-    padding: 1.5rem;
+    padding: 1.25rem;
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 0.75rem;
   }
 
   :global(.table-card h3) {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
-    color: var(--fg);
     margin: 0 0 1rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
   }
 
-  :global(.table-wrap) {
-    overflow-x: auto;
-    margin: 0 -1.5rem;
-    padding: 0 1.5rem;
-  }
-
-  :global(.data-table) {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  :global(.data-table th),
-  :global(.data-table td) {
-    padding: 0.875rem 1rem;
-    text-align: left;
-  }
-
+  :global(.table-wrap) { overflow-x: auto; }
+  :global(.data-table) { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  :global(.data-table th, .data-table td) { padding: 0.75rem; text-align: left; }
   :global(.data-table th) {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: var(--muted);
     border-bottom: 1px solid var(--border);
   }
-
-  :global(.data-table td) {
-    font-size: 0.9rem;
-    border-bottom: 1px solid var(--border);
-    color: var(--fg);
-  }
-
-  :global(.data-table tr:last-child td) {
-    border-bottom: none;
-  }
-
-  :global(.data-table tr:hover td) {
-    background: rgba(96, 165, 250, 0.03);
-  }
+  :global(.data-table td) { border-bottom: 1px solid var(--border); }
+  :global(.data-table tr:last-child td) { border-bottom: none; }
+  :global(.data-table tr:hover td) { background: rgba(96, 165, 250, 0.03); }
 
   :global(.badge) {
     display: inline-block;
-    padding: 0.2rem 0.5rem;
-    border-radius: 0.375rem;
-    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.65rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
     margin-left: 0.5rem;
   }
-
-  :global(.badge.peak) {
-    background: rgba(16, 185, 129, 0.15);
-    color: #10b981;
-  }
-
-  :global(.badge.low) {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
-  }
+  :global(.badge.peak) { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+  :global(.badge.low) { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+  :global(.badge.main) { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+  :global(.badge.blog) { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
 
   /* Chat Panel */
-  .chat-panel {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    z-index: 50;
-  }
+  .chat-panel { position: fixed; bottom: 2rem; right: 2rem; z-index: 50; }
 
   .chat-toggle {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.875rem 1.25rem;
+    padding: 0.75rem 1rem;
     background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
     color: white;
     border: none;
     border-radius: 2rem;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
     box-shadow: 0 4px 16px rgba(96, 165, 250, 0.4);
     transition: all 0.2s;
   }
 
-  .chat-toggle:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(96, 165, 250, 0.5);
-  }
-
-  .chat-toggle.hidden {
-    display: none;
-  }
-
-  .chat-icon {
-    font-size: 1.1rem;
-  }
+  .chat-toggle:hover { transform: translateY(-2px); }
+  .chat-toggle.hidden { display: none; }
 
   .chat-container {
     display: none;
     flex-direction: column;
-    width: 380px;
-    height: 520px;
+    width: 360px;
+    height: 480px;
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 1rem;
@@ -418,56 +405,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     overflow: hidden;
   }
 
-  .chat-container.active {
-    display: flex;
-  }
+  .chat-container.active { display: flex; }
 
   .chat-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 1.25rem;
+    padding: 1rem;
     border-bottom: 1px solid var(--border);
     background: linear-gradient(135deg, rgba(96, 165, 250, 0.1) 0%, transparent 100%);
   }
 
-  .chat-title {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .chat-avatar {
-    font-size: 1.5rem;
-  }
-
-  .chat-title h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--fg);
-    margin: 0;
-  }
-
-  .chat-title p {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin: 0;
-  }
-
-  .chat-close {
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0.25rem;
-    line-height: 1;
-    transition: color 0.2s;
-  }
-
-  .chat-close:hover {
-    color: var(--fg);
-  }
+  .chat-title { display: flex; align-items: center; gap: 0.75rem; }
+  .chat-avatar { font-size: 1.5rem; }
+  .chat-title h3 { font-size: 1rem; font-weight: 600; margin: 0; }
+  .chat-title p { font-size: 0.7rem; color: var(--muted); margin: 0; }
+  .chat-close { background: none; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; }
+  .chat-close:hover { color: var(--fg); }
 
   .chat-messages {
     flex: 1;
@@ -478,22 +432,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     gap: 0.75rem;
   }
 
-  .message {
-    max-width: 85%;
-  }
-
-  .message.user {
-    align-self: flex-end;
-  }
-
-  .message.assistant {
-    align-self: flex-start;
-  }
+  .message { max-width: 85%; }
+  .message.user { align-self: flex-end; }
+  .message.assistant { align-self: flex-start; }
 
   .message-content {
     padding: 0.75rem 1rem;
     border-radius: 1rem;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     line-height: 1.5;
   }
 
@@ -509,154 +455,62 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     border-bottom-left-radius: 0.25rem;
   }
 
-  .message.typing .message-content {
-    color: var(--muted);
-    font-style: italic;
-  }
-
-  :global(.message-content strong) {
-    font-weight: 600;
-  }
-
-  .chat-input-area {
-    padding: 1rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .suggested-prompts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-  }
+  .chat-input-area { padding: 1rem; border-top: 1px solid var(--border); }
+  .suggested-prompts { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.75rem; }
 
   .prompt-chip {
     background: var(--border);
     border: 1px solid transparent;
     border-radius: 1rem;
-    padding: 0.375rem 0.75rem;
-    font-size: 0.75rem;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.7rem;
     color: var(--muted);
     cursor: pointer;
     transition: all 0.2s;
   }
+  .prompt-chip:hover { border-color: var(--accent); color: var(--accent); }
 
-  .prompt-chip:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .chat-input-row {
-    display: flex;
-    gap: 0.5rem;
-  }
+  .chat-input-row { display: flex; gap: 0.5rem; }
 
   .chat-input {
     flex: 1;
     background: var(--border);
     border: 1px solid transparent;
     border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem;
     color: var(--fg);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     outline: none;
-    transition: border-color 0.2s;
   }
-
-  .chat-input:focus {
-    border-color: var(--accent);
-  }
-
-  .chat-input::placeholder {
-    color: var(--muted);
-  }
+  .chat-input:focus { border-color: var(--accent); }
+  .chat-input::placeholder { color: var(--muted); }
 
   .chat-send {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
+    width: 42px;
     background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
     border: none;
     border-radius: 0.5rem;
     color: white;
     cursor: pointer;
-    transition: transform 0.2s;
-  }
-
-  .chat-send:hover {
-    transform: scale(1.05);
-  }
-
-  .chat-send:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  /* Error State */
-  :global(.error-state) {
-    text-align: center;
-    padding: 3rem;
-    color: #ef4444;
-  }
-
-  :global(.error-state .error-icon) {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   /* Responsive */
   @media (max-width: 1024px) {
-    :global(.stats-grid) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    
-    :global(.charts-section) {
-      grid-template-columns: 1fr;
-    }
+    :global(.stats-grid) { grid-template-columns: repeat(2, 1fr); }
+    :global(.charts-section) { grid-template-columns: 1fr; }
   }
 
   @media (max-width: 640px) {
-    .analytics-hero {
-      flex-direction: column;
-      text-align: center;
-    }
-
-    .hero-actions {
-      width: 100%;
-      justify-content: center;
-    }
-
-    :global(.stats-grid) {
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-    }
-
-    :global(.stat-card) {
-      padding: 1rem;
-    }
-
-    :global(.stat-card .value) {
-      font-size: 1.5rem;
-    }
-
-    .chat-panel {
-      bottom: 1rem;
-      right: 1rem;
-    }
-
-    .chat-container {
-      width: calc(100vw - 2rem);
-      height: 70vh;
-      position: fixed;
-      bottom: 0;
-      right: 0;
-      border-radius: 1rem 1rem 0 0;
-    }
-
-    .chat-label {
-      display: none;
-    }
+    .analytics-hero { flex-direction: column; }
+    .hero-controls { width: 100%; justify-content: flex-start; }
+    :global(.stats-grid) { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    :global(.stat-card .value) { font-size: 1.5rem; }
+    .chat-panel { bottom: 1rem; right: 1rem; }
+    .chat-container { width: calc(100vw - 2rem); }
+    .chat-label { display: none; }
   }
 </style>
 
@@ -664,8 +518,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <script is:inline>
   const WORKER_URL = 'https://blog-analytics.prahlad-menon.workers.dev/';
   const CHAT_API_URL = '/api/chat';
-  let analyticsData = null;
+  
+  let rawData = null;
+  let aggregateData = null;
+  let byHostData = null;
   let totals = null;
+  let currentDays = 14;
+  let currentHost = 'all';
+  let compareMode = false;
 
   // Utility functions
   function formatBytes(bytes) {
@@ -687,144 +547,180 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   function getShortDate(dateStr) {
-    return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { 
-      month: 'short', day: 'numeric' 
-    });
+    return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
+  // Filter controls
+  document.querySelectorAll('#dateRange .pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#dateRange .pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentDays = parseInt(btn.dataset.days);
+      fetchAnalytics();
+    });
+  });
+
+  document.querySelectorAll('#siteFilter .pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#siteFilter .pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentHost = btn.dataset.host;
+      processData();
+    });
+  });
+
+  document.getElementById('compareMode')?.addEventListener('change', (e) => {
+    compareMode = e.target.checked;
+    processData();
+  });
+
+  document.getElementById('refreshBtn')?.addEventListener('click', fetchAnalytics);
+
   // Chat toggle
-  const chatToggle = document.getElementById('chatToggle');
-  const chatContainer = document.getElementById('chatContainer');
-  const chatClose = document.getElementById('chatClose');
-
-  chatToggle?.addEventListener('click', () => {
-    chatToggle.classList.add('hidden');
-    chatContainer.classList.add('active');
+  document.getElementById('chatToggle')?.addEventListener('click', () => {
+    document.getElementById('chatToggle').classList.add('hidden');
+    document.getElementById('chatContainer').classList.add('active');
   });
 
-  chatClose?.addEventListener('click', () => {
-    chatContainer.classList.remove('active');
-    chatToggle.classList.remove('hidden');
+  document.getElementById('chatClose')?.addEventListener('click', () => {
+    document.getElementById('chatContainer').classList.remove('active');
+    document.getElementById('chatToggle').classList.remove('hidden');
   });
 
-  // Fetch analytics
   async function fetchAnalytics() {
     const content = document.getElementById('content');
     const btn = document.getElementById('refreshBtn');
     
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;display:inline-block"></span> Loading';
+    btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;display:inline-block"></span>';
 
     try {
-      const response = await fetch(WORKER_URL);
-      const result = await response.json();
+      const response = await fetch(`${WORKER_URL}?days=${currentDays}`);
+      rawData = await response.json();
       
-      if (result.errors) throw new Error(result.errors[0].message);
+      if (rawData.errors) throw new Error(rawData.errors[0].message);
 
-      analyticsData = result.data.viewer.zones[0].httpRequests1dGroups;
-      analyticsData.reverse();
-      
-      totals = analyticsData.reduce((acc, day) => ({
-        visitors: acc.visitors + day.uniq.uniques,
-        pageViews: acc.pageViews + day.sum.pageViews,
-        requests: acc.requests + day.sum.requests,
-        bandwidth: acc.bandwidth + day.sum.bytes,
-        threats: acc.threats + day.sum.threats,
-        cached: acc.cached + (day.sum.cachedBytes || 0)
-      }), { visitors: 0, pageViews: 0, requests: 0, bandwidth: 0, threats: 0, cached: 0 });
-
-      renderDashboard();
+      processData();
       document.getElementById('lastUpdated').textContent = `Updated ${new Date().toLocaleTimeString()}`;
     } catch (error) {
-      content.innerHTML = `
-        <div class="error-state">
-          <div class="error-icon">⚠️</div>
-          <p>Failed to load analytics: ${error.message}</p>
-          <button class="button-primary" onclick="fetchAnalytics()" style="margin-top: 1rem">
-            Try Again
-          </button>
-        </div>
-      `;
+      content.innerHTML = `<div class="loading-state" style="color:#ef4444">⚠️ ${error.message}</div>`;
     } finally {
       btn.disabled = false;
       btn.innerHTML = '<span class="btn-icon">↻</span> Refresh';
     }
   }
 
+  function processData() {
+    if (!rawData?.data?.viewer?.zones?.[0]) return;
+    
+    const zone = rawData.data.viewer.zones[0];
+    byHostData = zone.byHost || [];
+    
+    // Filter aggregate data by host if needed
+    if (currentHost === 'all') {
+      aggregateData = zone.aggregate;
+    } else {
+      // Aggregate from byHost data for specific host
+      const hostData = byHostData.filter(d => d.dimensions.clientRequestHTTPHost === currentHost);
+      aggregateData = aggregateByDate(hostData);
+    }
+
+    // Calculate totals
+    totals = aggregateData.reduce((acc, day) => ({
+      visitors: acc.visitors + day.uniq.uniques,
+      pageViews: acc.pageViews + day.sum.pageViews,
+      requests: acc.requests + day.sum.requests,
+      bandwidth: acc.bandwidth + day.sum.bytes,
+      threats: acc.threats + day.sum.threats,
+      cached: acc.cached + (day.sum.cachedBytes || 0)
+    }), { visitors: 0, pageViews: 0, requests: 0, bandwidth: 0, threats: 0, cached: 0 });
+
+    renderDashboard();
+  }
+
+  function aggregateByDate(hostData) {
+    const byDate = {};
+    hostData.forEach(d => {
+      const date = d.dimensions.date;
+      if (!byDate[date]) {
+        byDate[date] = { dimensions: { date }, sum: { requests: 0, pageViews: 0, bytes: 0, cachedBytes: 0, threats: 0 }, uniq: { uniques: 0 } };
+      }
+      byDate[date].sum.requests += d.sum.requests;
+      byDate[date].sum.pageViews += d.sum.pageViews;
+      byDate[date].sum.bytes += d.sum.bytes;
+      byDate[date].sum.cachedBytes += d.sum.cachedBytes || 0;
+      byDate[date].sum.threats += d.sum.threats;
+      byDate[date].uniq.uniques += d.uniq.uniques;
+    });
+    return Object.values(byDate).sort((a, b) => a.dimensions.date.localeCompare(b.dimensions.date));
+  }
+
+  function getHostDataByDate(host) {
+    const data = byHostData.filter(d => d.dimensions.clientRequestHTTPHost === host);
+    return aggregateByDate(data);
+  }
+
   function generateInsights() {
     const insights = [];
-    const peakDay = [...analyticsData].sort((a, b) => b.sum.pageViews - a.sum.pageViews)[0];
-    const lowDay = [...analyticsData].sort((a, b) => a.sum.pageViews - b.sum.pageViews)[0];
-    const avgViews = totals.pageViews / analyticsData.length;
+    const peakDay = [...aggregateData].sort((a, b) => b.sum.pageViews - a.sum.pageViews)[0];
+    const avgViews = totals.pageViews / aggregateData.length;
     
-    // Trend analysis
-    const recent = analyticsData.slice(-3);
-    const older = analyticsData.slice(0, 3);
-    const recentAvg = recent.reduce((s, d) => s + d.sum.pageViews, 0) / 3;
-    const olderAvg = older.reduce((s, d) => s + d.sum.pageViews, 0) / 3;
-    const trendPct = ((recentAvg - olderAvg) / olderAvg * 100).toFixed(0);
+    const third = Math.floor(aggregateData.length / 3);
+    const recent = aggregateData.slice(-third);
+    const older = aggregateData.slice(0, third);
+    const recentAvg = recent.reduce((s, d) => s + d.sum.pageViews, 0) / recent.length;
+    const olderAvg = older.reduce((s, d) => s + d.sum.pageViews, 0) / older.length;
+    const trendPct = olderAvg ? ((recentAvg - olderAvg) / olderAvg * 100).toFixed(0) : 0;
     
     if (trendPct > 10) {
-      insights.push({ icon: '📈', text: `Traffic is <strong>up ${trendPct}%</strong> compared to earlier this week. Great momentum!` });
+      insights.push({ icon: '📈', text: `Traffic is <strong>up ${trendPct}%</strong> compared to earlier in this period.` });
     } else if (trendPct < -10) {
-      insights.push({ icon: '📉', text: `Traffic is <strong>down ${Math.abs(trendPct)}%</strong> vs earlier this week. Consider promoting content.` });
+      insights.push({ icon: '📉', text: `Traffic is <strong>down ${Math.abs(trendPct)}%</strong>. Consider promoting content.` });
     } else {
-      insights.push({ icon: '➡️', text: `Traffic is <strong>stable</strong> this week with consistent daily engagement.` });
+      insights.push({ icon: '➡️', text: `Traffic is <strong>stable</strong> with consistent engagement.` });
     }
     
-    insights.push({ 
-      icon: '🏆', 
-      text: `<strong>${formatDate(peakDay.dimensions.date)}</strong> was your peak day with <strong>${formatNumber(peakDay.sum.pageViews)}</strong> page views.` 
-    });
+    insights.push({ icon: '🏆', text: `<strong>${formatDate(peakDay.dimensions.date)}</strong> was peak with <strong>${formatNumber(peakDay.sum.pageViews)}</strong> views.` });
+    
+    if (currentHost === 'all' && byHostData.length > 0) {
+      const mainTotal = byHostData.filter(d => d.dimensions.clientRequestHTTPHost === 'themenonlab.com').reduce((s, d) => s + d.sum.pageViews, 0);
+      const blogTotal = byHostData.filter(d => d.dimensions.clientRequestHTTPHost === 'blog.themenonlab.com').reduce((s, d) => s + d.sum.pageViews, 0);
+      const total = mainTotal + blogTotal;
+      if (total > 0) {
+        const blogPct = ((blogTotal / total) * 100).toFixed(0);
+        insights.push({ icon: '📊', text: `Blog accounts for <strong>${blogPct}%</strong> of total traffic.` });
+      }
+    }
     
     if (totals.threats > 0) {
-      insights.push({ 
-        icon: '🛡️', 
-        text: `Cloudflare blocked <strong>${totals.threats} threats</strong> this week — your site is protected.` 
-      });
-    }
-    
-    const cacheRatio = totals.cached / totals.bandwidth * 100;
-    if (cacheRatio > 50) {
-      insights.push({ icon: '⚡', text: `<strong>${cacheRatio.toFixed(0)}%</strong> of bandwidth served from cache. Fast performance!` });
+      insights.push({ icon: '🛡️', text: `Blocked <strong>${totals.threats} threats</strong> — site protected.` });
     }
     
     return insights;
   }
 
   function renderDashboard() {
-    const avgVisitors = Math.round(totals.visitors / analyticsData.length);
-    const avgPageViews = Math.round(totals.pageViews / analyticsData.length);
-    const peakDay = [...analyticsData].sort((a, b) => b.sum.pageViews - a.sum.pageViews)[0];
-    const lowDay = [...analyticsData].sort((a, b) => a.sum.pageViews - b.sum.pageViews)[0];
+    const avgVisitors = Math.round(totals.visitors / aggregateData.length);
+    const peakDay = [...aggregateData].sort((a, b) => b.sum.pageViews - a.sum.pageViews)[0];
+    const lowDay = [...aggregateData].sort((a, b) => a.sum.pageViews - b.sum.pageViews)[0];
     const insights = generateInsights();
-    
-    // Trend calculation
-    const recent = analyticsData.slice(-3);
-    const older = analyticsData.slice(0, 3);
-    const recentAvg = recent.reduce((s, d) => s + d.sum.pageViews, 0) / 3;
-    const olderAvg = older.reduce((s, d) => s + d.sum.pageViews, 0) / 3;
-    const trendPct = ((recentAvg - olderAvg) / olderAvg * 100).toFixed(0);
-    const trendClass = trendPct > 0 ? 'up' : trendPct < 0 ? 'down' : 'neutral';
-    const trendIcon = trendPct > 0 ? '↑' : trendPct < 0 ? '↓' : '→';
 
     document.getElementById('content').innerHTML = `
-      <!-- Stats Cards -->
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="label">Total Visitors</div>
+          <div class="label">Visitors</div>
           <div class="value">${formatNumber(totals.visitors)}</div>
-          <div class="change ${trendClass}">${trendIcon} ${Math.abs(trendPct)}% vs last week</div>
+          <div class="change neutral">${avgVisitors}/day avg</div>
         </div>
         <div class="stat-card">
           <div class="label">Page Views</div>
           <div class="value">${formatNumber(totals.pageViews)}</div>
-          <div class="change neutral">${avgPageViews}/day avg</div>
+          <div class="change neutral">${Math.round(totals.pageViews / aggregateData.length)}/day</div>
         </div>
         <div class="stat-card">
           <div class="label">Bandwidth</div>
           <div class="value">${formatBytes(totals.bandwidth)}</div>
-          <div class="change neutral">${formatBytes(totals.bandwidth / 7)}/day</div>
+          <div class="change neutral">${formatBytes(totals.bandwidth / aggregateData.length)}/day</div>
         </div>
         <div class="stat-card">
           <div class="label">Peak Day</div>
@@ -833,19 +729,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
       </div>
 
-      <!-- Charts -->
       <div class="charts-section">
-        <div class="chart-card">
-          <h3>📈 Traffic Over Time</h3>
+        <div class="chart-card ${compareMode ? 'full-width' : ''}">
+          <h3>${compareMode ? '📈 Page Views by Site' : '📈 Page Views'}</h3>
           <div class="chart-container"><canvas id="trafficChart"></canvas></div>
         </div>
+        ${!compareMode ? `
         <div class="chart-card">
           <h3>📊 Daily Visitors</h3>
           <div class="chart-container"><canvas id="visitorsChart"></canvas></div>
         </div>
+        ` : `
+        <div class="chart-card full-width">
+          <h3>👥 Visitors by Site</h3>
+          <div class="chart-container"><canvas id="visitorsChart"></canvas></div>
+        </div>
+        `}
       </div>
 
-      <!-- Insights -->
       <div class="insights-card">
         <h3>💡 Insights</h3>
         ${insights.map(i => `
@@ -856,7 +757,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         `).join('')}
       </div>
 
-      <!-- Data Table -->
       <div class="table-card">
         <h3>📋 Daily Breakdown</h3>
         <div class="table-wrap">
@@ -868,28 +768,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <th>Page Views</th>
                 <th>Requests</th>
                 <th>Bandwidth</th>
-                <th>Threats</th>
               </tr>
             </thead>
             <tbody>
-              ${[...analyticsData].reverse().map(day => {
-                const isPeak = day === peakDay;
-                const isLow = day === lowDay;
-                return `
-                  <tr>
-                    <td>
-                      ${formatDate(day.dimensions.date)}
-                      ${isPeak ? '<span class="badge peak">Peak</span>' : ''}
-                      ${isLow ? '<span class="badge low">Low</span>' : ''}
-                    </td>
-                    <td>${formatNumber(day.uniq.uniques)}</td>
-                    <td><strong>${formatNumber(day.sum.pageViews)}</strong></td>
-                    <td>${formatNumber(day.sum.requests)}</td>
-                    <td>${formatBytes(day.sum.bytes)}</td>
-                    <td>${day.sum.threats || '—'}</td>
-                  </tr>
-                `;
-              }).join('')}
+              ${[...aggregateData].reverse().slice(0, 14).map(day => `
+                <tr>
+                  <td>
+                    ${formatDate(day.dimensions.date)}
+                    ${day === peakDay ? '<span class="badge peak">Peak</span>' : ''}
+                    ${day === lowDay ? '<span class="badge low">Low</span>' : ''}
+                  </td>
+                  <td>${formatNumber(day.uniq.uniques)}</td>
+                  <td><strong>${formatNumber(day.sum.pageViews)}</strong></td>
+                  <td>${formatNumber(day.sum.requests)}</td>
+                  <td>${formatBytes(day.sum.bytes)}</td>
+                </tr>
+              `).join('')}
             </tbody>
           </table>
         </div>
@@ -900,15 +794,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   function renderCharts() {
-    const labels = analyticsData.map(d => getShortDate(d.dimensions.date));
-    const pageViews = analyticsData.map(d => d.sum.pageViews);
-    const visitors = analyticsData.map(d => d.uniq.uniques);
-    
     const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
     const gridColor = isDark ? '#262626' : '#e5e5e5';
     const textColor = isDark ? '#a3a3a3' : '#525252';
     
-    // Traffic line chart
+    if (compareMode) {
+      renderComparisonCharts(gridColor, textColor);
+    } else {
+      renderSingleCharts(gridColor, textColor);
+    }
+  }
+
+  function renderSingleCharts(gridColor, textColor) {
+    const labels = aggregateData.map(d => getShortDate(d.dimensions.date));
+    const pageViews = aggregateData.map(d => d.sum.pageViews);
+    const visitors = aggregateData.map(d => d.uniq.uniques);
+    const maxVisitors = Math.max(...visitors);
+
     new Chart(document.getElementById('trafficChart'), {
       type: 'line',
       data: {
@@ -920,47 +822,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           backgroundColor: 'rgba(96, 165, 250, 0.1)',
           fill: true,
           tension: 0.4,
-          pointRadius: 4,
-          pointHoverRadius: 6,
-          pointBackgroundColor: '#60a5fa'
-        }, {
-          label: 'Visitors',
-          data: visitors,
-          borderColor: '#10b981',
-          backgroundColor: 'transparent',
-          tension: 0.4,
-          pointRadius: 4,
-          pointHoverRadius: 6,
-          pointBackgroundColor: '#10b981'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { 
-          legend: { 
-            position: 'bottom', 
-            labels: { color: textColor, padding: 16, usePointStyle: true } 
-          } 
-        },
-        scales: {
-          x: { grid: { color: gridColor }, ticks: { color: textColor } },
-          y: { grid: { color: gridColor }, ticks: { color: textColor } }
-        }
-      }
-    });
-    
-    // Visitors bar chart
-    const maxVisitors = Math.max(...visitors);
-    new Chart(document.getElementById('visitorsChart'), {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Visitors',
-          data: visitors,
-          backgroundColor: visitors.map(v => v === maxVisitors ? '#10b981' : 'rgba(96, 165, 250, 0.6)'),
-          borderRadius: 6
+          pointRadius: 3,
+          pointHoverRadius: 5
         }]
       },
       options: {
@@ -968,53 +831,140 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          x: { grid: { display: false }, ticks: { color: textColor } },
+          x: { grid: { color: gridColor }, ticks: { color: textColor, maxRotation: 45 } },
+          y: { grid: { color: gridColor }, ticks: { color: textColor } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('visitorsChart'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          data: visitors,
+          backgroundColor: visitors.map(v => v === maxVisitors ? '#10b981' : 'rgba(96, 165, 250, 0.6)'),
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: textColor, maxRotation: 45 } },
           y: { grid: { color: gridColor }, ticks: { color: textColor } }
         }
       }
     });
   }
 
-  // Chat functions
+  function renderComparisonCharts(gridColor, textColor) {
+    const mainData = getHostDataByDate('themenonlab.com');
+    const blogData = getHostDataByDate('blog.themenonlab.com');
+    
+    const allDates = [...new Set([...mainData.map(d => d.dimensions.date), ...blogData.map(d => d.dimensions.date)])].sort();
+    const labels = allDates.map(d => getShortDate(d));
+    
+    const mainViews = allDates.map(date => mainData.find(d => d.dimensions.date === date)?.sum.pageViews || 0);
+    const blogViews = allDates.map(date => blogData.find(d => d.dimensions.date === date)?.sum.pageViews || 0);
+    const mainVisitors = allDates.map(date => mainData.find(d => d.dimensions.date === date)?.uniq.uniques || 0);
+    const blogVisitors = allDates.map(date => blogData.find(d => d.dimensions.date === date)?.uniq.uniques || 0);
+
+    new Chart(document.getElementById('trafficChart'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Main Site',
+          data: mainViews,
+          borderColor: '#a855f7',
+          backgroundColor: 'rgba(168, 85, 247, 0.1)',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 3
+        }, {
+          label: 'Blog',
+          data: blogViews,
+          borderColor: '#60a5fa',
+          backgroundColor: 'rgba(96, 165, 250, 0.1)',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { color: textColor, usePointStyle: true } } },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { color: textColor, maxRotation: 45 } },
+          y: { grid: { color: gridColor }, ticks: { color: textColor } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('visitorsChart'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Main Site',
+          data: mainVisitors,
+          backgroundColor: 'rgba(168, 85, 247, 0.7)',
+          borderRadius: 4
+        }, {
+          label: 'Blog',
+          data: blogVisitors,
+          backgroundColor: 'rgba(96, 165, 250, 0.7)',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { color: textColor, usePointStyle: true } } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: textColor, maxRotation: 45 } },
+          y: { grid: { color: gridColor }, ticks: { color: textColor } }
+        }
+      }
+    });
+  }
+
+  // Chat
   function askPrompt(el) {
     document.getElementById('chatInput').value = el.textContent;
     sendChat();
   }
-  
+
   async function sendChat() {
     const input = document.getElementById('chatInput');
     const messages = document.getElementById('chatMessages');
     const question = input.value.trim();
-    
-    if (!question || !analyticsData) return;
-    
-    // Add user message
+    if (!question || !aggregateData) return;
+
     messages.innerHTML += `<div class="message user"><div class="message-content">${escapeHtml(question)}</div></div>`;
     input.value = '';
     messages.scrollTop = messages.scrollHeight;
-    
-    // Add typing indicator
+
     const typingId = 'typing-' + Date.now();
-    messages.innerHTML += `<div class="message assistant typing" id="${typingId}"><div class="message-content">Thinking...</div></div>`;
+    messages.innerHTML += `<div class="message assistant" id="${typingId}"><div class="message-content">Thinking...</div></div>`;
     messages.scrollTop = messages.scrollHeight;
-    
-    // Try GPT-5 first, fallback to local
+
     let response;
     try {
       const gptResult = await fetchGPTResponse(question);
       if (gptResult && !gptResult.startsWith('Chat is currently unavailable')) {
         response = gptResult;
       } else {
-        console.log('GPT unavailable, using local:', gptResult);
         response = generateLocalResponse(question);
       }
     } catch (e) {
-      console.error('Chat error:', e);
       response = generateLocalResponse(question);
     }
-    
-    // Replace typing with response
-    document.getElementById(typingId).outerHTML = `<div class="message assistant"><div class="message-content">${response}</div></div>`;
+
+    document.getElementById(typingId).innerHTML = `<div class="message-content">${response}</div>`;
     messages.scrollTop = messages.scrollHeight;
   }
 
@@ -1025,75 +975,53 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   async function fetchGPTResponse(question) {
-    const context = `Analytics data for the past 7 days:
-Total visitors: ${totals.visitors}
-Total page views: ${totals.pageViews}
-Total bandwidth: ${formatBytes(totals.bandwidth)}
-Daily breakdown: ${analyticsData.map(d => `${d.dimensions.date}: ${d.sum.pageViews} views, ${d.uniq.uniques} visitors`).join('; ')}`;
+    const mainData = getHostDataByDate('themenonlab.com');
+    const blogData = getHostDataByDate('blog.themenonlab.com');
     
-    const response = await fetch(CHAT_API_URL, {
+    const context = `Analytics for ${currentDays} days (filter: ${currentHost}):
+Total: ${totals.visitors} visitors, ${totals.pageViews} page views, ${formatBytes(totals.bandwidth)}
+Main site total: ${mainData.reduce((s,d) => s + d.sum.pageViews, 0)} views
+Blog total: ${blogData.reduce((s,d) => s + d.sum.pageViews, 0)} views
+Daily: ${aggregateData.slice(-7).map(d => `${d.dimensions.date}: ${d.sum.pageViews} views`).join('; ')}`;
+
+    const res = await fetch(CHAT_API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question, context })
     });
     
-    if (!response.ok) throw new Error('Chat API error');
-    const data = await response.json();
-    return data.answer || generateLocalResponse(question);
-  }
-  
-  function generateLocalResponse(question) {
-    const q = question.toLowerCase();
-    const peakDay = [...analyticsData].sort((a, b) => b.sum.pageViews - a.sum.pageViews)[0];
-    const lowDay = [...analyticsData].sort((a, b) => a.sum.pageViews - b.sum.pageViews)[0];
-    const avgViews = Math.round(totals.pageViews / analyticsData.length);
-    const recent = analyticsData.slice(-3);
-    const older = analyticsData.slice(0, 3);
-    const recentAvg = recent.reduce((s, d) => s + d.sum.pageViews, 0) / 3;
-    const olderAvg = older.reduce((s, d) => s + d.sum.pageViews, 0) / 3;
-    const trendPct = ((recentAvg - olderAvg) / olderAvg * 100).toFixed(0);
-    
-    if (q.includes('best') || q.includes('peak') || q.includes('top')) {
-      return `Your best day was <strong>${formatDate(peakDay.dimensions.date)}</strong> with ${formatNumber(peakDay.sum.pageViews)} page views and ${formatNumber(peakDay.uniq.uniques)} unique visitors. That's ${Math.round(peakDay.sum.pageViews / avgViews * 100 - 100)}% above your daily average!`;
-    }
-    
-    if (q.includes('worst') || q.includes('low') || q.includes('slow')) {
-      return `Your slowest day was <strong>${formatDate(lowDay.dimensions.date)}</strong> with ${formatNumber(lowDay.sum.pageViews)} page views. This was ${Math.round((1 - lowDay.sum.pageViews / avgViews) * 100)}% below average.`;
-    }
-    
-    if (q.includes('trend') || q.includes('going') || q.includes('direction')) {
-      if (trendPct > 10) {
-        return `📈 Traffic is <strong>trending up ${trendPct}%</strong>! Recent days are outperforming earlier this week. Keep the momentum going.`;
-      } else if (trendPct < -10) {
-        return `📉 Traffic is <strong>down ${Math.abs(trendPct)}%</strong> compared to earlier this week. Consider sharing content on social media.`;
-      }
-      return `➡️ Traffic is <strong>stable</strong> this week. You're averaging ${formatNumber(avgViews)} page views per day.`;
-    }
-    
-    if (q.includes('concern') || q.includes('worry') || q.includes('problem') || q.includes('issue')) {
-      const issues = [];
-      if (trendPct < -15) issues.push(`Traffic dropped ${Math.abs(trendPct)}% recently`);
-      if (totals.threats > 10) issues.push(`${totals.threats} security threats blocked`);
-      if (lowDay.sum.pageViews < avgViews * 0.3) issues.push(`${formatDate(lowDay.dimensions.date)} had unusually low traffic`);
-      
-      if (issues.length === 0) {
-        return `✅ No concerns! Traffic is healthy, security is solid, and engagement is consistent.`;
-      }
-      return `⚠️ A few things to note:<br>• ${issues.join('<br>• ')}<br><br>Nothing critical, but worth monitoring.`;
-    }
-    
-    if (q.includes('visitor') || q.includes('user')) {
-      return `You had <strong>${formatNumber(totals.visitors)} total visitors</strong> this week, averaging ${Math.round(totals.visitors / 7)} per day. Peak was ${formatNumber(peakDay.uniq.uniques)} visitors on ${formatDate(peakDay.dimensions.date)}.`;
-    }
-    
-    if (q.includes('bandwidth') || q.includes('data')) {
-      return `Total bandwidth: <strong>${formatBytes(totals.bandwidth)}</strong> this week (${formatBytes(totals.bandwidth / 7)}/day). Cloudflare caching keeps your site fast!`;
-    }
-    
-    // Default summary
-    return `This week: <strong>${formatNumber(totals.pageViews)}</strong> page views from <strong>${formatNumber(totals.visitors)}</strong> visitors. Best day: ${formatDate(peakDay.dimensions.date)}. Traffic is ${trendPct > 0 ? 'up' : trendPct < 0 ? 'down' : 'stable'} ${Math.abs(trendPct)}%. Ask about trends, peaks, or concerns!`;
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    return data.answer;
   }
 
-  // Load on page load
+  function generateLocalResponse(question) {
+    const q = question.toLowerCase();
+    const peakDay = [...aggregateData].sort((a, b) => b.sum.pageViews - a.sum.pageViews)[0];
+    const avgViews = Math.round(totals.pageViews / aggregateData.length);
+
+    if (q.includes('compare') || q.includes('site')) {
+      const mainTotal = byHostData.filter(d => d.dimensions.clientRequestHTTPHost === 'themenonlab.com').reduce((s, d) => s + d.sum.pageViews, 0);
+      const blogTotal = byHostData.filter(d => d.dimensions.clientRequestHTTPHost === 'blog.themenonlab.com').reduce((s, d) => s + d.sum.pageViews, 0);
+      return `<strong>Main site:</strong> ${formatNumber(mainTotal)} views<br><strong>Blog:</strong> ${formatNumber(blogTotal)} views<br>Blog is ${((blogTotal/(mainTotal+blogTotal))*100).toFixed(0)}% of total traffic.`;
+    }
+
+    if (q.includes('best') || q.includes('peak') || q.includes('top')) {
+      return `Peak was <strong>${formatDate(peakDay.dimensions.date)}</strong> with ${formatNumber(peakDay.sum.pageViews)} views — ${Math.round(peakDay.sum.pageViews / avgViews * 100 - 100)}% above average.`;
+    }
+
+    if (q.includes('trend')) {
+      const third = Math.floor(aggregateData.length / 3);
+      const recent = aggregateData.slice(-third);
+      const older = aggregateData.slice(0, third);
+      const recentAvg = recent.reduce((s, d) => s + d.sum.pageViews, 0) / recent.length;
+      const olderAvg = older.reduce((s, d) => s + d.sum.pageViews, 0) / older.length;
+      const pct = ((recentAvg - olderAvg) / olderAvg * 100).toFixed(0);
+      return pct > 0 ? `📈 Up <strong>${pct}%</strong> recently!` : `📉 Down <strong>${Math.abs(pct)}%</strong> recently.`;
+    }
+
+    return `${currentDays} days: <strong>${formatNumber(totals.pageViews)}</strong> views, <strong>${formatNumber(totals.visitors)}</strong> visitors. Peak: ${formatDate(peakDay.dimensions.date)}.`;
+  }
+
   fetchAnalytics();
 </script>
