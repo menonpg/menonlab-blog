@@ -1,7 +1,6 @@
 ---
-// Hidden analytics page - not linked anywhere
-// Access at: /analytics
-// Uses Cloudflare Worker for live data
+// Advanced Analytics Dashboard
+// Live data via Cloudflare Worker + Charts + AI Chat
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -9,202 +8,699 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>Analytics | The Menon Lab</title>
+  <title>Analytics Dashboard | The Menon Lab</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-      --bg: #0a0a0a;
-      --card-bg: #141414;
-      --border: #262626;
-      --text: #fafafa;
-      --text-muted: #a1a1aa;
-      --accent: #3b82f6;
-      --green: #22c55e;
+      --bg: #050505;
+      --card: #0f0f0f;
+      --card-hover: #161616;
+      --border: #1f1f1f;
+      --text: #f5f5f5;
+      --text-muted: #888;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+      --green: #10b981;
       --red: #ef4444;
+      --yellow: #f59e0b;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 2rem;
+      line-height: 1.6;
     }
-    .container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
-    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-    .subtitle { color: var(--text-muted); margin-bottom: 0.5rem; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
+    
+    /* Layout */
+    .dashboard { display: flex; min-height: 100vh; }
+    .main { flex: 1; padding: 2rem; overflow-y: auto; }
+    .sidebar { 
+      width: 380px; 
+      background: var(--card); 
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
     }
-    .card-label { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem; }
-    .card-value { font-size: 2rem; font-weight: 700; }
-    .card-change { font-size: 0.875rem; margin-top: 0.25rem; }
-    .card-change.positive { color: var(--green); }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; min-width: 600px; }
-    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
-    th { color: var(--text-muted); font-weight: 500; font-size: 0.875rem; }
-    .loading { text-align: center; padding: 4rem; color: var(--text-muted); }
-    .error { color: var(--red); padding: 2rem; text-align: center; }
-    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
-    .last-updated { color: var(--text-muted); font-size: 0.75rem; display: block; margin-top: 0.5rem; }
+    
+    /* Header */
+    .header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .header h1 { 
+      font-size: 1.75rem; 
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .header-meta { color: var(--text-muted); font-size: 0.875rem; }
     .refresh-btn {
       background: var(--accent);
       color: white;
       border: none;
-      padding: 0.6rem 1.2rem;
+      padding: 0.5rem 1rem;
       border-radius: 8px;
       cursor: pointer;
       font-size: 0.875rem;
       font-weight: 500;
-      transition: opacity 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
     }
-    .refresh-btn:hover { opacity: 0.9; }
-    .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    h3 { margin-bottom: 0.5rem; }
+    .refresh-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px var(--accent-glow); }
+    .refresh-btn:disabled { opacity: 0.5; transform: none; }
+    
+    /* Stats Grid */
+    .stats-grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+      gap: 1rem; 
+      margin-bottom: 2rem; 
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: all 0.2s;
+    }
+    .stat-card:hover { background: var(--card-hover); border-color: #2a2a2a; }
+    .stat-label { 
+      color: var(--text-muted); 
+      font-size: 0.75rem; 
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+    .stat-value { font-size: 2rem; font-weight: 700; }
+    .stat-change { 
+      font-size: 0.8rem; 
+      margin-top: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .stat-change.up { color: var(--green); }
+    .stat-change.down { color: var(--red); }
+    
+    /* Charts */
+    .charts-grid { 
+      display: grid; 
+      grid-template-columns: 2fr 1fr; 
+      gap: 1rem; 
+      margin-bottom: 2rem; 
+    }
+    .chart-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+    .chart-card h3 { 
+      font-size: 0.875rem; 
+      font-weight: 500; 
+      margin-bottom: 1rem;
+      color: var(--text-muted);
+    }
+    .chart-container { position: relative; height: 250px; }
+    
+    /* Insights */
+    .insights {
+      background: linear-gradient(135deg, var(--card) 0%, #0a0a12 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .insights h3 { 
+      font-size: 0.875rem; 
+      font-weight: 500; 
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .insight-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .insight-item:last-child { border-bottom: none; }
+    .insight-icon { font-size: 1.25rem; }
+    .insight-text { font-size: 0.9rem; color: var(--text-muted); }
+    .insight-text strong { color: var(--text); }
+    
+    /* Table */
+    .table-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      overflow: hidden;
+    }
+    .table-card h3 { 
+      font-size: 0.875rem; 
+      font-weight: 500; 
+      margin-bottom: 1rem;
+      color: var(--text-muted);
+    }
+    .table-wrap { overflow-x: auto; margin: 0 -1.5rem; padding: 0 1.5rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 0.75rem 1rem; text-align: left; }
+    th { 
+      color: var(--text-muted); 
+      font-weight: 500; 
+      font-size: 0.75rem; 
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+    td { border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--card-hover); }
+    .day-badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .day-badge.peak { background: rgba(16, 185, 129, 0.15); color: var(--green); }
+    
+    /* Chat Sidebar */
+    .chat-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .chat-header h2 { 
+      font-size: 1rem; 
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .chat-header p { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem; }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .message {
+      max-width: 90%;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .message.user {
+      background: var(--accent);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .message.assistant {
+      background: var(--border);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .message.typing {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .chat-input-wrap {
+      padding: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .chat-input-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .chat-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .chat-input:focus { border-color: var(--accent); }
+    .chat-input::placeholder { color: var(--text-muted); }
+    .chat-send {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0 1rem;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .chat-send:disabled { opacity: 0.5; }
+    .suggested-prompts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .prompt-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .prompt-chip:hover { border-color: var(--accent); color: var(--text); }
+    
+    /* Loading */
+    .loading { 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      padding: 4rem; 
+      color: var(--text-muted);
+    }
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 0.75rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .dashboard { flex-direction: column; }
+      .sidebar { width: 100%; max-height: 50vh; border-left: none; border-top: 1px solid var(--border); }
+      .charts-grid { grid-template-columns: 1fr; }
+    }
     @media (max-width: 640px) {
-      body { padding: 1rem; }
-      .container { padding: 0 0.5rem; }
-      .card { padding: 1rem; }
-      .card-value { font-size: 1.5rem; }
-      h1 { font-size: 1.5rem; }
-      .grid { grid-template-columns: repeat(2, 1fr); }
+      .main { padding: 1rem; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .stat-value { font-size: 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div>
-        <h1>📊 Blog Analytics</h1>
-        <p class="subtitle">themenonlab.com — Last 7 days</p>
-        <span class="last-updated" id="lastUpdated">Loading...</span>
+  <div class="dashboard">
+    <main class="main">
+      <div class="header">
+        <div>
+          <h1>📊 Analytics Dashboard</h1>
+          <p class="header-meta">themenonlab.com • <span id="dateRange">Last 7 days</span> • <span id="lastUpdated">Loading...</span></p>
+        </div>
+        <button class="refresh-btn" id="refreshBtn" onclick="fetchAnalytics()">
+          <span>↻</span> Refresh
+        </button>
       </div>
-      <button class="refresh-btn" id="refreshBtn" onclick="fetchAnalytics()">↻ Refresh</button>
-    </div>
-
-    <div id="content">
-      <div class="loading">Loading analytics...</div>
-    </div>
+      
+      <div id="content">
+        <div class="loading"><div class="spinner"></div> Loading analytics...</div>
+      </div>
+    </main>
+    
+    <aside class="sidebar">
+      <div class="chat-header">
+        <h2>🤖 Ask Monica</h2>
+        <p>Ask questions about your analytics</p>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="message assistant">
+          Hi! I can help you understand your analytics. Try asking about traffic trends, top days, or comparisons.
+        </div>
+      </div>
+      <div class="chat-input-wrap">
+        <div class="chat-input-row">
+          <input type="text" class="chat-input" id="chatInput" placeholder="Ask about your analytics..." onkeypress="if(event.key==='Enter')sendChat()">
+          <button class="chat-send" id="chatSend" onclick="sendChat()">→</button>
+        </div>
+        <div class="suggested-prompts">
+          <span class="prompt-chip" onclick="askPrompt(this)">What's my best day?</span>
+          <span class="prompt-chip" onclick="askPrompt(this)">Traffic trend?</span>
+          <span class="prompt-chip" onclick="askPrompt(this)">Any concerns?</span>
+        </div>
+      </div>
+    </aside>
   </div>
 
   <script>
     const WORKER_URL = 'https://blog-analytics.prahlad-menon.workers.dev/';
+    let analyticsData = null;
+    let totals = null;
 
     function formatBytes(bytes) {
       if (bytes >= 1073741824) return (bytes / 1073741824).toFixed(2) + ' GB';
       if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
-      if (bytes >= 1024) return (bytes / 1024).toFixed(1) + ' KB';
-      return bytes + ' B';
+      return (bytes / 1024).toFixed(1) + ' KB';
     }
 
     function formatNumber(num) {
+      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+      if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
       return num.toLocaleString();
     }
 
     function formatDate(dateStr) {
       return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { 
-        weekday: 'short', 
-        month: 'short', 
-        day: 'numeric' 
+        weekday: 'short', month: 'short', day: 'numeric' 
+      });
+    }
+    
+    function getShortDate(dateStr) {
+      return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { 
+        month: 'short', day: 'numeric' 
       });
     }
 
     async function fetchAnalytics() {
       const content = document.getElementById('content');
       const btn = document.getElementById('refreshBtn');
-      const updated = document.getElementById('lastUpdated');
       
       btn.disabled = true;
-      btn.textContent = '↻ Loading...';
+      btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;margin:0"></span> Loading';
 
       try {
         const response = await fetch(WORKER_URL);
         const result = await response.json();
         
-        if (result.errors) {
-          throw new Error(result.errors[0].message);
-        }
+        if (result.errors) throw new Error(result.errors[0].message);
 
-        const days = result.data.viewer.zones[0].httpRequests1dGroups;
-        renderAnalytics(days);
-        updated.textContent = `Updated: ${new Date().toLocaleString()}`;
+        analyticsData = result.data.viewer.zones[0].httpRequests1dGroups;
+        analyticsData.reverse(); // Oldest first for charts
+        
+        totals = analyticsData.reduce((acc, day) => ({
+          visitors: acc.visitors + day.uniq.uniques,
+          pageViews: acc.pageViews + day.sum.pageViews,
+          requests: acc.requests + day.sum.requests,
+          bandwidth: acc.bandwidth + day.sum.bytes,
+          threats: acc.threats + day.sum.threats
+        }), { visitors: 0, pageViews: 0, requests: 0, bandwidth: 0, threats: 0 });
+
+        renderDashboard();
+        document.getElementById('lastUpdated').textContent = `Updated ${new Date().toLocaleTimeString()}`;
       } catch (error) {
-        content.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+        content.innerHTML = `<div class="loading" style="color:var(--red)">Error: ${error.message}</div>`;
       } finally {
         btn.disabled = false;
-        btn.textContent = '↻ Refresh';
+        btn.innerHTML = '<span>↻</span> Refresh';
       }
     }
 
-    function renderAnalytics(days) {
-      const totals = days.reduce((acc, day) => ({
-        visitors: acc.visitors + day.uniq.uniques,
-        pageViews: acc.pageViews + day.sum.pageViews,
-        requests: acc.requests + day.sum.requests,
-        bandwidth: acc.bandwidth + day.sum.bytes,
-        threats: acc.threats + day.sum.threats
-      }), { visitors: 0, pageViews: 0, requests: 0, bandwidth: 0, threats: 0 });
+    function generateInsights() {
+      const insights = [];
+      const peakDay = [...analyticsData].sort((a, b) => b.sum.pageViews - a.sum.pageViews)[0];
+      const lowDay = [...analyticsData].sort((a, b) => a.sum.pageViews - b.sum.pageViews)[0];
+      const avgViews = totals.pageViews / analyticsData.length;
+      
+      // Recent trend
+      const recent = analyticsData.slice(-3);
+      const older = analyticsData.slice(0, 3);
+      const recentAvg = recent.reduce((s, d) => s + d.sum.pageViews, 0) / 3;
+      const olderAvg = older.reduce((s, d) => s + d.sum.pageViews, 0) / 3;
+      const trendPct = ((recentAvg - olderAvg) / olderAvg * 100).toFixed(0);
+      
+      if (trendPct > 10) {
+        insights.push({ icon: '📈', text: `Traffic is <strong>up ${trendPct}%</strong> compared to earlier this week. Great momentum!` });
+      } else if (trendPct < -10) {
+        insights.push({ icon: '📉', text: `Traffic is <strong>down ${Math.abs(trendPct)}%</strong> vs earlier this week. Consider promoting content.` });
+      } else {
+        insights.push({ icon: '➡️', text: `Traffic is <strong>stable</strong> this week with consistent daily views.` });
+      }
+      
+      insights.push({ 
+        icon: '🏆', 
+        text: `<strong>${formatDate(peakDay.dimensions.date)}</strong> was your best day with <strong>${formatNumber(peakDay.sum.pageViews)}</strong> page views.` 
+      });
+      
+      if (totals.threats > 0) {
+        insights.push({ 
+          icon: '🛡️', 
+          text: `Cloudflare blocked <strong>${totals.threats} threats</strong> this week. Your site is protected.` 
+        });
+      }
+      
+      const cacheRatio = analyticsData.reduce((s, d) => s + d.sum.cachedBytes, 0) / totals.bandwidth * 100;
+      if (cacheRatio > 50) {
+        insights.push({ icon: '⚡', text: `<strong>${cacheRatio.toFixed(0)}%</strong> of bandwidth served from cache. Fast performance!` });
+      }
+      
+      return insights;
+    }
 
-      const avgVisitors = Math.round(totals.visitors / days.length);
-      const avgPageViews = Math.round(totals.pageViews / days.length);
+    function renderDashboard() {
+      const avgVisitors = Math.round(totals.visitors / analyticsData.length);
+      const avgPageViews = Math.round(totals.pageViews / analyticsData.length);
+      const peakDay = [...analyticsData].sort((a, b) => b.sum.pageViews - a.sum.pageViews)[0];
+      const insights = generateInsights();
 
       document.getElementById('content').innerHTML = `
-        <div class="grid">
-          <div class="card">
-            <div class="card-label">Total Visitors</div>
-            <div class="card-value">${formatNumber(totals.visitors)}</div>
-            <div class="card-change">${avgVisitors}/day avg</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Visitors</div>
+            <div class="stat-value">${formatNumber(totals.visitors)}</div>
+            <div class="stat-change up">↑ ${avgVisitors}/day avg</div>
           </div>
-          <div class="card">
-            <div class="card-label">Page Views</div>
-            <div class="card-value">${formatNumber(totals.pageViews)}</div>
-            <div class="card-change">${avgPageViews}/day avg</div>
+          <div class="stat-card">
+            <div class="stat-label">Page Views</div>
+            <div class="stat-value">${formatNumber(totals.pageViews)}</div>
+            <div class="stat-change">${avgPageViews}/day avg</div>
           </div>
-          <div class="card">
-            <div class="card-label">Bandwidth</div>
-            <div class="card-value">${formatBytes(totals.bandwidth)}</div>
+          <div class="stat-card">
+            <div class="stat-label">Bandwidth</div>
+            <div class="stat-value">${formatBytes(totals.bandwidth)}</div>
+            <div class="stat-change">${formatBytes(totals.bandwidth / 7)}/day</div>
           </div>
-          <div class="card">
-            <div class="card-label">Threats Blocked</div>
-            <div class="card-value">${formatNumber(totals.threats)}</div>
-            <div class="card-change positive">🛡️ Protected</div>
+          <div class="stat-card">
+            <div class="stat-label">Peak Day</div>
+            <div class="stat-value">${formatNumber(peakDay.sum.pageViews)}</div>
+            <div class="stat-change">${formatDate(peakDay.dimensions.date)}</div>
           </div>
         </div>
-
-        <div class="card">
+        
+        <div class="charts-grid">
+          <div class="chart-card">
+            <h3>Traffic Over Time</h3>
+            <div class="chart-container"><canvas id="trafficChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <h3>Daily Visitors</h3>
+            <div class="chart-container"><canvas id="visitorsChart"></canvas></div>
+          </div>
+        </div>
+        
+        <div class="insights">
+          <h3>💡 Insights</h3>
+          ${insights.map(i => `
+            <div class="insight-item">
+              <span class="insight-icon">${i.icon}</span>
+              <span class="insight-text">${i.text}</span>
+            </div>
+          `).join('')}
+        </div>
+        
+        <div class="table-card">
           <h3>Daily Breakdown</h3>
           <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Visitors</th>
-                <th>Page Views</th>
-                <th>Requests</th>
-                <th>Bandwidth</th>
-                <th>Threats</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${days.map(day => `
+            <table>
+              <thead>
                 <tr>
-                  <td>${formatDate(day.dimensions.date)}</td>
-                  <td>${formatNumber(day.uniq.uniques)}</td>
-                  <td>${formatNumber(day.sum.pageViews)}</td>
-                  <td>${formatNumber(day.sum.requests)}</td>
-                  <td>${formatBytes(day.sum.bytes)}</td>
-                  <td>${day.sum.threats}</td>
+                  <th>Date</th>
+                  <th>Visitors</th>
+                  <th>Page Views</th>
+                  <th>Requests</th>
+                  <th>Bandwidth</th>
+                  <th>Threats</th>
                 </tr>
-              `).join('')}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                ${[...analyticsData].reverse().map(day => `
+                  <tr>
+                    <td>
+                      ${formatDate(day.dimensions.date)}
+                      ${day === peakDay ? '<span class="day-badge peak">Peak</span>' : ''}
+                    </td>
+                    <td>${formatNumber(day.uniq.uniques)}</td>
+                    <td><strong>${formatNumber(day.sum.pageViews)}</strong></td>
+                    <td>${formatNumber(day.sum.requests)}</td>
+                    <td>${formatBytes(day.sum.bytes)}</td>
+                    <td>${day.sum.threats || '—'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
           </div>
         </div>
       `;
+      
+      renderCharts();
+    }
+
+    function renderCharts() {
+      const labels = analyticsData.map(d => getShortDate(d.dimensions.date));
+      const pageViews = analyticsData.map(d => d.sum.pageViews);
+      const visitors = analyticsData.map(d => d.uniq.uniques);
+      
+      // Traffic line chart
+      new Chart(document.getElementById('trafficChart'), {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Page Views',
+            data: pageViews,
+            borderColor: '#6366f1',
+            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }, {
+            label: 'Visitors',
+            data: visitors,
+            borderColor: '#10b981',
+            backgroundColor: 'transparent',
+            tension: 0.4,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { color: '#888', padding: 20 } } },
+          scales: {
+            x: { grid: { color: '#1f1f1f' }, ticks: { color: '#888' } },
+            y: { grid: { color: '#1f1f1f' }, ticks: { color: '#888' } }
+          }
+        }
+      });
+      
+      // Visitors bar chart
+      new Chart(document.getElementById('visitorsChart'), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Visitors',
+            data: visitors,
+            backgroundColor: visitors.map((v, i) => 
+              v === Math.max(...visitors) ? '#10b981' : 'rgba(99, 102, 241, 0.6)'
+            ),
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#888' } },
+            y: { grid: { color: '#1f1f1f' }, ticks: { color: '#888' } }
+          }
+        }
+      });
+    }
+
+    // Chat functions
+    function askPrompt(el) {
+      document.getElementById('chatInput').value = el.textContent;
+      sendChat();
+    }
+    
+    async function sendChat() {
+      const input = document.getElementById('chatInput');
+      const messages = document.getElementById('chatMessages');
+      const question = input.value.trim();
+      
+      if (!question || !analyticsData) return;
+      
+      // Add user message
+      messages.innerHTML += `<div class="message user">${question}</div>`;
+      input.value = '';
+      messages.scrollTop = messages.scrollHeight;
+      
+      // Add typing indicator
+      const typingId = 'typing-' + Date.now();
+      messages.innerHTML += `<div class="message assistant typing" id="${typingId}">Thinking...</div>`;
+      messages.scrollTop = messages.scrollHeight;
+      
+      // Generate response locally (no API needed for basic questions)
+      const response = generateLocalResponse(question);
+      
+      // Replace typing with response
+      document.getElementById(typingId).outerHTML = `<div class="message assistant">${response}</div>`;
+      messages.scrollTop = messages.scrollHeight;
+    }
+    
+    function generateLocalResponse(question) {
+      const q = question.toLowerCase();
+      const peakDay = [...analyticsData].sort((a, b) => b.sum.pageViews - a.sum.pageViews)[0];
+      const lowDay = [...analyticsData].sort((a, b) => a.sum.pageViews - b.sum.pageViews)[0];
+      const avgViews = Math.round(totals.pageViews / analyticsData.length);
+      const recent = analyticsData.slice(-3);
+      const older = analyticsData.slice(0, 3);
+      const recentAvg = recent.reduce((s, d) => s + d.sum.pageViews, 0) / 3;
+      const olderAvg = older.reduce((s, d) => s + d.sum.pageViews, 0) / 3;
+      const trendPct = ((recentAvg - olderAvg) / olderAvg * 100).toFixed(0);
+      
+      if (q.includes('best') || q.includes('peak') || q.includes('top')) {
+        return `Your best day was <strong>${formatDate(peakDay.dimensions.date)}</strong> with ${formatNumber(peakDay.sum.pageViews)} page views and ${formatNumber(peakDay.uniq.uniques)} unique visitors. That's ${Math.round(peakDay.sum.pageViews / avgViews * 100 - 100)}% above your daily average!`;
+      }
+      
+      if (q.includes('worst') || q.includes('low') || q.includes('slow')) {
+        return `Your slowest day was <strong>${formatDate(lowDay.dimensions.date)}</strong> with ${formatNumber(lowDay.sum.pageViews)} page views. This was ${Math.round((1 - lowDay.sum.pageViews / avgViews) * 100)}% below average.`;
+      }
+      
+      if (q.includes('trend') || q.includes('going') || q.includes('direction')) {
+        if (trendPct > 10) {
+          return `📈 Traffic is <strong>trending up ${trendPct}%</strong>! Recent days are outperforming earlier this week. Keep the momentum going.`;
+        } else if (trendPct < -10) {
+          return `📉 Traffic is <strong>down ${Math.abs(trendPct)}%</strong> compared to earlier this week. Consider sharing some content on social media or checking if there are any technical issues.`;
+        }
+        return `➡️ Traffic is <strong>stable</strong> this week. You're averaging ${formatNumber(avgViews)} page views per day with consistent engagement.`;
+      }
+      
+      if (q.includes('concern') || q.includes('worry') || q.includes('problem') || q.includes('issue')) {
+        const issues = [];
+        if (trendPct < -15) issues.push(`Traffic dropped ${Math.abs(trendPct)}% recently`);
+        if (totals.threats > 10) issues.push(`${totals.threats} security threats blocked (normal, but worth monitoring)`);
+        if (lowDay.sum.pageViews < avgViews * 0.3) issues.push(`${formatDate(lowDay.dimensions.date)} had unusually low traffic`);
+        
+        if (issues.length === 0) {
+          return `✅ No concerns! Your traffic is healthy, security threats are being blocked, and engagement is consistent.`;
+        }
+        return `⚠️ A few things to note:\n• ${issues.join('\n• ')}\n\nNothing critical, but worth keeping an eye on.`;
+      }
+      
+      if (q.includes('visitor') || q.includes('user')) {
+        return `You had <strong>${formatNumber(totals.visitors)} total visitors</strong> this week, averaging ${Math.round(totals.visitors / 7)} per day. Your peak was ${formatNumber(peakDay.uniq.uniques)} visitors on ${formatDate(peakDay.dimensions.date)}.`;
+      }
+      
+      if (q.includes('bandwidth') || q.includes('data')) {
+        return `Total bandwidth: <strong>${formatBytes(totals.bandwidth)}</strong> this week (${formatBytes(totals.bandwidth / 7)}/day average). Cloudflare is caching content efficiently to keep your site fast.`;
+      }
+      
+      // Default summary
+      return `This week: <strong>${formatNumber(totals.pageViews)}</strong> page views from <strong>${formatNumber(totals.visitors)}</strong> visitors. Your best day was ${formatDate(peakDay.dimensions.date)}. Traffic is ${trendPct > 0 ? 'up' : trendPct < 0 ? 'down' : 'stable'} ${Math.abs(trendPct)}% compared to earlier this week. Ask me about trends, peaks, or concerns!`;
     }
 
     // Load on page load
