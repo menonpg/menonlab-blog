@@ -1,7 +1,7 @@
 ---
 title: "OpenClaw: Run Your Own Personal AI Assistant Anywhere"
 description: "An open-source AI assistant that connects to WhatsApp, Telegram, Slack, Discord, and more — running entirely on your own devices"
-date: "2026-02-19"
+date: "2026-02-24"
 tags: ["ai-assistant", "open-source", "self-hosted", "chatbot", "multi-platform"]
 ---
 
@@ -156,6 +156,38 @@ Add custom skills by dropping a `SKILL.md` into your workspace. The skill system
 **Monitoring**: The web UI (`http://localhost:18789`) shows active sessions, channel status, and logs.
 
 **Backups**: Your config and session data live in `~/.openclaw`. Back up this directory.
+
+## WebClaw: Fast Web Client
+
+Want a polished web interface for managing your OpenClaw instance? **WebClaw** provides exactly that — a fast, modern web client currently in beta.
+
+**One-command setup:**
+
+```bash
+npx webclaw
+```
+
+The CLI prompts for:
+- Project name
+- Gateway URL and auth (token or password)
+- Port to run on
+
+Then it creates the folder and starts the WebClaw server.
+
+WebClaw connects to your OpenClaw gateway, giving you a browser-based interface for:
+- Managing active sessions
+- Viewing conversation history
+- Configuring channels
+- Monitoring agent activity
+
+**Environment variables:**
+- `CLAWDBOT_GATEWAY_URL` — your gateway endpoint
+- `CLAWDBOT_GATEWAY_TOKEN` or `CLAWDBOT_GATEWAY_PASSWORD` — authentication
+
+WebClaw is particularly useful when you want to manage OpenClaw from a different machine or share access with others without giving them CLI access.
+
+**GitHub:** [ibelick/webclaw](https://github.com/ibelick/webclaw)  
+**Live demo:** [webclaw.dev](https://webclaw.dev)
 
 ## Docker Containerization on Windows
 
