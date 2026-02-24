@@ -18,6 +18,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <button class="pill" data-days="90">90 days</button>
         </div>
       </div>
+      <!-- Site filter disabled - Cloudflare API doesn't support hostname breakdown for this zone -->
+      <!--
       <div class="filter-group">
         <label>Site</label>
         <div class="pill-group" id="siteFilter">
@@ -26,6 +28,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <button class="pill" data-host="blog.themenonlab.com">Blog</button>
         </div>
       </div>
+      -->
       <button class="button-primary" id="refreshBtn">
         <span class="btn-icon">↻</span> Refresh
       </button>
@@ -34,10 +37,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   <div class="meta-bar">
     <span id="lastUpdated">Loading...</span>
+    <!-- Compare toggle disabled - needs hostname data -->
+    <!--
     <label class="compare-toggle">
       <input type="checkbox" id="compareMode" />
       <span>Compare sites on charts</span>
     </label>
+    -->
   </div>
 
   <div id="content">
