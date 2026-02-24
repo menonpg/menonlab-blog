@@ -1,7 +1,7 @@
 ---
 title: "GitButler: Modern Git for AI-Powered Workflows"
 description: "Virtual branches, stacked branches, and unlimited undo — Git reimagined for how we actually work"
-pubDate: 2026-02-24
+pubDate: "2026-02-24"
 tags: ["git", "developer-tools", "ai", "productivity"]
 ---
 

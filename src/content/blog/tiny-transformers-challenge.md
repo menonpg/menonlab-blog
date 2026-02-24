@@ -1,9 +1,9 @@
 ---
 title: "The 1,000-Parameter Challenge: Minimal Transformers That Actually Work"
 description: "Can a transformer with fewer parameters than a simple neural network learn meaningful tasks? We explore the lower limits of transformer capabilities with hands-on experiments."
-date: "2026-02-23"
+pubDate: "2026-02-23"
 tags: ["transformers", "deep-learning", "mnist", "grokking", "research"]
-draft: true
+draft: false
 ---
 
 What's the smallest transformer that can do something useful?
