@@ -5,8 +5,6 @@ date: "2026-02-24"
 tags: ["git", "developer-tools", "ai", "productivity"]
 ---
 
-# GitButler: Modern Git for AI-Powered Workflows
-
 Git is powerful. It's also... not exactly user-friendly. **GitButler** is a ground-up reimagining of the Git interface — both GUI and CLI — designed for modern, AI-assisted development.
 
 ## The Problem with Git

@@ -5,8 +5,6 @@ date: "2026-02-24"
 tags: ["ai", "llm", "api", "self-hosted", "open-source"]
 ---
 
-# OpenLLM: Run Any Open-Source LLM as an API with One Command
-
 Want to run DeepSeek R1, Llama 3.3, or Qwen2.5 as your own private API? **OpenLLM** makes it trivially easy — one command, and you have an OpenAI-compatible endpoint ready to go.
 
 ## Why This Matters
