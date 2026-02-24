@@ -1,6 +1,6 @@
 ---
 title: "Replicating the 777-Parameter Transformer: Our Tiny Transformers Project"
-description: "We're building the smallest transformers that actually work — starting with a replication of the famous 777-parameter addition model. Here's our repo, experiments, and what we've learned."
+description: "We're building the smallest transformers that actually work — starting with a replication of the famous 777-parameter addition model. Here's our repo, experiments, what failed, and what we learned."
 date: "2026-02-24"
 tags: ["transformers", "grokking", "deep-learning", "replication", "open-source"]
 ---
@@ -10,6 +10,8 @@ How small can a transformer be and still do something useful?
 That question led us to start [tiny-transformers](https://github.com/menonpg/tiny-transformers) — a project to explore the minimum viable transformer for various tasks.
 
 Our first target: replicate the famous **777-parameter transformer** that learned 10-digit addition with 99.69% accuracy.
+
+This post documents everything — including the mistakes. If you're trying to replicate grokking yourself, hopefully our failures save you some time.
 
 ## The Reference: yhavinga/gpt-acc-jax
 
@@ -29,77 +31,127 @@ Their winning architecture:
 
 Key findings from their 47 experiments:
 - **One layer beats two** at the same parameter count
-- **Higher learning rate (0.02)** is essential for tiny models
+- **Higher learning rate (0.02)** is essential for tiny models  
 - **Tied embeddings + no FFN bias** enables sub-1K params
 - There's a sharp **parameter cliff** at ~800 params — below it, nothing works
 
-## Our Approach: Modular Arithmetic First
+## What We Tried (and What Failed)
 
-Instead of jumping straight to 10-digit decimal addition, we're starting with **modular arithmetic** — the same domain used in the original grokking papers.
+Replication is harder than it looks. Here's our iteration log:
 
-Why? Modular arithmetic (like `a + b mod 97`) is:
-- Bounded (all answers are 0-96)
-- Well-studied for grokking
-- Easier to visualize and debug
-- A stepping stone to decimal arithmetic
+### Attempt 1: Copy the Config, Ignore the Architecture
 
-Our dataset:
+Our first notebook had `EMBED_DIM = 7` and `LEARNING_RATE = 0.02` — matching the paper. We thought that was enough.
+
+**What we missed:** The model had no feedforward layer. We used `nn.MultiheadAttention` directly and went straight to the output head. The 777-param model has a proper FFN with `d_ff = 14` (2× expansion).
+
+**Result:** The model could memorize (~100% train accuracy) but never generalized. Test accuracy stuck around 10-15%.
+
+**Lesson:** The FFN layer isn't optional. Attention alone can memorize, but the FFN seems critical for the compression that leads to generalization.
+
+### Attempt 2: Wrong Weight Decay
+
+We initially used `WEIGHT_DECAY = 0.01` (matching the 777 paper exactly), but the original grokking papers on modular arithmetic used much higher values — around 1.0.
+
+**What happened:** With low weight decay, the model memorized and stayed memorized. No grokking even after 20k epochs.
+
+**The fix:** Cranked weight decay to 1.0. This is counterintuitive — aggressive regularization on a tiny model — but it's what forces the model to find a compact, generalizing solution instead of a sprawling memorization table.
+
+**Lesson:** Weight decay is the secret ingredient. It's not just regularization — it's what creates the pressure to generalize.
+
+### Attempt 3: Using nn.MultiheadAttention
+
+PyTorch's `nn.MultiheadAttention` is convenient, but it has internal Q, K, V projections with their own parameters. For a 7-dimensional model, this bloats the parameter count unpredictably.
+
+**What happened:** Our "minimal" model had way more parameters than expected. Hard to match the 777 target.
+
+**The fix:** Wrote a custom `CausalSelfAttention` class with explicit QKV projection:
+
 ```python
-# All pairs (a, b) where a, b ∈ {0, 1, ..., 96}
-# Task: predict (a + b) mod 97
-# Total possible examples: 97 × 97 = 9,409
-# Train/test split: 50/50
+class CausalSelfAttention(nn.Module):
+    def __init__(self, d_model):
+        super().__init__()
+        self.qkv = nn.Linear(d_model, 3 * d_model, bias=False)
+        self.proj = nn.Linear(d_model, d_model, bias=False)
 ```
 
-## Current Experiment Setup
+**Lesson:** At this scale, every parameter matters. Use explicit layers so you know exactly what you're paying for.
 
-We matched the 777-param paper's hyperparameters:
+### Attempt 4: Constant Learning Rate
+
+We started with a constant learning rate of 0.02. The 777 paper uses cosine decay with warmup.
+
+**What happened:** Training was unstable early on. Loss would spike, then recover, then spike again.
+
+**The fix:** Added warmup (50 epochs) + cosine decay:
 
 ```python
-# Training configuration (from grokking_arithmetic.ipynb)
-OPERATION = 'add'
-P = 97  # Prime modulus
-EMBED_DIM = 7  # Match 777-param model
-NUM_HEADS = 1
-BATCH_SIZE = 512
-NUM_EPOCHS = 100000  # 100k epochs for grokking!
-LEARNING_RATE = 0.02  # Higher LR for tiny models
-WEIGHT_DECAY = 1.0  # Crucial for grokking
+def get_lr(step, warmup_steps, total_steps, max_lr):
+    if step < warmup_steps:
+        return max_lr * step / warmup_steps
+    progress = (step - warmup_steps) / (total_steps - warmup_steps)
+    return min_lr + 0.5 * (max_lr - min_lr) * (1 + math.cos(math.pi * progress))
 ```
 
-The 100k epoch count isn't arbitrary — the original grokking papers trained for 100,000 steps, and grokking often happens late (10k-50k epochs in).
+**Lesson:** LR scheduling matters even for tiny models. Warmup prevents early instability; decay helps fine-tune at the end.
 
-## Our Model Architecture
+### Attempt 5: Not Training Long Enough
+
+Our first runs used 10,000 epochs. Seemed like a lot.
+
+**What happened:** Train accuracy hit 100% around epoch 500. Test accuracy hovered at 15%. We thought the model was broken.
+
+**The reality:** Grokking can take 20k-50k epochs. The model needs to memorize first (fast), then the weight decay pressure slowly forces it to find a generalizing solution (slow).
+
+**The fix:** Extended to 100,000 epochs with checkpoints every 10k.
+
+**Lesson:** Patience. Grokking is called "delayed generalization" for a reason. If your train accuracy is 100% and test is bad, you might just need to wait.
+
+## Our Current Architecture
+
+After all the iterations, here's what we're running:
 
 ```python
-class TinyArithmeticTransformer(nn.Module):
-    def __init__(self, vocab_size=104, embed_dim=7, num_heads=1, max_len=5):
+class TinyGrokTransformer(nn.Module):
+    def __init__(self, vocab_size, d_model=7, d_ff=14, n_layers=1):
         # Token embeddings
-        self.token_embed = nn.Embedding(vocab_size, embed_dim)
+        self.token_embed = nn.Embedding(vocab_size, d_model)
         
-        # Learned position embeddings (essential!)
-        self.pos_embed = nn.Parameter(torch.zeros(1, max_len, embed_dim))
+        # Learned position embeddings (NOT sinusoidal!)
+        self.pos_embed = nn.Embedding(max_len, d_model)
         
-        # Single attention layer
-        self.attention = nn.MultiheadAttention(embed_dim, num_heads)
-        self.norm = nn.LayerNorm(embed_dim)
+        # Transformer block: attention + FFN
+        self.blocks = nn.ModuleList([
+            TransformerBlock(d_model, d_ff) for _ in range(n_layers)
+        ])
         
-        # Output head (tied with input embeddings)
-        self.head = nn.Linear(embed_dim, vocab_size, bias=False)
-        self.head.weight = self.token_embed.weight  # Weight tying
+        # Output head TIED with input embeddings
+        self.head = nn.Linear(d_model, vocab_size, bias=False)
+        self.head.weight = self.token_embed.weight
 ```
 
-Current parameter count: **~800-1000** depending on vocab size. We're iterating to get it under 777.
+Key details:
+- **d_model = 7, d_ff = 14** — Matches 777 paper
+- **Learned positions** — Sinusoidal failed in their experiments
+- **No bias in FFN** — Saves parameters
+- **Tied embeddings** — Input and output share weights
 
-## What We're Tracking
+## The Training Config
 
-Each training run logs:
-- Train/test loss curves
-- Train/test accuracy curves
-- **Grokking detection**: automatic alert when test acc jumps from <50% to >99%
-- Checkpoints every 10k epochs
+```python
+D_MODEL = 7
+D_FF = 14           # 2× expansion
+N_LAYERS = 1
+BATCH_SIZE = 512    # Full batch works best
+NUM_EPOCHS = 100000 # Grokking needs patience
+MAX_LR = 0.02       # High for tiny models
+WEIGHT_DECAY = 1.0  # Critical for grokking
+WARMUP_EPOCHS = 50
+```
 
-The classic grokking signature we're looking for:
+## What We're Looking For
+
+The classic grokking signature:
 
 ```
 Epoch 5000:  Train 100%, Test 12%   ← Memorized
@@ -108,51 +160,43 @@ Epoch 15000: Train 100%, Test 18%   ← Plateau...
 Epoch 20000: Train 100%, Test 97%   ← GROKKING! 🎯
 ```
 
-## Experiments in Progress
-
-**Notebook 1: `grokking_arithmetic.ipynb`**
-- Modular addition (mod 97)
-- Target: <1000 params, >99% test accuracy
-- Status: Running 100k epoch experiments
-
-**Notebook 2: `grokking_diffusion_mnist.ipynb`**
-- Tiny diffusion model for MNIST generation
-- Target: <10,000 params, recognizable digits
-- Status: Architecture design phase
-
-**Notebook 3: `micro_vit_mnist.ipynb`** (completed)
-- Micro Vision Transformer for MNIST classification
-- Result: 6,794 params, 93.22% accuracy
-- Missed targets but proved tiny ViTs can learn
+The notebook has automatic detection that alerts when test accuracy jumps from <50% to >99%.
 
 ## Run It Yourself
 
-Everything's on GitHub with Colab links:
+The notebook is on GitHub with a Colab badge:
 
 ```bash
 git clone https://github.com/menonpg/tiny-transformers
 cd tiny-transformers/notebooks
+# Open grokking_arithmetic.ipynb
 ```
 
-Or click the Colab badge in the README to run in-browser with free GPU.
+Or run directly in Colab (free GPU): [Open in Colab](https://colab.research.google.com/github/menonpg/tiny-transformers/blob/main/notebooks/grokking_arithmetic.ipynb)
 
 ## What's Next
 
-1. **Hit 99% on modular addition** with <1000 params
-2. **Extend to subtraction, multiplication, division** (mod 97)
-3. **Scale to decimal arithmetic** (10-digit addition like the 777-param paper)
-4. **Visualize the grokking transition** — what do the weights look like mid-grok?
-5. **Mechanistic interpretability** — can we reverse-engineer what the model learned?
+We're still iterating:
 
-## Why This Matters
+1. **Verify grokking occurs** on our current architecture (running now)
+2. **Extend to other operations** — subtraction, multiplication, division (mod 97)
+3. **Scale to decimal arithmetic** — 10-digit addition like the original 777 paper
+4. **Visualize weight evolution** — what do the embeddings look like before/during/after grokking?
+5. **Mechanistic interpretability** — can we reverse-engineer the algorithm the model learned?
 
-Tiny transformers aren't just an academic curiosity. They tell us:
+## Why Document Failures?
 
-- **What's the minimum compute needed for a task?** Useful for edge deployment.
-- **Do neural networks learn algorithms or memorize?** Grokking proves they can learn.
-- **What architectural choices actually matter?** At 777 params, every decision counts.
+Because replication papers rarely show the dead ends. The 777 paper ran 47 experiments — they had plenty of failures too. Knowing what *doesn't* work is often more useful than knowing what does.
 
-We're documenting everything as we go. Follow along at [menonpg/tiny-transformers](https://github.com/menonpg/tiny-transformers).
+If you're trying to replicate grokking:
+- **Do** use an FFN layer (attention alone won't generalize)
+- **Do** use high weight decay (1.0 for modular arithmetic)
+- **Do** train for 50k-100k epochs (grokking is slow)
+- **Do** use a high learning rate (0.02) for tiny models
+- **Don't** use sinusoidal positions (learned works better)
+- **Don't** expect results in 10k epochs (that's just memorization)
+
+We'll update this post as we learn more.
 
 ---
 
