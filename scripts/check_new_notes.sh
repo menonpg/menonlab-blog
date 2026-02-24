@@ -1,22 +1,14 @@
 #!/bin/bash
-# Check for new GitHub-related notes since last check
+# Check for new GitHub-related notes that haven't been processed yet
 # Outputs new notes in a parseable format
 
-LAST_CHECK_FILE="$HOME/clawd/.last_notes_check"
+PROCESSED_FILE="$HOME/clawd/.processed_notes"
 NOTES_DB="$HOME/Library/Group Containers/group.com.apple.notes/NoteStore.sqlite"
 
-# Get last check timestamp (default to 24 hours ago)
-if [ -f "$LAST_CHECK_FILE" ]; then
-    LAST_CHECK=$(cat "$LAST_CHECK_FILE")
-else
-    LAST_CHECK=$(date -v-24H +%s)
-fi
+# Create processed file if it doesn't exist
+touch "$PROCESSED_FILE"
 
-# Convert to Core Data timestamp (seconds since 2001-01-01)
-CORE_DATA_EPOCH=978307200
-LAST_CHECK_CORE=$((LAST_CHECK - CORE_DATA_EPOCH))
-
-# Query for new notes with GitHub content (check BOTH title AND snippet)
+# Query for notes with GitHub content
 RESULTS=$(sqlite3 -separator '|||' "$NOTES_DB" "
 SELECT 
     ZTITLE1,
@@ -32,14 +24,24 @@ WHERE (
     ZSNIPPET LIKE '%arxiv.org%'
 )
 AND ZTITLE1 IS NOT NULL
-AND ZMODIFICATIONDATE1 > $LAST_CHECK_CORE
+AND ZMODIFICATIONDATE1 > (strftime('%s', 'now', '-7 days') - 978307200)
 ORDER BY ZMODIFICATIONDATE1 DESC
-LIMIT 10;
+LIMIT 20;
 ")
 
-# Only update timestamp if we found results OR if enough time has passed
-# This prevents the timestamp from racing ahead of new notes
-if [ -n "$RESULTS" ]; then
-    echo "$RESULTS"
-    date +%s > "$LAST_CHECK_FILE"
-fi
+# Filter out already-processed notes
+while IFS='|||' read -r title date snippet; do
+    # Skip if empty
+    [ -z "$title" ] && continue
+    
+    # Create a hash of the title for tracking
+    HASH=$(echo "$title" | md5 -q 2>/dev/null || echo "$title" | md5sum | cut -d' ' -f1)
+    
+    # Check if already processed
+    if ! grep -q "^$HASH$" "$PROCESSED_FILE" 2>/dev/null; then
+        echo "$title|||$date|||$snippet"
+    fi
+done <<< "$RESULTS"
+
+# NOTE: Don't mark as processed here!
+# The calling agent should call mark_note_processed.sh after writing the post

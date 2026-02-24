@@ -9,6 +9,7 @@ const blog = defineCollection({
     description: z.string().optional(),
     tags: z.array(z.string()).optional(),
     draft: z.boolean().optional(),
+    pinned: z.boolean().optional(),      // featured posts shown first
     publishDate: z.string().optional(),  // scheduled publishing (future dates hidden)
     canonical: z.string().optional(),    // canonical URL for cross-posted content
     heroImage: z.string().optional(),    // override path (rarely needed)

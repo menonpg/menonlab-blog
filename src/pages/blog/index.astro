@@ -18,7 +18,17 @@ const posts = (await getCollection('blog'))
     
     return true;
   })
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+  .sort((a, b) => {
+    // Pinned posts first
+    if (a.data.pinned && !b.data.pinned) return -1;
+    if (!a.data.pinned && b.data.pinned) return 1;
+    // Then by date
+    return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+  });
+
+// Separate pinned and regular posts for display
+const pinnedPosts = posts.filter(p => p.data.pinned);
+const regularPosts = posts.filter(p => !p.data.pinned);
 
 // Extract all unique tags
 const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))].sort();
@@ -61,9 +71,12 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))].sort()
       const readingTime = calculateReadingTime(body);
       const tags = post.data.tags || [];
       return (
-        <article class="post-card" data-tags={JSON.stringify(tags)}>
+        <article class={`post-card ${post.data.pinned ? 'pinned' : ''}`} data-tags={JSON.stringify(tags)}>
           <a href={`/blog/${post.slug}`} aria-label={`Read post: ${post.data.title}`}>
-            <h2>{post.data.title}</h2>
+            <h2>
+              {post.data.pinned && <span class="pin-badge" title="Featured">📌</span>}
+              {post.data.title}
+            </h2>
             <div class="meta">
               <time datetime={post.data.date}>{post.data.date}</time>
               <span class="separator" aria-hidden="true">•</span>
@@ -279,6 +292,16 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags || []))].sort()
     margin-bottom: 0;
     line-height: 1.6;
     flex: 1;
+  }
+
+  /* Pinned/Featured posts */
+  .post-card.pinned {
+    border-color: rgba(96, 165, 250, 0.4);
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.05) 0%, transparent 100%);
+  }
+
+  .pin-badge {
+    margin-right: 0.5rem;
   }
 
   @media (max-width: 768px) {
