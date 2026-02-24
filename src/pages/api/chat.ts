@@ -1,5 +1,8 @@
 import type { APIRoute } from 'astro';
 
+// Keep this endpoint server-rendered (not static)
+export const prerender = false;
+
 export const POST: APIRoute = async ({ request }) => {
   const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
   const apiKey = process.env.AZURE_OPENAI_KEY;

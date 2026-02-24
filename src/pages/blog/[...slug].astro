@@ -8,9 +8,6 @@ import { generateBlogPostSchema } from '../../utils/schema';
 import fs from 'node:fs';
 import path from 'node:path';
 
-// Prerender all blog posts at build time
-export const prerender = true;
-
 export async function getStaticPaths() {
   const now = new Date();
   const posts = await getCollection('blog');

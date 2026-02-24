@@ -4,8 +4,6 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { getCollection } from 'astro:content';
 import { calculateReadingTime, formatReadingTime } from '../../utils/readingTime';
 
-export const prerender = true;
-
 const now = new Date();
 const posts = (await getCollection('blog'))
   .filter(post => {

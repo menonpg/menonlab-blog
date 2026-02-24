@@ -1,5 +1,8 @@
 import type { APIRoute } from 'astro';
 
+// Keep this endpoint server-rendered (not static)
+export const prerender = false;
+
 export const GET: APIRoute = async () => {
   const envCheck = {
     hasEndpoint: !!process.env.AZURE_OPENAI_ENDPOINT,
