@@ -2,20 +2,68 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
-// Get all posts, pinned first, then by date
+// Get all posts
 const allPosts = (await getCollection('blog'))
   .filter(post => !post.data.draft)
-  .sort((a, b) => {
-    // Pinned posts come first
-    if (a.data.pinned && !b.data.pinned) return -1;
-    if (!a.data.pinned && b.data.pinned) return 1;
-    // Then sort by date
-    return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
-  });
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
-const pinnedPosts = allPosts.filter(p => p.data.pinned);
-const recentPosts = allPosts.filter(p => !p.data.pinned).slice(0, 5);
-const posts = [...pinnedPosts, ...recentPosts].slice(0, 6);
+// Featured collections - curated post groups
+const collections = [
+  {
+    title: "Thought Leadership",
+    emoji: "💡",
+    description: "Original perspectives on where AI is heading",
+    slugs: [
+      "ai-capital-organizational-strategy",
+      "code-vs-json-llm-tool-calling",
+      "claude-code-security-10-billion-wake-up-call"
+    ]
+  },
+  {
+    title: "Research Deep Dives",
+    emoji: "🔬",
+    description: "Understanding the science behind the breakthroughs",
+    slugs: [
+      "grokking-777-parameter-transformer",
+      "tiny-transformers-replication",
+      "pinns-pinos-mesh-free-simulation"
+    ]
+  },
+  {
+    title: "Practical Guides",
+    emoji: "🛠️",
+    description: "Hands-on tutorials that get you results",
+    slugs: [
+      "7-rag-patterns-2026",
+      "context-rot-ai-coding-agents",
+      "local-voice-ai-complete-guide"
+    ]
+  },
+  {
+    title: "Tools That Ship",
+    emoji: "📦",
+    description: "Open-source projects ready to use today",
+    slugs: [
+      "openclaw-open-source-ai-assistant",
+      "browser-use-ai-browser-automation",
+      "unsloth-fast-llm-finetuning"
+    ]
+  }
+];
+
+// Resolve slugs to actual posts
+const resolvedCollections = collections.map(col => ({
+  ...col,
+  posts: col.slugs
+    .map(slug => allPosts.find(p => p.slug === slug))
+    .filter(Boolean)
+}));
+
+// Recent posts (excluding featured ones)
+const featuredSlugs = new Set(collections.flatMap(c => c.slugs));
+const recentPosts = allPosts
+  .filter(p => !featuredSlugs.has(p.slug))
+  .slice(0, 5);
 ---
 
 <BaseLayout title="The Menon Lab - AI & Open Source Insights" includeWebSiteSchema={true}>
@@ -25,17 +73,38 @@ const posts = [...pinnedPosts, ...recentPosts].slice(0, 6);
       <p class="subtitle">
         Curated insights on AI, machine learning, and open-source tools — by Dr. Prahlad G. Menon
       </p>
-      <a href="/blog" class="button-primary">Read the Blog →</a>
+      <a href="/blog" class="button-primary">Browse All Posts →</a>
     </div>
   </div>
+
+  <section class="featured-collections">
+    <h2>Featured Collections</h2>
+    <div class="collections-grid">
+      {resolvedCollections.map((collection) => (
+        <div class="collection-card">
+          <div class="collection-header">
+            <span class="collection-emoji">{collection.emoji}</span>
+            <h3>{collection.title}</h3>
+          </div>
+          <p class="collection-description">{collection.description}</p>
+          <ul class="collection-posts">
+            {collection.posts.map((post) => (
+              <li>
+                <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
 
   <section class="latest-posts">
     <h2>Latest Posts</h2>
     <div class="posts-grid">
-      {posts.map((post) => (
-        <article class={`post-card ${post.data.pinned ? 'pinned' : ''}`}>
+      {recentPosts.map((post) => (
+        <article class="post-card">
           <a href={`/blog/${post.slug}/`}>
-            {post.data.pinned && <span class="pinned-badge">📌 Pinned</span>}
             <h3>{post.data.title}</h3>
             <time datetime={post.data.date}>{new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
             {post.data.tags && (
@@ -107,6 +176,95 @@ const posts = [...pinnedPosts, ...recentPosts].slice(0, 6);
     box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
   }
 
+  /* Featured Collections */
+  .featured-collections {
+    margin-bottom: 4rem;
+  }
+
+  .featured-collections h2 {
+    margin-bottom: 1.5rem;
+  }
+
+  .collections-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .collections-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .collection-card {
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--bg);
+    transition: all 0.2s;
+  }
+
+  .collection-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.1);
+  }
+
+  .collection-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .collection-emoji {
+    font-size: 1.5rem;
+  }
+
+  .collection-header h3 {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .collection-description {
+    font-size: 0.875rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .collection-posts {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .collection-posts li {
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .collection-posts li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  .collection-posts a {
+    color: var(--fg);
+    text-decoration: none;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .collection-posts a:hover {
+    color: var(--accent);
+  }
+
+  /* Latest Posts */
   .latest-posts {
     margin-bottom: 4rem;
   }
@@ -131,19 +289,6 @@ const posts = [...pinnedPosts, ...recentPosts].slice(0, 6);
   .post-card:hover {
     border-color: var(--accent);
     transform: translateX(4px);
-  }
-
-  .post-card.pinned {
-    border-color: var(--accent);
-    background: rgba(96, 165, 250, 0.03);
-  }
-
-  .pinned-badge {
-    display: inline-block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--accent);
-    margin-bottom: 0.5rem;
   }
 
   .post-card a {
@@ -182,6 +327,7 @@ const posts = [...pinnedPosts, ...recentPosts].slice(0, 6);
     font-weight: 500;
   }
 
+  /* About */
   .about {
     padding: 2rem;
     background: rgba(96, 165, 250, 0.05);
