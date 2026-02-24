@@ -1,6 +1,6 @@
 ---
 title: "VoxTell: How Text-Guided Segmentation Just Leapfrogged the SAM Family"
-description: "A deep technical analysis of VoxTell's CVPR 2026 paper—comparing it to SAM, MedSAM, SAM-Med3D, and TotalSegmentator, with practical guidance on when and how to use it."
+description: "A deep technical analysis of VoxTell's CVPR 2026 paper—comparing it to SAM, MedSAM, SAM-Med3D, Medical SAM3, MedSAM3, and TotalSegmentator, with practical guidance on when and how to use it."
 date: "2026-02-24"
 tags: ["medical-imaging", "computer-vision", "deep-learning", "CVPR", "segmentation", "vision-language"]
 ---
@@ -92,6 +92,32 @@ SAT was the previous SOTA for text-prompted medical segmentation. Both use MaskF
 - **Fusion depth:** SAT performs single late-stage fusion; VoxTell fuses at every decoder stage
 - **Training scale:** VoxTell roughly doubles the dataset and triples the vocabulary
 - **Clinical language:** VoxTell explicitly benchmarks on radiotherapy report text; SAT doesn't
+
+### vs. Medical SAM3 and MedSAM3
+
+The SAM3 family deserves special attention because these models also support text-guided segmentation—making them VoxTell's most direct competitors.
+
+**Medical SAM3** ([arXiv:2601.10880](https://arxiv.org/abs/2601.10880)) fully fine-tunes SAM3 on 33 medical datasets spanning 10 modalities. The key insight from their diagnostic study: vanilla SAM3's apparent competitiveness on medical data relies heavily on ground-truth-derived bounding boxes. Remove that geometric prior, and performance collapses. Medical SAM3 addresses this through holistic adaptation—updating all parameters rather than just adapters—and explicitly trains for text-only prompting without spatial cues.
+
+**MedSAM3** ([arXiv:2511.19046](https://arxiv.org/abs/2511.19046)) takes a different approach, fine-tuning SAM3 with semantic concept labels and introducing an agent framework that integrates MLLMs for complex reasoning and iterative refinement.
+
+| Aspect | VoxTell | Medical SAM3 | MedSAM3 |
+|--------|---------|--------------|---------|
+| **Architecture** | UNet-3D + Qwen3 text encoder | SAM3 (fully fine-tuned) | SAM3 (fine-tuned) |
+| **Native 3D** | Yes (volumetric) | 2D slices + memory | 2D slices + memory |
+| **Training Data** | 62K volumes, 158 datasets | 33 datasets, 10 modalities | Multiple modalities |
+| **Text Encoder** | Qwen3-Embedding-4B (frozen) | SAM3's native encoder | SAM3's native encoder |
+| **Fusion Strategy** | Multi-stage (every decoder level) | SAM3's detector-tracker | SAM3's architecture |
+| **Agent Integration** | No | No | Yes (MLLM-based) |
+| **Spatial Prompts** | Text-only | Text + optional spatial | Text + optional spatial |
+
+**The architectural difference matters.** VoxTell is natively 3D—it processes the entire volume at once, capturing inter-slice relationships directly. Medical SAM3 and MedSAM3 inherit SAM3's 2D architecture and use memory mechanisms to propagate information across slices. For volumetric reasoning (e.g., "segment the entire portal vein tree"), native 3D processing has theoretical advantages.
+
+**The fusion depth matters too.** VoxTell injects text at every decoder resolution. Medical SAM3 relies on SAM3's detector-tracker paradigm, which wasn't designed for multi-scale text conditioning. Whether this translates to practical performance differences depends on the task—instance disambiguation and fine-grained spatial queries likely favor VoxTell's approach.
+
+**MedSAM3's agent framework is interesting** for complex multi-step reasoning, but adds latency and complexity. For straightforward segmentation tasks, VoxTell's direct text-to-mask pipeline is simpler.
+
+**Bottom line:** If you're committed to the SAM ecosystem and want text prompting, Medical SAM3 is the most mature option. If you need native 3D processing and believe multi-stage fusion matters for your use case, VoxTell is the stronger architectural choice.
 
 ## Practical Use Cases
 
