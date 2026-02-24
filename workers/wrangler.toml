@@ -1,0 +1,16 @@
+name = "blog-analytics"
+main = "blog-analytics.js"
+compatibility_date = "2024-01-01"
+
+# Set these via `wrangler secret put <NAME>`
+# or in Cloudflare dashboard under Workers > Settings > Variables
+#
+# Required secrets:
+# - CLOUDFLARE_ZONE_ID
+# - CLOUDFLARE_API_TOKEN  
+# - AZURE_OPENAI_ENDPOINT
+# - AZURE_OPENAI_KEY
+# - AZURE_OPENAI_DEPLOYMENT
+
+[vars]
+AZURE_OPENAI_DEPLOYMENT = "gpt-5-chat"
