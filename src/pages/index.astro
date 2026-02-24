@@ -2,9 +2,20 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('blog'))
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-  .slice(0, 5);
+// Get all posts, pinned first, then by date
+const allPosts = (await getCollection('blog'))
+  .filter(post => !post.data.draft)
+  .sort((a, b) => {
+    // Pinned posts come first
+    if (a.data.pinned && !b.data.pinned) return -1;
+    if (!a.data.pinned && b.data.pinned) return 1;
+    // Then sort by date
+    return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+  });
+
+const pinnedPosts = allPosts.filter(p => p.data.pinned);
+const recentPosts = allPosts.filter(p => !p.data.pinned).slice(0, 5);
+const posts = [...pinnedPosts, ...recentPosts].slice(0, 6);
 ---
 
 <BaseLayout title="The Menon Lab - AI & Open Source Insights" includeWebSiteSchema={true}>
@@ -22,8 +33,9 @@ const posts = (await getCollection('blog'))
     <h2>Latest Posts</h2>
     <div class="posts-grid">
       {posts.map((post) => (
-        <article class="post-card">
+        <article class={`post-card ${post.data.pinned ? 'pinned' : ''}`}>
           <a href={`/blog/${post.slug}/`}>
+            {post.data.pinned && <span class="pinned-badge">📌 Pinned</span>}
             <h3>{post.data.title}</h3>
             <time datetime={post.data.date}>{new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
             {post.data.tags && (
@@ -119,6 +131,19 @@ const posts = (await getCollection('blog'))
   .post-card:hover {
     border-color: var(--accent);
     transform: translateX(4px);
+  }
+
+  .post-card.pinned {
+    border-color: var(--accent);
+    background: rgba(96, 165, 250, 0.03);
+  }
+
+  .pinned-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
   }
 
   .post-card a {

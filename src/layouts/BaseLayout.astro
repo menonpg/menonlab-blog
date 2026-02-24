@@ -167,6 +167,11 @@ const version = pkg.version;
       </div>
     </footer>
     <Analytics />
+    <!-- Local JSON analytics (set ANALYTICS_URL env var to enable) -->
+    <script is:inline define:vars={{ analyticsUrl: import.meta.env.PUBLIC_ANALYTICS_URL || '' }}>
+      window.ANALYTICS_URL = analyticsUrl;
+    </script>
+    <script src="/analytics.js" defer></script>
     <script is:inline>
       // Theme toggle functionality
       const getTheme = () => {
