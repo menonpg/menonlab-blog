@@ -1,0 +1,223 @@
+---
+// Hidden analytics page - not linked anywhere
+// Access at: /analytics
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Analytics | The Menon Lab</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card-bg: #141414;
+      --border: #262626;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --accent: #3b82f6;
+      --green: #22c55e;
+      --red: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--text-muted); margin-bottom: 2rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .card-label { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem; }
+    .card-value { font-size: 2rem; font-weight: 700; }
+    .card-change { font-size: 0.875rem; margin-top: 0.25rem; }
+    .card-change.positive { color: var(--green); }
+    .card-change.negative { color: var(--red); }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-weight: 500; font-size: 0.875rem; }
+    .loading { text-align: center; padding: 4rem; color: var(--text-muted); }
+    .error { color: var(--red); padding: 2rem; text-align: center; }
+    .refresh-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .refresh-btn:hover { opacity: 0.9; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .last-updated { color: var(--text-muted); font-size: 0.875rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>📊 Blog Analytics</h1>
+        <p class="subtitle">themenonlab.com — Last 7 days</p>
+      </div>
+      <div>
+        <span class="last-updated" id="lastUpdated"></span>
+        <button class="refresh-btn" onclick="fetchAnalytics()">Refresh</button>
+      </div>
+    </div>
+
+    <div id="content">
+      <div class="loading">Loading analytics...</div>
+    </div>
+  </div>
+
+  <script>
+    const ZONE_ID = '04ed85d1d8067cd9981b29085f2dc2d5';
+    const API_TOKEN = 'dlwjTMNhyyYsEfdJuXoDr68MjxaKRNREZhId1mey';
+
+    function formatBytes(bytes) {
+      if (bytes >= 1073741824) return (bytes / 1073741824).toFixed(2) + ' GB';
+      if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
+      if (bytes >= 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return bytes + ' B';
+    }
+
+    function formatNumber(num) {
+      return num.toLocaleString();
+    }
+
+    function getDateRange() {
+      const end = new Date();
+      const start = new Date();
+      start.setDate(start.getDate() - 7);
+      return { start: start.toISOString().split('T')[0], end: end.toISOString().split('T')[0] };
+    }
+
+    async function fetchAnalytics() {
+      const content = document.getElementById('content');
+      content.innerHTML = '<div class="loading">Loading analytics...</div>';
+
+      const { start } = getDateRange();
+      
+      const query = `{
+        viewer {
+          zones(filter: {zoneTag: "${ZONE_ID}"}) {
+            httpRequests1dGroups(limit: 7, filter: {date_gt: "${start}"}, orderBy: [date_DESC]) {
+              dimensions { date }
+              sum { requests pageViews bytes cachedBytes threats }
+              uniq { uniques }
+            }
+          }
+        }
+      }`;
+
+      try {
+        const response = await fetch('https://api.cloudflare.com/client/v4/graphql', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${API_TOKEN}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ query })
+        });
+
+        const data = await response.json();
+        
+        if (data.errors) {
+          throw new Error(data.errors[0].message);
+        }
+
+        const days = data.data.viewer.zones[0].httpRequests1dGroups;
+        renderAnalytics(days);
+        document.getElementById('lastUpdated').textContent = `Updated: ${new Date().toLocaleTimeString()}`;
+      } catch (error) {
+        content.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+      }
+    }
+
+    function renderAnalytics(days) {
+      // Calculate totals
+      const totals = days.reduce((acc, day) => ({
+        visitors: acc.visitors + day.uniq.uniques,
+        pageViews: acc.pageViews + day.sum.pageViews,
+        requests: acc.requests + day.sum.requests,
+        bandwidth: acc.bandwidth + day.sum.bytes,
+        threats: acc.threats + day.sum.threats
+      }), { visitors: 0, pageViews: 0, requests: 0, bandwidth: 0, threats: 0 });
+
+      // Calculate daily averages
+      const avgVisitors = Math.round(totals.visitors / days.length);
+      const avgPageViews = Math.round(totals.pageViews / days.length);
+
+      const content = document.getElementById('content');
+      content.innerHTML = `
+        <div class="grid">
+          <div class="card">
+            <div class="card-label">Total Visitors</div>
+            <div class="card-value">${formatNumber(totals.visitors)}</div>
+            <div class="card-change">${avgVisitors}/day avg</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Page Views</div>
+            <div class="card-value">${formatNumber(totals.pageViews)}</div>
+            <div class="card-change">${avgPageViews}/day avg</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Total Requests</div>
+            <div class="card-value">${formatNumber(totals.requests)}</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Bandwidth</div>
+            <div class="card-value">${formatBytes(totals.bandwidth)}</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Threats Blocked</div>
+            <div class="card-value">${formatNumber(totals.threats)}</div>
+            <div class="card-change positive">🛡️ Protected</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom: 1rem;">Daily Breakdown</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Visitors</th>
+                <th>Page Views</th>
+                <th>Requests</th>
+                <th>Bandwidth</th>
+                <th>Threats</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${days.map(day => `
+                <tr>
+                  <td>${new Date(day.dimensions.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</td>
+                  <td>${formatNumber(day.uniq.uniques)}</td>
+                  <td>${formatNumber(day.sum.pageViews)}</td>
+                  <td>${formatNumber(day.sum.requests)}</td>
+                  <td>${formatBytes(day.sum.bytes)}</td>
+                  <td>${day.sum.threats}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Load on page load
+    fetchAnalytics();
+  </script>
+</body>
+</html>
