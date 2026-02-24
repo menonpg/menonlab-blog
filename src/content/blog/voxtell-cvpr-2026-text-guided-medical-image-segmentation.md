@@ -1,9 +1,8 @@
 ---
 title: "VoxTell at CVPR 2026: A Paradigm Shift in Text-Guided 3D Medical Image Segmentation"
 description: "How our collaborative work on VoxTell is reshaping the way clinicians interact with volumetric medical images—from single words to full radiology reports."
-pubDate: 2026-02-24
-heroImage: "/blog-images/voxtell-hero.png"
-tags: ["medical imaging", "computer vision", "deep learning", "CVPR", "segmentation", "NLP"]
+date: "2026-02-24"
+tags: ["medical-imaging", "computer-vision", "deep-learning", "CVPR", "segmentation", "NLP"]
 ---
 
 I'm thrilled to share that **VoxTell has been accepted to CVPR 2026**—one of the premier venues in computer vision research. This work represents a significant step forward in how we think about medical image segmentation, and I'm honored to have contributed alongside an exceptional team at the German Cancer Research Center (DKFZ).
