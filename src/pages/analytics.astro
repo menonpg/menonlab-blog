@@ -595,15 +595,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;display:inline-block"></span>';
 
     try {
-      // Current Worker doesn't support params yet - use base URL
-      const response = await fetch(WORKER_URL);
+      const response = await fetch(`${WORKER_URL}?days=${currentDays}`);
       rawData = await response.json();
       
+      console.log('Worker response:', rawData);
+      
       if (rawData.errors) throw new Error(rawData.errors[0].message);
+      if (rawData.error) throw new Error(rawData.error);
 
       processData();
       document.getElementById('lastUpdated').textContent = `Updated ${new Date().toLocaleTimeString()}`;
     } catch (error) {
+      console.error('Analytics error:', error);
       content.innerHTML = `<div class="loading-state" style="color:#ef4444">⚠️ ${error.message}</div>`;
     } finally {
       btn.disabled = false;
@@ -612,13 +615,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   function processData() {
-    if (!rawData?.data?.viewer?.zones?.[0]) return;
+    if (!rawData?.data?.viewer?.zones?.[0]) {
+      console.error('No zone data:', rawData);
+      document.getElementById('content').innerHTML = '<div class="loading-state" style="color:#ef4444">⚠️ No data returned from Cloudflare</div>';
+      return;
+    }
     
     const zone = rawData.data.viewer.zones[0];
+    console.log('Zone data:', zone);
     
     // Support both old Worker (httpRequests1dGroups) and new Worker (aggregate + byHost)
     byHostData = zone.byHost || [];
     aggregateData = zone.aggregate || zone.httpRequests1dGroups || [];
+    
+    console.log('Aggregate data:', aggregateData.length, 'items');
+    console.log('ByHost data:', byHostData.length, 'items');
     
     // If we have byHost data and a specific filter, use it
     if (byHostData.length > 0 && currentHost !== 'all') {
