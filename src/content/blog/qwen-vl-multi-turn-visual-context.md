@@ -189,45 +189,85 @@ The 7B model fits on a single RTX 4090 and still handles multi-turn visual conte
 
 ### Option 1: Transformers (Local)
 
+Here's the actual test code that produced the results above:
+
 ```python
-from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
 from PIL import Image
+from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
+import torch
 
+# --- CONFIG ---
+image_path = "equipment.jpg"
+model_name = "Qwen/Qwen2.5-VL-72B-Instruct"  # Or smaller: 7B, 32B
+
+# --- LOAD MODEL ---
+processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
-    "Qwen/Qwen2.5-VL-72B-Instruct",
-    torch_dtype="auto",
-    device_map="auto"
-)
-processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-72B-Instruct")
+    model_name,
+    torch_dtype=torch.bfloat16,
+    device_map="auto",
+    trust_remote_code=True,
+).eval()
 
-# First turn: image + question
+image = Image.open(image_path).convert("RGB")
+
+# --- CHAT TURN FUNCTION ---
+def chat_turn(messages, image=None, max_new_tokens=512):
+    prompt_text = processor.apply_chat_template(
+        messages,
+        tokenize=False,
+        add_generation_prompt=True
+    )
+    
+    # Image only needed for first turn — reuse context after
+    inputs = processor(
+        text=prompt_text,
+        images=image,
+        padding=True,
+        return_tensors="pt"
+    ).to("cuda")
+    
+    with torch.no_grad():
+        generated_ids = model.generate(
+            **inputs,
+            max_new_tokens=max_new_tokens,
+            do_sample=False,
+        )
+    
+    # Decode only new tokens
+    generated_ids = generated_ids[:, inputs.input_ids.shape[1]:]
+    return processor.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
+
+# --- TURN 1: Image + Question ---
 messages = [
     {
         "role": "user",
         "content": [
-            {"type": "image", "image": Image.open("equipment.jpg")},
-            {"type": "text", "text": "What do you see in this image?"}
+            {"type": "image", "image": image},
+            {"type": "text", "text": "What do you see in this image? Describe it concisely."}
         ]
     }
 ]
 
-# Process and generate
-inputs = processor.apply_chat_template(messages, return_tensors="pt")
-output = model.generate(**inputs, max_new_tokens=512)
-response_1 = processor.decode(output[0], skip_special_tokens=True)
+response1 = chat_turn(messages, image=image)
+print(f"Turn 1: {response1}")
 
-# Second turn: follow-up WITHOUT resending image
-messages.append({"role": "assistant", "content": response_1})
+# --- TURN 2: Follow-up WITHOUT resending image ---
 messages.append({
-    "role": "user", 
-    "content": [{"type": "text", "text": "What is the condition?"}]
+    "role": "assistant",
+    "content": [{"type": "text", "text": response1}]
+})
+messages.append({
+    "role": "user",
+    "content": [{"type": "text", "text": "What is the condition?"}]  # Text only!
 })
 
-inputs = processor.apply_chat_template(messages, return_tensors="pt")
-output = model.generate(**inputs, max_new_tokens=512)
-response_2 = processor.decode(output[0], skip_special_tokens=True)
+response2 = chat_turn(messages, image=None)  # 👈 image=None — context persists
+print(f"Turn 2: {response2}")
 # Model still "sees" the original image ✓
 ```
+
+**Key insight:** In turn 2, we pass `image=None` to `chat_turn()`. The image tokens from turn 1 are already in the message history — they persist in the context window automatically.
 
 ### Option 2: vLLM (Production)
 
