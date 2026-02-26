@@ -34,8 +34,8 @@ while IFS='|||' read -r title date snippet; do
     # Skip if empty
     [ -z "$title" ] && continue
     
-    # Create a hash of the title for tracking
-    HASH=$(echo "$title" | md5 -q 2>/dev/null || echo "$title" | md5sum | cut -d' ' -f1)
+    # Create a hash of the title for tracking (use shasum, available on macOS/Linux)
+    HASH=$(echo "$title" | shasum -a 256 | cut -d' ' -f1)
     
     # Check if already processed
     if ! grep -q "^$HASH$" "$PROCESSED_FILE" 2>/dev/null; then

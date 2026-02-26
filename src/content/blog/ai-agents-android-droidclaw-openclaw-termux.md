@@ -88,16 +88,86 @@ curl -sL myopenclawhub.com/install | bash && source ~/.bashrc
 
 **Between the two OpenClaw methods:** openclaw-android is objectively better for most users — faster setup, less storage, better performance. Use the Ubuntu method only if you need specific Linux packages unavailable in Termux.
 
-## Recommended Hardware
+## Hardware Requirements: What You Actually Need
 
-You don't need a flagship. Any Android with:
-- 6GB+ RAM
-- Android 7.0+ (10+ recommended for openclaw-android)
-- 64GB storage (32GB workable for openclaw-android)
+Running AI agents on Android isn't as demanding as you'd think, but the requirements differ by approach.
 
-**Best value:** Pixel 8 runs around $250 used. Good specs, guaranteed OS updates, and Tensor chip handles local inference well if you experiment with that later.
+### Minimum Requirements by Method
 
-Older Pixels (6, 7) work fine too. Samsung Galaxy S series from 2022+ are solid. Even a mid-range phone from 2023 will handle this.
+| Requirement | DroidClaw | OpenClaw (Ubuntu) | openclaw-android |
+|-------------|-----------|-------------------|------------------|
+| **RAM** | 4GB (phone is just executing) | 6GB minimum, 8GB recommended | 6GB minimum |
+| **Storage** | 2GB free | 4-6GB free | 2GB free |
+| **Android Version** | 7.0+ | 7.0+ | 10.0+ |
+| **USB Debugging** | Required | Not needed | Not needed |
+| **Computer needed?** | Yes | No | No |
+
+**Key insight:** DroidClaw is the most forgiving on phone specs because the AI runs on your computer — the phone just needs to receive ADB commands and dump accessibility trees. OpenClaw variants run everything on-device, so RAM matters more.
+
+### RAM: The Critical Spec
+
+For on-device AI (OpenClaw variants):
+- **4GB RAM:** Technically works, but expect slowdowns and occasional kills
+- **6GB RAM:** Comfortable for the gateway + one browser tab
+- **8GB RAM:** Sweet spot — handles multitasking without issues
+- **12GB+ RAM:** Overkill for basic agents, but nice if you want to run local LLMs via Termux
+
+For DroidClaw (phone as execution target):
+- **4GB RAM:** Fine — the phone just needs to run its normal apps
+- More RAM only helps if you're automating memory-hungry apps
+
+### Recommended Phones: The Buyer's Guide
+
+Here's a comparison of phones that work well, sorted by value:
+
+| Phone | RAM | Chipset | Storage | Used Price (2026) | Best For |
+|-------|-----|---------|---------|-------------------|----------|
+| **Pixel 7** | 8GB | Tensor G2 | 128/256GB | ~$180-220 | Budget pick, great Termux support |
+| **Pixel 7a** | 8GB | Tensor G2 | 128GB | ~$150-180 | Best value overall |
+| **Pixel 8** | 8GB | Tensor G3 | 128/256GB | ~$250-300 | Sweet spot, 7 years updates |
+| **Pixel 8 Pro** | 12GB | Tensor G3 | 128-1TB | ~$350-400 | Future-proofed, local LLM ready |
+| **Samsung S22** | 8GB | Snapdragon 8 Gen 1 | 128/256GB | ~$200-250 | Good if you prefer Samsung |
+| **Samsung S23** | 8GB | Snapdragon 8 Gen 2 | 128/256GB | ~$300-350 | Better efficiency than S22 |
+| **OnePlus 11** | 8/16GB | Snapdragon 8 Gen 2 | 128/256GB | ~$280-350 | Most RAM for the money |
+
+### Why Pixels Are Preferred
+
+1. **Unlocked bootloader** — easier to experiment, no carrier bloat
+2. **Stock Android** — Termux runs best without manufacturer modifications
+3. **Long update support** — Pixel 8 gets updates until 2030
+4. **Tensor chips** — Optimized for on-device AI (useful if you explore local LLMs later)
+5. **Active developer community** — most Termux guides are written for Pixels
+
+### The $250 Sweet Spot: Pixel 8
+
+At ~$250 used, the Pixel 8 hits the perfect balance:
+- 8GB RAM handles OpenClaw comfortably
+- Tensor G3 is efficient (good battery life for 24/7 operation)
+- 128GB storage is plenty (even Ubuntu method only needs 4-6GB)
+- Android 14 with updates through 2030
+- USB-C 3.2 for fast ADB transfers (DroidClaw)
+
+### Budget Option: Pixel 7a (~$150-180)
+
+If you just want to experiment:
+- Same 8GB RAM as Pixel 8
+- Tensor G2 still excellent
+- Main tradeoff: older chip, fewer years of updates
+- Perfect for a "dedicated AI phone" you leave plugged in
+
+### Power User Option: OnePlus 11 or Pixel 8 Pro
+
+If you want to run local LLMs via Termux (Ollama, llama.cpp):
+- 12-16GB RAM lets you run 7B parameter models
+- OnePlus 11 with 16GB RAM can be found for ~$350
+- Pixel 8 Pro (12GB) around $400
+
+### What to Avoid
+
+- **Phones with <6GB RAM** — constant memory pressure with OpenClaw
+- **Heavily skinned Android** (older Xiaomi MIUI, some Huawei) — Termux compatibility issues
+- **Phones with locked bootloaders** — harder to debug issues
+- **Anything older than Android 10** — missing APIs that openclaw-android needs
 
 ## The Bigger Picture
 
