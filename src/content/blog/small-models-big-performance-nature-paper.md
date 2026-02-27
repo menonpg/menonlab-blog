@@ -1,6 +1,6 @@
 ---
-title: "Do You Really Need GPT-4? The Densing Law Says Probably Not"
-description: "A Nature study reveals that model efficiency doubles every 3.5 months. What this means for enterprises still paying premium prices for massive LLMs."
+title: "Do You Really Need GPT-5? The Densing Law Says Probably Not"
+description: "A Nature study reveals that model efficiency doubles every 3.5 months. What this means for enterprises still paying premium prices for frontier models like GPT-5.2 and Claude Opus 4."
 date: "2026-02-27"
 tags: ["llm", "efficiency", "research", "scaling-laws", "enterprise-ai", "healthcare-ai"]
 ---
