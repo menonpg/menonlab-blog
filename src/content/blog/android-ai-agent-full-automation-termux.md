@@ -1,277 +1,260 @@
 ---
 title: "How I Turned an Android Phone into a Fully Autonomous AI Agent"
-description: "No root, no PC required. Full phone control via self-ADB, browser automation, hardware access, and Telegram integration — all running from Termux on the device itself."
+description: "The missing piece: self-ADB for full screen and app control. Once you have OpenClaw running in Termux, here's how to give your AI agent hands."
 date: "2026-02-27"
-tags: ["ai-agents", "android", "openclaw", "termux", "automation", "self-hosted"]
+tags: ["ai-agents", "android", "openclaw", "termux", "automation", "self-hosted", "adb"]
 ---
 
-I wanted to run a persistent AI agent on my Android phone that could autonomously browse the web, control phone hardware, access my GitHub repos, and send me updates via Telegram — all from the phone itself, with no desktop involved.
+This guide assumes you've already set up OpenClaw on your Android phone using Termux. If you haven't, start with my comparison guide: [AI Agents on Android: DroidClaw vs OpenClaw vs Termux Options Compared](/blog/ai-agents-android-droidclaw-openclaw-termux).
 
-Here's exactly how I did it.
+**Where this guide picks up:** You have OpenClaw running in Termux, you can chat with your AI via Telegram, and basic Termux:API commands work (camera, location, battery status). But you've hit a wall — how do you get the AI to actually *control* apps? Tap buttons? Navigate Chrome? Take screenshots of what's on screen?
 
-## The Stack
+That's what this guide solves.
 
-- **Device:** Google Pixel 7 Pro (Android 14)
-- **Agent runtime:** OpenClaw running in Termux
-- **Communication:** Telegram bot
-- **Phone control:** Termux:API + ADB over WiFi (self-ADB)
+## The Problem
 
-## How It Works: Two Layers
+Out of the box, OpenClaw in Termux can:
+- ✅ Chat via Telegram/WhatsApp/Signal
+- ✅ Search the web
+- ✅ Access phone hardware via Termux:API (camera, GPS, SMS, sensors)
+- ✅ Run shell commands and scripts
 
-Before diving in, understand the two layers:
+But it **cannot**:
+- ❌ Tap or swipe on the screen
+- ❌ Control apps like Chrome, YouTube, or WhatsApp
+- ❌ Take screenshots of what's currently displayed
+- ❌ Type into arbitrary apps
 
-1. **Setup (you do this once):** Install apps, configure API keys, enable permissions. These are commands *you* type.
+These require ADB access — and most guides assume you're connecting from a PC. But what if the phone needs to control *itself*?
 
-2. **Runtime (the AI does this automatically):** Once set up, the AI agent executes commands behind the scenes when you ask it to do things via Telegram. You never type these — they're what powers the magic.
+## The Breakthrough: Self-ADB
 
-I'll clearly mark which is which throughout this guide.
+Here's what most people don't realize: **Android 11+ supports wireless ADB debugging, and you can connect to it from Termux running on the same device.**
+
+No PC. No second phone. The phone connects to itself.
+
+This unlocks full UI automation: tapping, swiping, typing, screenshots, launching apps — everything ADB can do, available to your AI agent.
 
 ---
 
-# Part 1: Setup (One-Time Configuration)
+## Prerequisites
 
-These are commands YOU type once to set everything up.
+Before continuing, make sure you have:
 
-## Step 1: Install Termux and OpenClaw
+1. **Termux** installed from F-Droid (not Play Store)
+2. **OpenClaw** installed and running (`npm install -g openclaw && openclaw setup`)
+3. **Termux:API** app installed from F-Droid
+4. **Termux:API package** installed (`pkg install termux-api`)
+5. **OpenClaw connected to Telegram** (or your preferred chat platform)
 
-Install Termux from **F-Droid** (not the Play Store — that version is outdated and unmaintained).
+If any of these aren't set up, see the [setup comparison guide](/blog/ai-agents-android-droidclaw-openclaw-termux) first.
 
-Open Termux and type:
+---
 
-```bash
-pkg update && pkg upgrade
-pkg install nodejs
-npm install -g openclaw
-openclaw setup
-```
+## Step 1: Install ADB in Termux
 
-During `openclaw setup`, you'll configure your Telegram bot token. After this, you can chat with your agent via Telegram.
-
-## Step 2: Install Termux:API for Hardware Control
-
-Install the **Termux:API** companion app from F-Droid (it's a separate app, not a Termux package).
-
-Then in Termux, type:
-
-```bash
-pkg install termux-api
-```
-
-Test that it works:
-
-```bash
-termux-battery-status
-termux-toast "Hello from Termux!"
-```
-
-If you see your battery info and a toast popup, you're good.
-
-## Step 3: Configure Web Search
-
-Get a [Brave Search API key](https://brave.com/search/api/) and add it to OpenClaw's config.
-
-```bash
-nano ~/.openclaw/openclaw.json
-```
-
-Add your API key:
-
-```json
-{
-  "tools": {
-    "web": {
-      "search": {
-        "apiKey": "YOUR_BRAVE_API_KEY"
-      }
-    }
-  }
-}
-```
-
-Save and restart:
-
-```bash
-openclaw gateway restart
-```
-
-## Step 4: Install GitHub CLI
-
-```bash
-pkg install gh
-gh auth login
-```
-
-Follow the prompts. This lets the AI access your repos.
-
-## Step 5: Enable Self-ADB (The Key Unlock)
-
-This is the breakthrough that enables full UI automation. You're going to connect ADB to your own phone, from Termux running on that same phone.
-
-### 5a. Install ADB
+Open Termux and run:
 
 ```bash
 pkg install android-tools
 ```
 
-### 5b. Enable Wireless Debugging
+This gives you the `adb` command inside Termux.
+
+## Step 2: Enable Wireless Debugging
+
+On your phone:
 
 1. Go to **Settings → About Phone**
 2. Tap **"Build Number"** 7 times to enable Developer Options
 3. Go to **Settings → Developer Options**
-4. Enable **Wireless debugging**
+4. Scroll down and enable **Wireless debugging**
 
-### 5c. Pair Termux to Your Phone
+## Step 3: Pair Termux to Your Own Phone
 
-In Wireless Debugging settings, tap **"Pair device with pairing code"**. You'll see an IP:port and a 6-digit code.
+This is the magic step.
 
-In Termux, type:
+1. In **Wireless debugging** settings, tap **"Pair device with pairing code"**
+2. You'll see an IP:port (like `192.168.1.42:37123`) and a 6-digit code
+3. In Termux, run:
 
 ```bash
-adb pair 192.168.x.x:XXXXX
+adb pair 192.168.1.42:37123
 ```
 
-Enter the 6-digit code when prompted.
+4. Enter the 6-digit code when prompted
 
-### 5d. Connect
+You should see: `Successfully paired`
 
-Go back to the Wireless Debugging screen. Note the IP:port shown under your device name (different from the pairing port).
+## Step 4: Connect
+
+1. Go back to the main **Wireless debugging** screen
+2. Note the IP:port shown under your device name (this is different from the pairing port)
+3. In Termux, run:
 
 ```bash
-adb connect 192.168.x.x:XXXXX
+adb connect 192.168.1.42:41234
 adb devices
 ```
 
-You should see your device listed as "device". That's it — Termux now has ADB control over your own phone.
+You should see your device listed as `device` (not `offline` or `unauthorized`).
 
-## Step 6: Persist Across Reboots
-
-Install **Termux:Boot** from F-Droid so the agent auto-starts when your phone reboots.
-
-```bash
-mkdir -p ~/.termux/boot
-cat > ~/.termux/boot/start-openclaw.sh << 'EOF'
-#!/data/data/com.termux/files/usr/bin/bash
-sleep 10
-openclaw gateway start
-EOF
-chmod +x ~/.termux/boot/start-openclaw.sh
-```
-
-## Step 7: Optimize Battery Settings
-
-In Android Settings, configure these so the system doesn't kill Termux:
-
-- **Battery → Battery Saver** → OFF
-- **Apps → Termux → Battery** → Unrestricted
-- **Apps → Termux:API → Battery** → Unrestricted
-- **Developer Options → Stay awake while charging** → ON
+**That's it.** Termux now has full ADB control over your phone.
 
 ---
 
-# Part 2: What the AI Does Behind the Scenes
+## What This Unlocks (Behind the Scenes)
 
-**You don't type any of this.** These are the commands the AI agent executes automatically when you interact with it via Telegram.
+Now your AI agent can execute these commands automatically when you chat with it. **You don't type these** — the AI runs them behind the scenes when you make requests via Telegram.
 
-When you message your agent "What's my battery level?", it runs:
+### Screen Control
 
+When you say **"Tap the center of the screen"**, the AI runs:
 ```bash
-termux-battery-status
+adb shell input tap 540 960
 ```
 
-When you say "Turn on the flashlight", it runs:
-
+When you say **"Scroll up"**, it runs:
 ```bash
-termux-torch on
+adb shell input swipe 540 1500 540 500
 ```
 
-When you ask "Where am I?", it runs:
-
+When you say **"Press the back button"**, it runs:
 ```bash
-termux-location
+adb shell input keyevent 4
 ```
 
-When you say "Take a photo", it runs:
-
+When you say **"Type 'hello world'"**, it runs:
 ```bash
-termux-camera-photo -c 0 ~/photo.jpg
+adb shell input text "hello%sworld"
 ```
+(Spaces become `%s` in ADB input)
 
-When you say "Open themenonlab.com in Chrome", it runs:
+### Browser Control
 
+When you say **"Open themenonlab.com in Chrome"**, the AI runs:
 ```bash
 adb shell am start -a android.intent.action.VIEW \
     -d "https://www.themenonlab.com" \
     -n com.android.chrome/com.google.android.apps.chrome.Main
 ```
 
-When you say "Take a screenshot and send it to me", it runs:
+When you say **"Open YouTube and search for lofi beats"**, it runs:
+```bash
+adb shell am start -a android.intent.action.VIEW \
+    -d "https://www.youtube.com/results?search_query=lofi+beats"
+```
 
+### Screenshots
+
+When you say **"Take a screenshot and send it to me"**, the AI runs:
 ```bash
 adb shell screencap -p /data/local/tmp/screen.png
 adb pull /data/local/tmp/screen.png ~/screen.png
-# Then sends via Telegram Bot API
 ```
 
-When you say "Tap the center of the screen", it runs:
+Then it sends `screen.png` to you via Telegram.
+
+### App Launching
+
+When you say **"Open Settings"**, it runs:
+```bash
+adb shell am start -a android.settings.SETTINGS
+```
+
+When you say **"Open the camera app"**, it runs:
+```bash
+adb shell am start -a android.media.action.IMAGE_CAPTURE
+```
+
+---
+
+## Keeping It Working
+
+### Reconnect After Reboot
+
+Wireless debugging disconnects when the phone restarts. Add a reconnect script:
 
 ```bash
-adb shell input tap 540 960
+cat > ~/reconnect-adb.sh << 'EOF'
+#!/data/data/com.termux/files/usr/bin/bash
+# Update the IP:port to match your Wireless Debugging screen
+adb connect 192.168.1.42:41234
+EOF
+chmod +x ~/reconnect-adb.sh
 ```
 
-When you say "Type 'hello' into the current app", it runs:
+After a reboot, run `~/reconnect-adb.sh` (you may need to re-pair if the pairing expired).
+
+### Auto-Start OpenClaw
+
+If you haven't already, install **Termux:Boot** from F-Droid:
 
 ```bash
-adb shell input text "hello"
+mkdir -p ~/.termux/boot
+cat > ~/.termux/boot/start-openclaw.sh << 'EOF'
+#!/data/data/com.termux/files/usr/bin/bash
+sleep 15
+openclaw gateway start
+EOF
+chmod +x ~/.termux/boot/start-openclaw.sh
 ```
 
-When you say "Scroll up", it runs:
+### Battery Optimization
 
-```bash
-adb shell input swipe 540 1500 540 500
-```
+Prevent Android from killing Termux:
 
-**The point:** You just chat naturally via Telegram. The AI translates your requests into these commands, executes them, and reports back with results or screenshots.
-
----
-
-# What This Setup Unlocks
-
-Once configured, your AI agent can:
-
-- ✅ Chat with you via Telegram from anywhere in the world
-- ✅ Browse the web and search for information
-- ✅ Take photos using the phone's cameras
-- ✅ Get GPS location
-- ✅ Send SMS messages
-- ✅ Control *any* app via screen taps, swipes, and typing
-- ✅ Take screenshots and send them to you
-- ✅ Clone GitHub repos and run code
-- ✅ Run 24/7 on a cheap used phone
-
-All without root. All without a PC. The phone is completely self-contained.
+- **Settings → Apps → Termux → Battery** → Unrestricted
+- **Settings → Apps → Termux:API → Battery** → Unrestricted
+- **Settings → Battery → Battery Saver** → OFF (when plugged in 24/7)
+- **Developer Options → Stay awake while charging** → ON
 
 ---
 
-# What Didn't Work (and Why)
+## The Full Picture
 
-**Chrome Extension Relay** — Dead end on mobile. The relay requires a desktop Chrome instance with the extension installed. Android Chrome doesn't support extensions.
+With self-ADB working, your AI agent now has:
 
-**Playwright/Puppeteer in Termux** — These need a full browser binary. You can technically run Chromium in proot-distro, but it's slow and fragile. Self-ADB with Chrome intents is more reliable.
+| Capability | How |
+|-----------|-----|
+| Chat anywhere | Telegram/WhatsApp via OpenClaw |
+| Web search | Brave Search API |
+| Take photos | `termux-camera-photo` |
+| Get location | `termux-location` |
+| Send SMS | `termux-sms-send` |
+| **Tap/swipe/type** | `adb shell input` ← NEW |
+| **Screenshots** | `adb shell screencap` ← NEW |
+| **Control any app** | `adb shell am start` ← NEW |
+| **Browser automation** | Chrome via intents ← NEW |
 
-**andClaw app** — Packages everything nicely, but I wanted more control over the setup. If you want a simpler path, it's a valid option.
+The Termux:API gives you hardware access. Self-ADB gives you UI control. Together, your AI can do almost anything a human can do with the phone.
 
 ---
 
-# The Bigger Picture
+## What Didn't Work (And Why)
 
-Most "AI on Android" guides stop at chat. They show you how to message an AI, but not how to give it *hands* — the ability to actually control the phone.
+**Chrome Extension Relay** — Requires desktop Chrome with the extension. Android Chrome doesn't support extensions.
 
-The self-ADB trick is the unlock. Once the AI can tap, swipe, type, and screenshot, it can automate anything. Navigate apps, fill forms, check prices, send messages — whatever a human could do by touching the screen.
+**Playwright/Puppeteer** — Need a full browser binary. Running Chromium in proot-distro is slow and fragile. Self-ADB with Chrome intents is simpler and more reliable.
 
-That old phone in your drawer? It just became a 24/7 autonomous agent.
+**Accessibility Services** — Require a proper Android app, not Termux. More setup complexity than self-ADB.
 
 ---
 
-**Hardware used:** Google Pixel 7 Pro (128GB, 12GB RAM) — purchased used for $275
+## Why This Matters
+
+Most guides stop at "chat with your AI from Telegram." That's useful, but limited.
+
+Self-ADB turns your phone into a fully autonomous agent. Need to check a website that requires JavaScript? Open it in Chrome, wait, screenshot. Need to send a WhatsApp message to someone not in your API contacts? Open the app, navigate, type, send.
+
+The AI now has hands.
+
+That old phone in your drawer? It just became a 24/7 autonomous agent that can control itself.
+
+---
+
+**My setup:** Google Pixel 7 Pro (128GB, 12GB RAM) — purchased used for $275
+
+**Previous guide:** [AI Agents on Android: Comparing Your Options](/blog/ai-agents-android-droidclaw-openclaw-termux)
 
 **Questions?** Find me on X [@themedcave](https://twitter.com/themedcave)
