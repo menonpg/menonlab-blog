@@ -7,7 +7,7 @@ tags: ["healthcare", "radiology", "human-ai", "clinical-ai", "automation-bias", 
 
 There's a phrase that's become almost liturgical in healthcare AI discussions: "AI-assisted diagnosis." It sounds clean and obvious—the AI assists, the human decides. Everyone wins.
 
-A recent editorial in *Radiology* by Shirangi, Pittinsky, and Gichoya challenges this comfortable framing. Their argument, titled "Rethinking Human-AI Collaboration in Radiology," cuts to something we've been dancing around: **the goal of human-AI interaction in radiology is not to preserve every radiologist's task, but to preserve what makes radiology valuable in the first place.**
+A [recent editorial in *Radiology*](https://doi.org/10.1148/radiol.252760) by Shirangi, Pittinsky, and Gichoya challenges this comfortable framing. Their argument, titled "Rethinking Human-AI Collaboration in Radiology," cuts to something we've been dancing around: **the goal of human-AI interaction in radiology is not to preserve every radiologist's task, but to preserve what makes radiology valuable in the first place.**
 
 That distinction matters enormously. And getting it wrong has consequences we're only beginning to understand.
 
@@ -82,4 +82,4 @@ That's a harder problem than building better detection algorithms. But it's the 
 
 ---
 
-*The editorial "Rethinking Human-AI Collaboration in Radiology" by Shirangi A, Pittinsky T, and Gichoya J was published in Radiology, February 2026 (DOI: 10.1148/radiol.252760).*
+*The editorial "Rethinking Human-AI Collaboration in Radiology" by Shirangi A, Pittinsky T, and Gichoya J was published in Radiology, February 2026. [Read the full editorial →](https://doi.org/10.1148/radiol.252760)*
