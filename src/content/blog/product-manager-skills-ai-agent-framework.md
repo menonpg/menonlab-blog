@@ -1,7 +1,7 @@
 ---
 title: "Product Manager Skills: 46 Battle-Tested Frameworks for AI Agents"
 description: "Train your AI agents to do product management work like a pro with this open-source collection of PM frameworks for Claude Code, Codex, and beyond."
-pubDate: 2026-02-28
+date: "2026-02-28"
 tags: ["ai-agents", "product-management", "frameworks", "open-source"]
 ---
 
