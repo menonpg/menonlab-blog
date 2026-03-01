@@ -95,15 +95,26 @@ agent = Agent(
 )
 ```
 
-## Why Not LangChain / LlamaIndex / MemGPT?
+## Why Not LangChain / MemGPT / Clawdbot?
 
 Those are frameworks. soul.py is a primitive.
 
 - **LangChain** — orchestration layer, requires significant setup
-- **LlamaIndex** — document indexing, needs vector store infrastructure
+- **LlamaIndex** — document indexing, needs vector store infrastructure  
 - **MemGPT** — impressive but opinionated about the full agent stack
+- **Clawdbot / OpenClaw** — full agent runtime with tools, channels, scheduling, approval gates
 
-soul.py does one thing: give any LLM a persistent identity and memory via files you can read, edit, and version-control yourself. Drop it into whatever you're already building.
+The last category is worth expanding on. Tools like Clawdbot give you a complete agent infrastructure: Telegram/Discord/Slack integration, browser automation, cron jobs, exec sandboxing, the works. If you're building a production agent that needs to *do things* in the world, that's the right choice.
+
+But what if you just want your Python script to remember who it's talking to?
+
+soul.py is the answer when:
+- You're building something custom and don't want a framework
+- You want memory without buying into an entire agent architecture
+- You need to drop persistent identity into an existing codebase
+- You want files you can read, edit, and `git diff`
+
+It's the difference between "I need a car" and "I need wheels." Sometimes you just need wheels.
 
 ## What v0.1 Doesn't Do (Yet)
 
