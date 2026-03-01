@@ -7,6 +7,31 @@ tags: ["ai-agents", "philosophy", "memory", "identity", "thought-leadership"]
 
 A reader challenged our [Darwinian Agent](/blog/soul-py-darwin-evolution-agent-identity) thesis with a simple question: *What if identity persists even when memory fails?*
 
+Before we get to philosophy, let's start with a CS problem you've probably experienced.
+
+## The Catastrophic Forgetting Problem
+
+If you've used any long-running AI agent — Claude, GPT, or tools like [Clawdbot](https://github.com/clawdbot/clawdbot) — you've hit this wall:
+
+The context window fills up. The system summarizes older messages to make room. And suddenly the agent forgets something you discussed ten minutes ago. Not gradually fades — *catastrophically forgets*, as if it never happened.
+
+"We just talked about this. You built that feature. Why are you asking me again?"
+
+This is **lossy compression at work**. Summarization discards details that seemed unimportant at compression time but turn out to matter later. The agent has no way to know what will be relevant in the future, so it guesses — and often guesses wrong.
+
+The standard solutions are technical:
+- Bigger context windows (expensive, still finite)
+- RAG retrieval (helps, but what if you don't know what to query?)
+- Sliding window with summaries (the cause of the problem)
+
+But there's a deeper issue here. When an agent forgets something you worked on together, it doesn't just lose information — it loses *continuity of identity*. The agent before and after summarization behaves like two different entities. One knows your project; one doesn't.
+
+This isn't just annoying. It's a failure of **identity persistence**.
+
+The philosophical framing turns out to matter for solving the technical problem. And for that, we need Oliver Sacks.
+
+## The Lost Mariner
+
 She pointed to Oliver Sacks' "The Man Who Mistook His Wife for a Hat" — a book of neurological case studies exploring what happens when the brain breaks in specific ways. The most haunting case: Jimmie G., "The Lost Mariner."
 
 ## The Lost Mariner
