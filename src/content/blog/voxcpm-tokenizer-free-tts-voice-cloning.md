@@ -76,29 +76,26 @@ With VoxCPM's 5-second cloning + LoRA fine-tuning, you can create persistent voi
 2. **Fine-tune with LoRA** to lock in specific characteristics
 3. **Deploy as the agent's consistent voice identity**
 
-## The PersonaPlex Connection
+## Two Approaches to Voice Agents
 
-Here's where VoxCPM fits into the bigger voice agent picture.
+VoxCPM fits into the **traditional pipeline** approach to voice agents:
 
-[PersonaPlex](https://research.nvidia.com/labs/adlr/personaplex/) is NVIDIA's voice-native AI model that achieves 170ms response latency with full-duplex conversation — meaning it can listen while speaking, just like humans do. It's designed for real-time voice interaction, not just TTS.
+```
+User speaks → STT (Whisper) → LLM (GPT/Claude) → TTS (VoxCPM) → Audio output
+```
 
-But PersonaPlex (and similar models like Moshi or Ultravox) solve a different problem than VoxCPM:
+In this architecture, VoxCPM is your TTS layer. You clone a voice, optionally fine-tune with LoRA, and that becomes your agent's consistent voice. Every response gets synthesized through VoxCPM.
 
-| Problem | Solution |
-|---------|----------|
-| **Voice quality & identity** — What does my agent sound like? | VoxCPM (high-fidelity synthesis, voice cloning, LoRA customization) |
-| **Real-time interaction** — How does my agent converse naturally? | PersonaPlex/Moshi (full-duplex, low latency, turn-taking) |
-| **Personality & behavior** — Who *is* my agent? | SOUL.md / system prompts |
+There's an alternative approach: **voice-native models** like [PersonaPlex](https://research.nvidia.com/labs/adlr/personaplex/) (NVIDIA) or [Moshi](https://github.com/kyutai-labs/moshi) (Kyutai). These skip the pipeline entirely — audio goes in, audio comes out, with the model handling understanding and generation together. They achieve lower latency (170ms) and full-duplex conversation (listening while speaking).
 
-The stack comes together like this:
+These are **different architectures, not components you combine.** You don't plug a VoxCPM voice into PersonaPlex — PersonaPlex has its own voice generation built in.
 
-1. **Define identity** with SOUL.md — personality, goals, constraints, tone
-2. **Create voice** with VoxCPM — clone from a 5-second sample, fine-tune with LoRA for consistency
-3. **Enable conversation** with a real-time voice model — PersonaPlex for full-duplex, or LiveKit Agents for WebRTC pipelines
+**Choose based on your constraints:**
+- **Need maximum voice quality and customization?** Traditional pipeline with VoxCPM as TTS
+- **Need lowest latency and natural turn-taking?** Voice-native model like PersonaPlex or Moshi
+- **Building now with proven tools?** Pipeline approach — VoxCPM + LiveKit Agents or similar
 
-VoxCPM isn't trying to be a conversational AI. It's trying to be the best TTS — and with tokenizer-free architecture, it's making a strong case. The voice you create with VoxCPM becomes your agent's sonic identity, which you then wire into whatever interaction layer makes sense for your use case.
-
-This is the difference between "my agent can talk" and "my agent has a *voice*."
+VoxCPM's strength is giving you control over voice identity in a pipeline architecture, with quality that approaches closed-source TTS.
 
 ## Quick Start
 
