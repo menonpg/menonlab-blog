@@ -134,3 +134,7 @@ The question isn't whether to give your agents memory. It's whether you're ready
 
 *"There is grandeur in this view of life... from so simple a beginning endless forms most beautiful and most wonderful have been, and are being, evolved."*
 — Charles Darwin, On the Origin of Species
+
+---
+
+**Continue reading:** [The Fragility of AI Identity: What Oliver Sacks Teaches Us About Agent Memory](/blog/ai-identity-fragility-multiple-anchors) — A reader challenged this thesis. The dialogue revealed something deeper: human identity survives damage because it's distributed. AI identity is fragile because it's centralized. Here's what we need to build to fix that.
