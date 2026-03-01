@@ -52,8 +52,8 @@ We deployed all three versions so you can see the progression:
 | Version | Demo | What it shows |
 |---------|------|---------------|
 | v0.1 | [soul.themenonlab.com](https://soul.themenonlab.com) | Memory persists across sessions |
-| v1.0 | [soul-v1.themenonlab.com](https://soul-v1.themenonlab.com) | Semantic RAG retrieval |
-| v2.0 | [soul-v2.themenonlab.com](https://soul-v2.themenonlab.com) | Auto query routing: RAG + RLM |
+| v1.0 | [soulv1.themenonlab.com](https://soulv1.themenonlab.com) | Semantic RAG retrieval |
+| v2.0 | [soulv2.themenonlab.com](https://soulv2.themenonlab.com) | Auto query routing: RAG + RLM |
 
 Try asking the v2.0 demo a focused question ("What's my name?") and then an exhaustive one ("What themes appear across our conversations?"). Watch the route indicator change.
 
@@ -133,7 +133,7 @@ pip install soul-agent
 soul init
 ```
 
-Or try the live demo: [soul-v2.themenonlab.com](https://soul-v2.themenonlab.com)
+Or try the live demo: [soulv2.themenonlab.com](https://soulv2.themenonlab.com)
 
 Star the repo: [github.com/menonpg/soul.py](https://github.com/menonpg/soul.py)
 
