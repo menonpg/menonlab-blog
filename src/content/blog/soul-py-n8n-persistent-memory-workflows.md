@@ -7,6 +7,32 @@ tags: ["ai-agents", "n8n", "automation", "llm", "memory"]
 
 Someone asked how to integrate [soul.py](https://github.com/menonpg/soul.py) into an n8n pipeline. The short answer: it works beautifully as a drop-in Python node.
 
+## Quick Start: Try It Locally First
+
+Before wiring into n8n, test it from the terminal:
+
+```bash
+pip install soul-agent
+soul init  # creates SOUL.md and MEMORY.md
+```
+
+```python
+from hybrid_agent import HybridAgent
+
+agent = HybridAgent()
+
+while True:
+    q = input("You: ")
+    result = agent.ask(q)
+    print(f"Agent: {result['answer']}\n")
+```
+
+Memory persists automatically between runs — kill the script, restart it, and the agent picks up exactly where it left off. Everything's stored in plain `MEMORY.md` in your working directory, so you can read or edit it with any text editor.
+
+Once you've confirmed it works, wire it into n8n.
+
+---
+
 ## The Problem
 
 n8n's AI nodes are stateless by default. Each workflow execution starts fresh — your agent has no memory of previous conversations. For simple automations, that's fine. For anything resembling a persistent assistant, it's a dealbreaker.
