@@ -1,0 +1,136 @@
+---
+title: "soul.py: Your AI Remembers Nothing. This Fixes It in 10 Lines."
+description: "A 150-line Python library that gives any LLM persistent identity and memory using plain markdown files. No database, no vector store, no infrastructure."
+date: "2026-03-01"
+tags: ["ai-agents", "llm", "python", "open-source", "memory"]
+---
+
+Every AI conversation starts the same way: "Hi, I'm Claude/GPT/Llama, how can I help you today?"
+
+You've talked to this model a hundred times. You've told it your name, your projects, your preferences. It doesn't matter. The moment the session ends, it forgets everything. Tomorrow, you start from zero.
+
+This is the most basic failure mode in AI agents, and somehow we've normalized it.
+
+## The 10-Line Fix
+
+```python
+from soul import Agent
+
+agent = Agent()
+agent.ask("My name is Prahlad and I'm building an AI research lab.")
+# → "That's exciting — what are you working on first?"
+
+# Later. New process. New session. Memory persists.
+agent = Agent()
+agent.ask("What do you know about me?")
+# → "You're Prahlad, building an AI research lab."
+```
+
+That's [soul.py](https://github.com/menonpg/soul.py). Memory survives across processes—no database, no server, nothing running in the background.
+
+## How It Actually Works
+
+soul.py uses two markdown files as the agent's persistent state:
+
+| File | Purpose |
+|------|---------|
+| `SOUL.md` | Identity — who the agent is, how it behaves |
+| `MEMORY.md` | Memory — timestamped log of past exchanges |
+
+Every `agent.ask()` call:
+1. Reads `SOUL.md` + `MEMORY.md` into the system prompt
+2. Calls the LLM
+3. Appends the exchange to `MEMORY.md` with a timestamp
+
+That's the entire architecture. 150 lines of Python.
+
+## What MEMORY.md Looks Like
+
+After a few conversations:
+
+```markdown
+# MEMORY.md
+
+## 2026-03-01 08:00
+Q: My name is Prahlad and I'm building an AI research lab.
+A: That's exciting — what are you working on first?
+
+## 2026-03-01 09:15
+Q: What should I focus on today?
+A: Based on your AI lab work, you mentioned the memory paper 
+   was the priority...
+```
+
+Human-readable. Version-controllable. Editable by hand. `git diff` your agent's memories if you want.
+
+## The Setup
+
+```bash
+pip install soul-agent
+
+soul init
+```
+
+The wizard asks two questions:
+- What's your agent's name?
+- Which provider? (anthropic / openai / openai-compatible)
+
+Creates `SOUL.md` and `MEMORY.md` in your current directory. You're done.
+
+## Works With Everything
+
+```python
+# Anthropic (default)
+agent = Agent(provider="anthropic")
+
+# OpenAI
+agent = Agent(provider="openai")
+
+# Local Ollama — no API key needed
+agent = Agent(
+    provider="openai-compatible",
+    base_url="http://localhost:11434/v1",
+    model="llama3.2",
+    api_key="ollama"
+)
+```
+
+## Why Not LangChain / LlamaIndex / MemGPT?
+
+Those are frameworks. soul.py is a primitive.
+
+- **LangChain** — orchestration layer, requires significant setup
+- **LlamaIndex** — document indexing, needs vector store infrastructure
+- **MemGPT** — impressive but opinionated about the full agent stack
+
+soul.py does one thing: give any LLM a persistent identity and memory via files you can read, edit, and version-control yourself. Drop it into whatever you're already building.
+
+## What v0.1 Doesn't Do (Yet)
+
+Once `MEMORY.md` gets very large (thousands of entries), it'll overflow the context window. That's the v1.0 problem—solved with local RAG (ChromaDB/FAISS).
+
+For most use cases, v0.1 runs indefinitely. A typical daily exchange is ~200 words. You'd hit the context limit after roughly **6 months of daily use**. Plenty of runway.
+
+The roadmap:
+- **v0.1 (now)**: Markdown-native, zero infrastructure
+- **v1.0**: Local vector store for large memory files
+- **v2.0**: RAG + RLM hybrid with query routing
+
+## The Philosophy
+
+The best infrastructure is no infrastructure.
+
+Vector databases are powerful. They're also another service to run, another thing to break, another dependency to manage. For most agent use cases—personal assistants, research companions, project copilots—you don't need them. You need a text file that persists.
+
+soul.py starts there. When you outgrow it, the upgrade path exists. But most people won't need it for months.
+
+## Get Started
+
+```bash
+pip install soul-agent
+soul init
+```
+
+Star the repo: [github.com/menonpg/soul.py](https://github.com/menonpg/soul.py)
+
+Your AI shouldn't have amnesia. Fix it in 10 lines.
