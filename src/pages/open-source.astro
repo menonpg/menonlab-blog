@@ -1,0 +1,288 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Open Source - The Menon Lab">
+  <article class="opensource-page">
+    <h1>Open Source Projects</h1>
+    
+    <section class="intro">
+      <p>
+        Tools and libraries we've built and released to the community. 
+        All MIT licensed, all actively maintained.
+      </p>
+    </section>
+
+    <section class="projects">
+      
+      <!-- soul.py -->
+      <div class="project-card featured">
+        <div class="project-header">
+          <h2>🧠 soul.py</h2>
+          <span class="badge">Featured</span>
+        </div>
+        <p class="tagline">Persistent identity and memory for any LLM agent</p>
+        <p class="description">
+          Your AI forgets everything when the conversation ends. soul.py fixes that in 10 lines. 
+          No database, no vector store — just markdown files you can read, edit, and git-version.
+        </p>
+        
+        <div class="version-table">
+          <div class="version-row">
+            <span class="version">v0.1</span>
+            <span class="desc">Pure markdown, zero deps</span>
+            <a href="https://soul.themenonlab.com" target="_blank" class="demo-link">Demo →</a>
+          </div>
+          <div class="version-row">
+            <span class="version">v1.0</span>
+            <span class="desc">Semantic RAG retrieval</span>
+            <a href="https://soul-v1.themenonlab.com" target="_blank" class="demo-link">Demo →</a>
+          </div>
+          <div class="version-row">
+            <span class="version">v2.0</span>
+            <span class="desc">Auto query routing: RAG + RLM</span>
+            <a href="https://soul-v2.themenonlab.com" target="_blank" class="demo-link">Demo →</a>
+          </div>
+        </div>
+
+        <div class="project-links">
+          <a href="https://github.com/menonpg/soul.py" target="_blank" class="btn btn-primary">
+            GitHub
+          </a>
+          <a href="https://pypi.org/project/soul-agent/" target="_blank" class="btn btn-secondary">
+            PyPI
+          </a>
+          <a href="/blog/soul-py-persistent-memory-llm-agents" class="btn btn-secondary">
+            v0.1 Writeup
+          </a>
+          <a href="/blog/soul-py-v2-rag-rlm-hybrid" class="btn btn-secondary">
+            v2.0 Writeup
+          </a>
+        </div>
+
+        <div class="install-block">
+          <code>pip install soul-agent</code>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="contribute">
+      <h2>Want to Contribute?</h2>
+      <p>
+        All projects welcome PRs. Check the GitHub issues for good first contributions, 
+        or open a discussion if you have ideas.
+      </p>
+      <a href="https://github.com/menonpg" target="_blank" class="btn btn-primary">
+        View All Repos →
+      </a>
+    </section>
+
+  </article>
+</BaseLayout>
+
+<style>
+  .opensource-page {
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+
+  h1 {
+    margin-bottom: 1rem;
+  }
+
+  .intro {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+
+  .intro p {
+    color: var(--muted);
+    font-size: 1.1rem;
+  }
+
+  .projects {
+    margin-bottom: 3rem;
+  }
+
+  /* Project Card */
+  .project-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .project-card.featured {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .project-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .project-header h2 {
+    margin: 0;
+    font-size: 1.75rem;
+  }
+
+  .badge {
+    background: var(--accent);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    text-transform: uppercase;
+  }
+
+  .tagline {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+
+  .description {
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Version Table */
+  .version-table {
+    background: rgba(96, 165, 250, 0.05);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .version-row {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .version-row:last-child {
+    border-bottom: none;
+  }
+
+  .version {
+    font-weight: 600;
+    font-family: monospace;
+    width: 4rem;
+    color: var(--accent);
+  }
+
+  .desc {
+    flex: 1;
+    color: var(--muted);
+  }
+
+  .demo-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .demo-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Project Links */
+  .project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: var(--border);
+    color: var(--fg);
+  }
+
+  .btn-secondary:hover {
+    background: var(--muted);
+    color: white;
+  }
+
+  /* Install Block */
+  .install-block {
+    background: #1e1e1e;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+  }
+
+  .install-block code {
+    color: #4ade80;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+  }
+
+  /* Contribute Section */
+  .contribute {
+    background: rgba(96, 165, 250, 0.05);
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .contribute h2 {
+    margin-bottom: 1rem;
+  }
+
+  .contribute p {
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .project-card {
+      padding: 1.5rem;
+    }
+
+    .version-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+
+    .project-links {
+      flex-direction: column;
+    }
+
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
