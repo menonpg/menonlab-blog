@@ -118,6 +118,9 @@ const recentPosts = allPosts
               </li>
             ))}
           </ul>
+          {collection.link && (
+            <a href={collection.link} class="collection-link">View all →</a>
+          )}
         </div>
       ))}
     </div>
@@ -286,6 +289,18 @@ const recentPosts = allPosts
 
   .collection-posts a:hover {
     color: var(--accent);
+  }
+
+  .collection-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--accent);
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .collection-link:hover {
+    text-decoration: underline;
   }
 
   /* Latest Posts */
