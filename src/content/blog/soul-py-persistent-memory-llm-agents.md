@@ -135,7 +135,17 @@ Vector databases are powerful. They're also another service to run, another thin
 
 soul.py starts there. When you outgrow it, the upgrade path exists. But most people won't need it for months.
 
-## Get Started
+## Try It Now — No Install Required
+
+**Live demo:** [soul.themenonlab.com](https://soul.themenonlab.com)
+
+Chat with a soul.py agent and watch `MEMORY.md` fill up in real time. Ask it something, then try "What do you know about me so far?" — you'll see exactly how the memory injection works under the hood.
+
+No API key needed. No signup. Just try it.
+
+*(Demo source is also open: [soul.py-demo](https://github.com/menonpg/soul.py-demo) — ~150 lines of FastAPI if you want to self-host)*
+
+## Get Started Locally
 
 ```bash
 pip install soul-agent
