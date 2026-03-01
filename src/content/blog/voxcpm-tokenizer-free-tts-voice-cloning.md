@@ -76,13 +76,29 @@ With VoxCPM's 5-second cloning + LoRA fine-tuning, you can create persistent voi
 2. **Fine-tune with LoRA** to lock in specific characteristics
 3. **Deploy as the agent's consistent voice identity**
 
-Combine this with something like [PersonaPlex](https://research.nvidia.com/labs/adlr/personaplex/) (NVIDIA's 170ms full-duplex voice model) and you have the full stack:
+## The PersonaPlex Connection
 
-- **Identity layer**: SOUL.md for personality, goals, constraints
-- **Voice layer**: VoxCPM for consistent, expressive synthesis
-- **Interaction layer**: PersonaPlex for real-time, natural conversation
+Here's where VoxCPM fits into the bigger voice agent picture.
 
-This isn't theoretical. The latency is there (RTF 0.15 = viable for streaming). The quality is there (44.1kHz, context-aware prosody). The customization is there (LoRA fine-tuning).
+[PersonaPlex](https://research.nvidia.com/labs/adlr/personaplex/) is NVIDIA's voice-native AI model that achieves 170ms response latency with full-duplex conversation — meaning it can listen while speaking, just like humans do. It's designed for real-time voice interaction, not just TTS.
+
+But PersonaPlex (and similar models like Moshi or Ultravox) solve a different problem than VoxCPM:
+
+| Problem | Solution |
+|---------|----------|
+| **Voice quality & identity** — What does my agent sound like? | VoxCPM (high-fidelity synthesis, voice cloning, LoRA customization) |
+| **Real-time interaction** — How does my agent converse naturally? | PersonaPlex/Moshi (full-duplex, low latency, turn-taking) |
+| **Personality & behavior** — Who *is* my agent? | SOUL.md / system prompts |
+
+The stack comes together like this:
+
+1. **Define identity** with SOUL.md — personality, goals, constraints, tone
+2. **Create voice** with VoxCPM — clone from a 5-second sample, fine-tune with LoRA for consistency
+3. **Enable conversation** with a real-time voice model — PersonaPlex for full-duplex, or LiveKit Agents for WebRTC pipelines
+
+VoxCPM isn't trying to be a conversational AI. It's trying to be the best TTS — and with tokenizer-free architecture, it's making a strong case. The voice you create with VoxCPM becomes your agent's sonic identity, which you then wire into whatever interaction layer makes sense for your use case.
+
+This is the difference between "my agent can talk" and "my agent has a *voice*."
 
 ## Quick Start
 
