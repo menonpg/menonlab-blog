@@ -184,9 +184,40 @@ The soul is more than memory. It's time our agents reflected that.
 
 ---
 
+## Try soul.py Today
+
+The ideas in this post are built on [soul.py](https://github.com/menonpg/soul.py) — our open-source library for persistent AI agent identity and memory.
+
+```bash
+pip install soul-agent
+soul init
+```
+
+**Live demos:**
+- [soul.themenonlab.com](https://soul.themenonlab.com) — Simple persistent memory
+- [soulv2.themenonlab.com](https://soulv2.themenonlab.com) — RAG + RLM hybrid with intelligent retrieval
+
+**Current features (v2.0):**
+- SOUL.md for agent identity
+- MEMORY.md with RAG/RLM retrieval
+- Auto query routing (focused vs exhaustive)
+- Works with Anthropic, OpenAI, or any compatible endpoint
+
+**What's next (v3.0 roadmap):**
+- Procedural memory extraction
+- Salience/emotional markers  
+- Identity verification and graceful degradation
+
+Star the repo: [github.com/menonpg/soul.py](https://github.com/menonpg/soul.py)
+
+---
+
 *This post emerged from a dialogue with a thoughtful reader who asked the right questions. The best ideas come from conversation.*
 
+**Related posts:**
+- [The Darwinian Agent: What Evolution Teaches Us About AI Memory](/blog/soul-py-darwin-evolution-agent-identity) — The original philosophy post
+- [soul.py v2.0: We Added a Brain to the Memory](/blog/soul-py-v2-rag-rlm-hybrid) — RAG + RLM technical deep-dive
+- [Adding Persistent Memory to n8n Workflows](/blog/soul-py-n8n-persistent-memory-workflows) — Practical integration guide
+
 **Further reading:**
-- [The Darwinian Agent: What Evolution Teaches Us About AI Memory](/blog/soul-py-darwin-evolution-agent-identity)
 - Oliver Sacks, "The Man Who Mistook His Wife for a Hat" (1985)
-- soul.py: [github.com/menonpg/soul.py](https://github.com/menonpg/soul.py)
