@@ -1,33 +1,24 @@
 ---
 title: "Adding Persistent Memory to n8n AI Workflows with soul.py"
-description: "Two approaches to making your n8n AI nodes remember everything — from simple file-based memory to production RAG+RLM hybrid retrieval."
+description: "How to make your n8n AI nodes remember everything — from automatic RAG+RLM routing to simple file-based memory for prototyping."
 date: "2026-03-01"
 tags: ["ai-agents", "n8n", "automation", "llm", "memory"]
 ---
 
-Someone asked how to integrate [soul.py](https://github.com/menonpg/soul.py) into an n8n pipeline. The short answer: it works beautifully. The longer answer: you have two options depending on your needs.
+Someone asked how to integrate [soul.py](https://github.com/menonpg/soul.py) into an n8n pipeline. The short answer: it works beautifully as a drop-in Python node.
 
 ## The Problem
 
 n8n's AI nodes are stateless by default. Each workflow execution starts fresh — your agent has no memory of previous conversations. For simple automations, that's fine. For anything resembling a persistent assistant, it's a dealbreaker.
 
-soul.py solves this with two approaches:
+## The Solution: HybridAgent
 
-| Mode | Best for | Infrastructure |
-|------|----------|----------------|
-| **Simple (v0.1)** | Small memory files, quick setup | Filesystem only |
-| **Hybrid (v2.0)** | Large memory, production use | Optional: Qdrant + embeddings |
+soul.py's `HybridAgent` automatically picks the right retrieval strategy per query:
 
-## Option 1: Simple File-Based Memory
+- **RAG** (~90% of queries): Fast semantic search for specific lookups
+- **RLM** (~10% of queries): Recursive synthesis for questions like "summarize everything we've discussed"
 
-This is the zero-infrastructure approach. soul.py reads `SOUL.md` (identity) and `MEMORY.md` (memory) from the filesystem, injects them into the system prompt, and appends new exchanges after each call.
-
-### Setup
-
-```bash
-pip install soul-agent
-soul init  # creates SOUL.md and MEMORY.md
-```
+You don't configure anything — the router decides.
 
 ### n8n Integration
 
@@ -35,15 +26,17 @@ Create a Python wrapper script on your n8n server:
 
 ```python
 # soul_node.py
-import sys
-import json
-from soul import Agent
+import sys, json
+from hybrid_agent import HybridAgent
 
-agent = Agent(provider="anthropic")  # or "openai", "openai-compatible"
+agent = HybridAgent()  # auto-detects RAG vs RLM per query
 query = sys.argv[1]
 result = agent.ask(query)
 
-print(json.dumps({"response": result}))
+print(json.dumps({
+    "response": result["answer"],
+    "route": result["route"],  # "RAG" or "RLM"
+}))
 ```
 
 In your n8n workflow, use an **Execute Command** node:
@@ -52,94 +45,46 @@ In your n8n workflow, use an **Execute Command** node:
 python /path/to/soul_node.py "{{ $json.message }}"
 ```
 
-That's it. The agent:
-1. Reads `SOUL.md` for its identity
-2. Reads `MEMORY.md` for context
-3. Responds to the query
-4. Appends the exchange to `MEMORY.md`
+The agent:
+1. Reads `SOUL.md` for identity and `MEMORY.md` for context
+2. Routes to RAG or RLM based on query type
+3. Responds with the answer and which route it took
+4. Appends the exchange to memory
 
 Next workflow execution? It remembers everything.
 
-### Limitations
+### Forcing a Mode
 
-Simple mode injects the *entire* `MEMORY.md` into the context window. Works great until your memory file exceeds ~6000 characters (roughly 1500 tokens). After that, you need the hybrid approach.
-
-## Option 2: Hybrid RAG + RLM (Production)
-
-For larger memory files, soul.py v2.0 uses intelligent retrieval:
-
-- **RAG** (~90% of queries): Vector search retrieves relevant chunks
-- **RLM** (~10% of queries): Recursive synthesis for questions that need the full picture
-
-A query router automatically decides which path to take.
-
-### Setup
-
-```bash
-pip install soul-agent
-```
-
-You'll need:
-- **Qdrant** (vector store) — cloud or self-hosted
-- **Azure OpenAI embeddings** (or falls back to BM25 keyword search)
-
-### n8n Integration
+For high-volume pipelines where you want consistent latency, you can force a specific mode:
 
 ```python
-# soul_hybrid_node.py
-import sys
-import json
-import os
-from hybrid_agent import HybridAgent
+agent = HybridAgent(mode="rag")   # always RAG (faster)
+agent = HybridAgent(mode="rlm")   # always RLM (exhaustive)
+agent = HybridAgent(mode="auto")  # router decides (default)
+```
 
-# Configure via environment or hardcode for testing
+### Vector Store Setup (Optional)
+
+HybridAgent works best with Qdrant + Azure embeddings for semantic search:
+
+```python
 agent = HybridAgent(
-    soul_path="SOUL.md",
-    memory_path="MEMORY.md",
-    mode="auto",  # auto-routes between RAG and RLM
     qdrant_url=os.environ.get("QDRANT_URL"),
     qdrant_api_key=os.environ.get("QDRANT_API_KEY"),
     azure_embedding_endpoint=os.environ.get("AZURE_EMBEDDING_ENDPOINT"),
     azure_embedding_key=os.environ.get("AZURE_EMBEDDING_KEY"),
 )
-
-query = sys.argv[1]
-result = agent.ask(query)
-
-print(json.dumps({
-    "response": result["answer"],
-    "route": result["route"],  # "RAG" or "RLM"
-    "latency_ms": result["total_ms"],
-}))
 ```
 
-The response tells you which retrieval path was used — useful for debugging and optimization.
+**No Qdrant?** It automatically falls back to BM25 (keyword-based retrieval). Not as good as vector search, but still works.
 
-### No Qdrant? BM25 Fallback
+## n8n Cloud (No Filesystem)
 
-If you don't configure Qdrant/Azure, the HybridAgent automatically falls back to BM25 (keyword-based retrieval). Not as good as vector search, but still better than injecting the entire file:
-
-```python
-agent = HybridAgent(
-    soul_path="SOUL.md",
-    memory_path="MEMORY.md",
-    mode="rag",  # force RAG mode with BM25 fallback
-)
-```
-
-## n8n Cloud Consideration
-
-If you're on n8n Cloud (no persistent filesystem), you'll need to:
-
-1. Store `MEMORY.md` contents in a database or n8n variable
-2. Pass it to the script as input
-3. Capture the updated memory from output
-4. Write it back to storage
+If you're on n8n Cloud without persistent filesystem access, store `MEMORY.md` contents in a database or n8n variable:
 
 ```python
 # soul_cloud_node.py
-import sys
-import json
+import sys, json
 
 memory_content = sys.argv[1]
 query = sys.argv[2]
@@ -148,33 +93,44 @@ query = sys.argv[2]
 with open("/tmp/MEMORY.md", "w") as f:
     f.write(memory_content)
 
-from soul import Agent
-agent = Agent(memory_path="/tmp/MEMORY.md")
+from hybrid_agent import HybridAgent
+agent = HybridAgent(memory_path="/tmp/MEMORY.md")
 result = agent.ask(query)
 
 # Return both response and updated memory
 updated_memory = open("/tmp/MEMORY.md").read()
 print(json.dumps({
-    "response": result,
+    "response": result["answer"],
+    "route": result["route"],
     "memory": updated_memory
 }))
 ```
 
-Then use n8n's **Set** node to persist `memory` back to your storage.
+Then use n8n's **Set** node to persist `memory` back to your storage after each call.
+
+## Lite Option: Simple Agent (v0.1)
+
+For prototyping or when your memory will stay small (<1500 tokens), the simple `Agent` class skips the routing layer entirely:
+
+```python
+from soul import Agent
+
+agent = Agent(provider="anthropic")  # or "openai"
+result = agent.ask(query)
+```
+
+This injects the full `MEMORY.md` into the system prompt. Zero infrastructure, zero configuration. Great for learning, but won't scale to large memory files.
 
 ## Which Should You Use?
 
-**Start with Simple (v0.1)** if:
-- Your memory will stay under ~1500 tokens
-- You want zero infrastructure
-- You're prototyping or learning
+| Use Case | Recommendation |
+|----------|----------------|
+| Production workflows | `HybridAgent` (auto mode) |
+| High-volume pipelines | `HybridAgent(mode="rag")` |
+| Prototyping / learning | `Agent` (simple mode) |
+| Large memory files | `HybridAgent` with Qdrant |
 
-**Use Hybrid (v2.0)** if:
-- Memory will grow large over time
-- You need fast retrieval at scale
-- You're building for production
-
-Both share the same `SOUL.md` and `MEMORY.md` format — you can upgrade from v0.1 to v2.0 without changing your data.
+Both use the same `SOUL.md` and `MEMORY.md` format — upgrade from simple to hybrid without changing your data.
 
 ## Try It
 
@@ -184,8 +140,8 @@ soul init
 ```
 
 Live demos:
-- [soul.themenonlab.com](https://soul.themenonlab.com) — v0.1 simple mode
-- [soulv2.themenonlab.com](https://soulv2.themenonlab.com) — v2.0 hybrid mode
+- [soulv2.themenonlab.com](https://soulv2.themenonlab.com) — HybridAgent with RAG+RLM routing
+- [soul.themenonlab.com](https://soul.themenonlab.com) — Simple Agent
 
 GitHub: [github.com/menonpg/soul.py](https://github.com/menonpg/soul.py)
 
