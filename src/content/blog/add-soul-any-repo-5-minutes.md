@@ -168,32 +168,186 @@ agent.ask("I'm having another API issue")
 
 The agent remembers because MEMORY.md persisted.
 
-## What soul.py Actually Does (v0.1)
+## What soul.py Does (v0.1.2)
 
 Let's be precise about the current version:
 
-**What it does:**
+**Core features:**
 - Reads SOUL.md and MEMORY.md from current directory
 - Injects both into the system prompt
-- Calls your chosen LLM provider
-- Appends the exchange to MEMORY.md with timestamp
+- Calls your chosen LLM provider (Anthropic, OpenAI, Ollama)
+- Appends every exchange to MEMORY.md with timestamp
+- **NEW:** `soul chat` — interactive CLI, no Python code needed
+- **NEW:** `soul status` — check your memory file stats
+- **NEW:** ChromaDB local vector search for large memories
+- **NEW:** Direct OpenAI embeddings (not just Azure)
 
-**What it doesn't do (yet):**
-- No automatic codebase reading (you paste relevant code into conversations)
-- No vector database / RAG (that's v2.0 — live at [soulv2.themenonlab.com](https://soulv2.themenonlab.com))
-- No CLI chat command (Python API only)
+**What it doesn't do:**
+- No automatic codebase indexing (you paste relevant code)
+- No git integration (yet)
 
-The simplicity is the point. 150 lines of Python. No infrastructure.
+The simplicity is intentional. ~300 lines of Python. No infrastructure.
 
-## v2.0: When Memory Gets Large
+## The CLI Experience (v0.1.2)
 
-v0.1 injects your entire MEMORY.md into context. This works great until the file exceeds your context window (~6 months of daily use).
+You don't need to write Python anymore. Just chat:
 
-v2.0 adds RAG for large memory files — semantic search to retrieve relevant memories instead of injecting everything.
+```bash
+soul chat
+```
 
-**Try v2.0:** [soulv2.themenonlab.com](https://soulv2.themenonlab.com)
+```
+🧠 soul.py v2.0 (RAG+RLM)
+   Soul:   SOUL.md
+   Memory: MEMORY.md (12 entries)
+   Commands: /memory  /reset  /help  exit
 
-For most projects, v0.1 is plenty. Start simple.
+You: What did we decide about the database schema?
+Assistant: Based on our conversations, you decided to use SQLAlchemy 
+with SQLite for development. The Task model has: id, title, description, 
+status (enum: todo/doing/done), due_date, and user_id foreign key.
+[RAG · 847ms]
+
+You: /memory
+📝 MEMORY.md — 12 entries, 4.2KB
+
+You: exit
+👋 Memory saved. See you next time.
+```
+
+Check memory stats anytime:
+
+```bash
+soul status
+```
+
+```
+🧠 soul.py status
+
+✅ SOUL.md     — 15 lines
+✅ MEMORY.md   — 47 entries, 8.3KB
+```
+
+## When Memory Gets Large: Vector Search
+
+v0.1 injects your entire MEMORY.md into the LLM context. This works great for months of use, but eventually you'll hit context limits.
+
+v0.1.2 adds **ChromaDB** — a local vector database that runs on your machine with zero configuration:
+
+```bash
+pip install soul-agent[chromadb]
+```
+
+```python
+from hybrid_agent import HybridAgent
+
+agent = HybridAgent(
+    mode="auto",  # Automatically chooses RAG vs RLM per query
+)
+```
+
+Now when you ask a question, soul.py:
+1. **Routes the query** — Is this a specific fact lookup (RAG) or synthesis question (RLM)?
+2. **Retrieves relevant memories** — Vector search finds the top-k most similar entries
+3. **Generates response** — Only relevant context goes to the LLM
+
+This scales to thousands of memory entries without hitting token limits.
+
+## Vector Database Deep Dive
+
+Under the hood, soul.py supports multiple vector backends:
+
+| Backend | Install | Best For |
+|---------|---------|----------|
+| **BM25** | Built-in | Small memories, offline, zero deps |
+| **ChromaDB** | `pip install soul-agent[chromadb]` | Local dev, medium memories |
+| **Qdrant** | Cloud or self-hosted | Production, large scale |
+
+### How Collections Work
+
+Each agent gets its own **collection** (like a database table) in the vector store:
+
+```python
+agent = HybridAgent(
+    collection_name="my_project_memory",  # Your collection name
+    # Defaults to "soul_v2_memory" if not specified
+)
+```
+
+**What goes in a collection:**
+- Each entry from MEMORY.md becomes a vector
+- Entries are embedded using your configured provider (OpenAI, Azure)
+- Vectors are stored with the original text as payload
+
+**Querying:**
+```
+Your question: "What database did we choose?"
+         ↓
+    Embed question → vector [0.12, -0.45, 0.78, ...]
+         ↓
+    Search collection for similar vectors
+         ↓
+    Return top-5 most similar memory entries
+         ↓
+    Inject into LLM prompt as context
+```
+
+### Configuring Qdrant (Production)
+
+For production deployments, use Qdrant Cloud:
+
+```python
+agent = HybridAgent(
+    qdrant_url="https://your-cluster.qdrant.io:6333",
+    qdrant_api_key="your-api-key",
+    azure_embedding_endpoint="https://your-azure.openai.azure.com",
+    azure_embedding_key="your-key",
+    collection_name="prod_agent_memory",
+)
+```
+
+Or set via environment variables:
+```bash
+export QDRANT_URL=https://your-cluster.qdrant.io:6333
+export QDRANT_API_KEY=xxx
+export AZURE_EMBEDDING_ENDPOINT=https://xxx.openai.azure.com
+export AZURE_EMBEDDING_KEY=xxx
+```
+
+### Using OpenAI Embeddings Directly
+
+New in v0.1.2 — you don't need Azure anymore:
+
+```python
+agent = HybridAgent(
+    openai_api_key="sk-...",  # Direct OpenAI, not Azure
+)
+```
+
+Uses `text-embedding-3-small` (1536 dimensions) by default.
+
+## RAG vs RLM: The Query Router
+
+soul.py v2.0 doesn't just do RAG. It automatically routes queries:
+
+| Query Type | Route | Method |
+|------------|-------|--------|
+| "What's my name?" | **RAG** | Vector search, return top matches |
+| "Summarize all our decisions" | **RLM** | Read ALL memories, synthesize |
+
+**RAG (Retrieval-Augmented Generation):**
+- Fast (~500ms)
+- Finds specific facts
+- Good for: "What did we decide about X?"
+
+**RLM (Retrieval + Learning Memory):**
+- Slower (~5-10s)
+- Processes everything recursively
+- Good for: "Give me a summary of the whole project"
+
+The router is a lightweight LLM call that classifies your query, then dispatches to the right retrieval strategy.
+
+**Try it live:** [soulv2.themenonlab.com](https://soulv2.themenonlab.com)
 
 ## Team Usage (Convention, Not Feature)
 
