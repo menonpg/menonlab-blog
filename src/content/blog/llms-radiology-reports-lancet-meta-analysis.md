@@ -84,7 +84,7 @@ The 87% improvement is promising. But clinician oversight isn't optional — it'
 
 ---
 
-**Reference:** Alabed S, et al. "Large language models for simplifying radiology reports: a systematic review and meta-analysis of patient, public, and clinician evaluations." *The Lancet Digital Health*, 2026.
+**Reference:** Alabed S, et al. "[Large language models for simplifying radiology reports: a systematic review and meta-analysis of patient, public, and clinician evaluations](https://www.thelancet.com/journals/landig/article/PIIS2589-7500(25)00142-6/fulltext)." *The Lancet Digital Health*, 2026.
 
 ---
 
