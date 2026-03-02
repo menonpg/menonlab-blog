@@ -1,8 +1,8 @@
 ---
-title: "Why Your n8n Workflows Forget Everything — And How to Fix It"
-description: "n8n is stateless by design. Every workflow execution starts fresh. soul-stack adds the missing memory layer — make your automations remember."
+title: "soul-stack: One Docker Command to Give n8n Persistent Memory"
+description: "n8n is stateless by design. soul-stack adds the missing memory layer — n8n + soul.py + Jupyter in a single container. Works with Anthropic, OpenAI, or 100% local with Ollama."
 date: "2026-03-01"
-tags: ["n8n", "automation", "soul.py", "docker", "self-hosted", "memory"]
+tags: ["n8n", "automation", "soul.py", "docker", "self-hosted", "memory", "soul-stack"]
 ---
 
 n8n is incredible. 50,000+ GitHub stars. Self-hosted automation that rivals Zapier. Workflows that can do almost anything.
@@ -31,9 +31,11 @@ What if your workflows could just... remember?
 ```bash
 docker run -d \
   -p 8000:8000 -p 8888:8888 -p 5678:5678 \
-  -e ANTHROPIC_API_KEY=your-key \
+  -e OPENAI_API_KEY=sk-your-key \
   pgmenon/soul-stack:latest
 ```
+
+Works with **OpenAI, Anthropic, or 100% local with Ollama** — your choice.
 
 One command. Three services:
 
@@ -149,14 +151,51 @@ Together, they're more than the sum of their parts. n8n gets memory. soul.py get
 
 ## Get Started
 
+soul-stack works with **any LLM provider** — cloud or local.
+
+### Option A: Anthropic (Claude)
+
 ```bash
 docker run -d \
   -p 8000:8000 -p 8888:8888 -p 5678:5678 \
-  -e ANTHROPIC_API_KEY=your-key \
+  -e ANTHROPIC_API_KEY=sk-ant-your-key \
+  -e ANTHROPIC_MODEL=claude-sonnet-4-20250514 \
   pgmenon/soul-stack:latest
 ```
 
-Then open:
+Default model is `claude-sonnet-4-20250514` if not specified. Other options: `claude-opus-4-20250514`, `claude-3-haiku-20240307`.
+
+### Option B: OpenAI (GPT-4, etc.)
+
+```bash
+docker run -d \
+  -p 8000:8000 -p 8888:8888 -p 5678:5678 \
+  -e OPENAI_API_KEY=sk-your-key \
+  -e OPENAI_MODEL=gpt-4o \
+  pgmenon/soul-stack:latest
+```
+
+Default model is `gpt-4o` if not specified. Other options: `gpt-4-turbo`, `gpt-3.5-turbo`.
+
+### Option C: Both Providers
+
+Pass both keys and select per-request, or let soul.py use whichever is available:
+
+```bash
+docker run -d \
+  -p 8000:8000 -p 8888:8888 -p 5678:5678 \
+  -e ANTHROPIC_API_KEY=sk-ant-... \
+  -e OPENAI_API_KEY=sk-... \
+  pgmenon/soul-stack:latest
+```
+
+### Option D: 100% Local with Ollama (Zero API Costs)
+
+For completely private, offline operation — see the docker-compose section below.
+
+---
+
+**Then open:**
 - **n8n:** http://localhost:5678
 - **soul.py API:** http://localhost:8000/docs
 - **Jupyter:** http://localhost:8888
