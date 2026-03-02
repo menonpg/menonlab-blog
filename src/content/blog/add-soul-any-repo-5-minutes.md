@@ -5,7 +5,9 @@ date: "2026-03-02"
 tags: ["soul-py", "ai-agents", "developer-tools", "tutorial", "open-source"]
 ---
 
-*Updated for v0.1.2 — now with `soul chat` CLI and ChromaDB local vector search*
+*Updated for soul-agent 0.1.2 on PyPI*
+
+> **Version note:** `pip install soul-agent` gives you version 0.1.2, which includes both the simple `Agent` class (pure markdown) and the `HybridAgent` class (RAG+RLM routing). The "v2.0" mentioned in demos refers to the HybridAgent architecture, not a separate package.
 
 Your AI forgets everything when you close the terminal.
 
@@ -168,11 +170,18 @@ agent.ask("I'm having another API issue")
 
 The agent remembers because MEMORY.md persisted.
 
-## What soul.py Does (v0.1.2)
+## What's in the Package (soul-agent 0.1.2)
 
-Let's be precise about the current version:
+`pip install soul-agent` gives you two classes:
 
-**Core features:**
+| Class | Import | What it does |
+|-------|--------|--------------|
+| `Agent` | `from soul import Agent` | Simple markdown injection — reads SOUL.md + MEMORY.md, injects into prompt |
+| `HybridAgent` | `from hybrid_agent import HybridAgent` | RAG+RLM routing — vector search for large memories, automatic query classification |
+
+**Start with `Agent`** if your memory is small (<100 entries). **Use `HybridAgent`** when memory grows large or you want semantic search.
+
+**Package features (0.1.2):**
 - Reads SOUL.md and MEMORY.md from current directory
 - Injects both into the system prompt
 - Calls your chosen LLM provider (Anthropic, OpenAI, Ollama)
@@ -197,7 +206,7 @@ soul chat
 ```
 
 ```
-🧠 soul.py v2.0 (RAG+RLM)
+🧠 soul.py (HybridAgent mode)
    Soul:   SOUL.md
    Memory: MEMORY.md (12 entries)
    Commands: /memory  /reset  /help  exit
