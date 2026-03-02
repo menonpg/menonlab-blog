@@ -270,12 +270,19 @@ bash ./mobile-use.sh \
 
 The agent will navigate Gmail, extract the data, and return structured JSON — no screenshots, no parsing, no manual automation.
 
-**When to use mobile-use vs. self-ADB:**
+**Where mobile-use shines:**
+- Complex UI navigation (finding comment boxes, tapping dynamic elements)
+- Apps with unresponsive elements that don't work with coordinate-based taps
+- Data extraction that needs LLM reasoning about what's on screen
+- When you're already running an agent on a separate machine anyway
 
-- **mobile-use**: You want a ready-to-go agent, structured data extraction, or iOS support
-- **Self-ADB**: You want full control, integration with your own agent (OpenClaw/Clawdbot), or to run entirely on-device
+**Where self-ADB is still better:**
+- Fully self-contained on the phone (no separate computer needed)
+- Simple tasks that already work well (open URLs, screenshots, basic typing)
+- Lower latency — no network round-trip to a host machine
+- Integration with on-device agents like OpenClaw or Clawdbot in Termux
 
-Both approaches have merit. Self-ADB is more flexible and runs locally on the phone itself. mobile-use is more powerful out of the box but requires a host machine running the agent.
+**The key constraint:** mobile-use requires a desktop/server running the Python agent, which connects to your phone via ADB. If you want the phone to control *itself* without external dependencies, self-ADB is still the way.
 
 [mobile-use on GitHub](https://github.com/minitap-ai/mobile-use) | [Benchmark results](https://minitap.ai/benchmark) | [Research paper](https://arxiv.org/abs/2602.07787)
 
