@@ -5,6 +5,8 @@ date: "2026-03-01"
 tags: ["n8n", "automation", "soul.py", "docker", "self-hosted", "memory", "soul-stack"]
 ---
 
+*Updated March 2026: soul-stack now includes soul-agent 0.1.2 with `soul chat` CLI, ChromaDB backend, and configurable vector storage via `SOUL_BACKEND` env var.*
+
 n8n is incredible. 50,000+ GitHub stars. Self-hosted automation that rivals Zapier. Workflows that can do almost anything.
 
 Except remember.
@@ -201,6 +203,50 @@ For completely private, offline operation — see the docker-compose section bel
 - **Jupyter:** http://localhost:8888
 
 The image auto-updates on every push to main. Fully automated CI/CD.
+
+## New in v0.1.2: Backend Selection & CLI
+
+The latest soul-stack image includes **soul-agent 0.1.2** with several new options:
+
+### Choose Your Vector Backend
+
+Set `SOUL_BACKEND` to control how memory is stored and searched:
+
+```bash
+docker run -d \
+  -e SOUL_BACKEND=chromadb \
+  -e OPENAI_API_KEY=sk-... \
+  pgmenon/soul-stack:latest
+```
+
+| Backend | Best For | Config |
+|---------|----------|--------|
+| `bm25` | Zero-config, small memories | Default, no setup needed |
+| `chromadb` | Local vector search, medium scale | Just set the env var |
+| `qdrant` | Production, large scale | Add `QDRANT_URL` + `QDRANT_API_KEY` |
+
+### OpenAI Embeddings
+
+Now you can use OpenAI for embeddings directly (not just Azure):
+
+```bash
+docker run -d \
+  -e SOUL_BACKEND=chromadb \
+  -e OPENAI_API_KEY=sk-... \
+  -e OPENAI_EMBEDDING_MODEL=text-embedding-3-small \
+  pgmenon/soul-stack:latest
+```
+
+### Interactive CLI Inside Container
+
+The `soul chat` and `soul status` commands are now available:
+
+```bash
+docker exec -it <container> soul chat
+docker exec -it <container> soul status
+```
+
+Useful for debugging memory state without hitting the API.
 
 ## Links
 
