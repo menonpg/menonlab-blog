@@ -1,84 +1,55 @@
 ---
-title: "Product Manager Skills: 46 Battle-Tested Frameworks for AI Agents"
-description: "A comprehensive skills framework that transforms AI agents into capable product management assistants using proven methodologies from Teresa Torres, Geoffrey Moore, and Amazon."
-date: "2026-03-02"
-tags: ["ai-agents", "product-management", "frameworks", "claude", "openai"]
+title: "Product Manager Skills: Teaching AI Agents to Think Like PMs"
+description: "A battle-tested framework collection that transforms AI coding agents into product management partners—46 skills covering discovery, prioritization, PRDs, and leadership transitions."
+date: "2026-03-01"
+tags: ["ai-agents", "product-management", "claude-code", "automation"]
 ---
 
-There's a pattern I see constantly with AI coding assistants: developers ask them to "write a PRD" or "help prioritize features," and they get... something. Generic. Template-ish. The kind of output that technically meets the request but misses the craft.
+The gap between "ask AI to write a PRD" and "get a usable PRD" is enormous. Generic prompts produce generic output. You end up spending more time fixing the AI's work than you saved by delegating it.
 
-The problem isn't the AI—it's that we're asking it to improvise product management instead of giving it actual frameworks to follow.
+[Product Manager Skills](https://github.com/deanpeters/Product-Manager-Skills) by Dean Peters takes a different approach: instead of prompt engineering, it provides structured *skills* that teach AI agents how product management actually works.
 
-[Product Manager Skills](https://github.com/deanpeters/Product-Manager-Skills) fixes this. It's a collection of 46 PM frameworks packaged as skills that AI agents can load and use. Instead of hoping Claude or Codex figures out how to run a customer discovery interview, you give it the actual methodology.
+## The Skills Framework
 
-## Why This Matters
+This isn't a prompt library. It's 46 interconnected frameworks covering the full PM lifecycle:
 
-Product management isn't about filling out templates. It's about knowing which framework to apply when, asking the right questions in the right order, and making decisions with incomplete information. That's hard to improvise, even for capable AI systems.
+- **Discovery & Research**: Jobs-to-be-Done interviews, opportunity assessment, customer journey mapping
+- **Prioritization**: RICE scoring, value vs. complexity matrices, feature stack ranking
+- **Documentation**: PRD generation, user story decomposition, acceptance criteria
+- **Strategy**: Market sizing (TAM/SAM/SOM), positioning frameworks, competitive analysis
+- **Leadership**: Director readiness coaching, VP/CPO transition playbooks, executive onboarding
 
-This repo takes battle-tested methodologies—Teresa Torres's Opportunity Solution Trees, Geoffrey Moore's positioning framework, Amazon's working-backwards process, MITRE's technology assessment approaches—and structures them as executable knowledge for AI agents.
-
-The result: when you ask for a PRD, the agent knows what questions to ask stakeholders, how to structure the document, and which prioritization framework applies to your situation.
-
-## What's Included
-
-The 46 skills span the full PM toolkit:
-
-**Discovery and Research**
-- Customer interview frameworks
-- Jobs-to-be-done analysis
-- Opportunity solution trees
-- Assumption testing protocols
-
-**Strategy and Prioritization**
-- TAM/SAM/SOM calculators
-- ICE and RICE scoring
-- Kano model analysis
-- Feature prioritization workflows
-
-**Documentation**
-- PRD generation with proper structure
-- User story creation with acceptance criteria
-- Epic breakdown patterns
-- Technical specification frameworks
-
-**Career Development**
-The most recent additions cover the PM career arc—from IC to Director to VP/CPO—with frameworks for navigating transitions, executive onboarding playbooks, and readiness assessments.
+Each skill includes the *why* behind the framework, not just the template. The agent learns when to apply RICE vs. Kano, how to structure discovery interviews, what makes a PRD actually useful.
 
 ## How It Works
 
-Each skill is a structured SKILL.md file that AI agents can load. The format works with Claude Code, Cowork, OpenAI Codex, ChatGPT, Gemini—essentially any AI that can read structured instructions.
+Skills are designed for AI coding agents like Claude Code, Codex, or ChatGPT with file context. Point your agent at the repository, and it gains access to battle-tested PM methodologies:
 
-The skills follow a facilitation protocol: they don't just generate output, they guide you through the process. Ask for a PRD and the agent walks you through stakeholder questions, helps you identify assumptions, and structures the document progressively.
-
-There's also a Streamlit beta interface for test-driving skills locally before integrating them into your agent workflow:
-
-```bash
-pip install -r app/requirements.txt
-streamlit run app/main.py
+```
+"Use the opportunity-solution-tree skill to map our customer problems to potential solutions"
 ```
 
-## The Facilitation Protocol
+The agent doesn't just fill in a template—it follows the skill's embedded methodology, asks the right clarifying questions, and produces output that reflects real PM thinking.
 
-One detail I appreciate: the repo includes a standardized facilitation protocol that ensures interactive flows actually feel interactive. Skills that involve discovery or decision-making walk through questions step-by-step rather than dumping everything at once.
+## Standout Features
 
-This was actually a bug fix in v0.4—they found that a brevity-focused rewrite had stripped out the guided facilitation behavior. The fix standardized how skills handle context, interruptions, and decision points.
+**Workshop Facilitation Protocol**: Interactive skills include a facilitation layer that guides you through frameworks step-by-step, asking questions progressively rather than dumping forms.
 
-It's the kind of attention to UX that separates "a collection of prompts" from "a usable toolkit."
+**Career Arc Coverage**: The v0.5 release added skills for PM-to-Director and Director-to-VP transitions—frameworks distilled from The Product Porch podcast episodes on leadership growth.
 
-## Who Should Use This
+**Streamlit Playground**: A local web UI for test-driving skills before integrating them into your agent workflow. Multi-provider support (Anthropic, OpenAI, Ollama) with guided browsing.
 
-This is valuable for:
+**Deterministic Helpers**: Some skills include Python scripts for calculations (market sizing math, for example) that produce consistent outputs without AI variance.
 
-- **Product managers** who want AI assistants that understand PM methodology
-- **AI agent developers** building tools for product teams
-- **Anyone** who's tired of getting generic output from "write me a PRD" prompts
+## Why This Matters
 
-The skills are licensed CC BY-NC-SA 4.0, so you can adapt them for your own use. The repo is actively maintained with new frameworks being added regularly.
+The meta-insight here is important: skills beat prompts. Instead of crafting perfect one-shot instructions, you give agents *knowledge structures* they can apply across contexts.
 
-## Getting Started
+This mirrors how humans learn PM work—through frameworks and mental models that transfer across products and companies. The skills repository codifies that tacit knowledge into something an AI agent can actually use.
 
-Clone the repo, pick a skill that matches what you're working on, and point your AI agent at it. The README includes setup instructions for different agent frameworks.
+For PMs experimenting with AI assistance, this is a more robust foundation than prompt engineering. For teams building AI-powered PM tools, it's a reference implementation of what structured PM knowledge looks like.
 
-If you've been treating AI assistants as fancy autocomplete for PM work, this repo shows what's possible when you give them actual methodology to follow. The output quality difference is substantial.
-
-[Explore the repo on GitHub](https://github.com/deanpeters/Product-Manager-Skills)
+**Links:**
+- [GitHub Repository](https://github.com/deanpeters/Product-Manager-Skills)
+- [Skills Index](https://github.com/deanpeters/Product-Manager-Skills/blob/main/skills/)
+- [Streamlit Interface Docs](https://github.com/deanpeters/Product-Manager-Skills/blob/main/app/STREAMLIT_INTERFACE.md)
