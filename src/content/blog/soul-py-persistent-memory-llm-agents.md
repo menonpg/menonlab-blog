@@ -118,14 +118,15 @@ It's the difference between "I need a car" and "I need wheels." Sometimes you ju
 
 ## What v0.1 Doesn't Do (Yet)
 
-Once `MEMORY.md` gets very large (thousands of entries), it'll overflow the context window. That's the v1.0 problem—solved with local RAG (ChromaDB/FAISS).
+Once `MEMORY.md` gets very large (thousands of entries), it'll overflow the context window. That's the v2.0 problem — solved with RAG retrieval.
 
 For most use cases, v0.1 runs indefinitely. A typical daily exchange is ~200 words. You'd hit the context limit after roughly **6 months of daily use**. Plenty of runway.
 
-The roadmap:
-- **v0.1 (now)**: Markdown-native, zero infrastructure
-- **v1.0**: Local vector store for large memory files
-- **v2.0**: RAG + RLM hybrid with query routing
+The versions:
+- **v0.1**: Markdown-native, zero infrastructure
+- **v2.0**: RAG + RLM hybrid with query routing (uses Qdrant + Azure embeddings)
+
+Try v2.0: [soulv2.themenonlab.com](https://soulv2.themenonlab.com)
 
 ## The Philosophy
 
