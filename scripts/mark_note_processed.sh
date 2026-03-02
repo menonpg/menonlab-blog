@@ -9,8 +9,8 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-# Create hash of the title
-HASH=$(echo "$1" | md5 -q 2>/dev/null || echo "$1" | md5sum | cut -d' ' -f1)
+# Create hash of the title (must match check_new_notes.sh)
+HASH=$(echo "$1" | shasum -a 256 | cut -d' ' -f1)
 
 # Add to processed list if not already there
 if ! grep -q "^$HASH$" "$PROCESSED_FILE" 2>/dev/null; then

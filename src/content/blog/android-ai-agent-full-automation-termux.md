@@ -241,6 +241,46 @@ The Termux:API gives you hardware access. Self-ADB gives you UI control. Togethe
 
 ---
 
+## Alternative: mobile-use (If You Want a Ready-Made Solution)
+
+*Updated March 2026*
+
+If setting up self-ADB feels like too much work, there's now a polished open-source alternative: **[mobile-use](https://github.com/minitap-ai/mobile-use)** from Minitap AI.
+
+mobile-use is an AI agent that controls Android and iOS devices using natural language. It understands your commands and interacts with the UI to perform tasks — from sending messages to navigating complex apps.
+
+**Key differences from the DIY approach:**
+
+| | Self-ADB (this guide) | mobile-use |
+|--|----------------------|------------|
+| Setup | Manual pairing, scripts | Docker one-liner or Python install |
+| iOS support | ❌ No | ✅ Yes (simulators) |
+| AI integration | You build it | Built-in multi-LLM support |
+| Data extraction | Manual screencap + vision | Native structured output (JSON) |
+| Benchmark | DIY | #1 on AndroidWorld (100% completion) |
+
+**Quick start with Docker:**
+
+```bash
+# Linux/macOS (device connected via USB or emulator running)
+bash ./mobile-use.sh \
+  "Open Gmail, find first 3 unread emails, and list their sender and subject line" \
+  --output-description "A JSON list of objects, each with 'sender' and 'subject' keys"
+```
+
+The agent will navigate Gmail, extract the data, and return structured JSON — no screenshots, no parsing, no manual automation.
+
+**When to use mobile-use vs. self-ADB:**
+
+- **mobile-use**: You want a ready-to-go agent, structured data extraction, or iOS support
+- **Self-ADB**: You want full control, integration with your own agent (OpenClaw/Clawdbot), or to run entirely on-device
+
+Both approaches have merit. Self-ADB is more flexible and runs locally on the phone itself. mobile-use is more powerful out of the box but requires a host machine running the agent.
+
+[mobile-use on GitHub](https://github.com/minitap-ai/mobile-use) | [Benchmark results](https://minitap.ai/benchmark) | [Research paper](https://arxiv.org/abs/2602.07787)
+
+---
+
 ## Why This Matters
 
 Most guides stop at "chat with your AI from Telegram." That's useful, but limited.
