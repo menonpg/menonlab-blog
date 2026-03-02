@@ -75,6 +75,69 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </blockquote>
           <script async src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>
         </div>
+
+        <div class="roadmap">
+          <h3>🗺️ Roadmap</h3>
+          <p>Planned features and improvements. PRs welcome!</p>
+          
+          <div class="roadmap-section">
+            <h4>Vector Database Support</h4>
+            <ul>
+              <li><span class="status done">✅</span> Qdrant (current)</li>
+              <li><span class="status planned">🔲</span> ChromaDB (local, zero-config)</li>
+              <li><span class="status planned">🔲</span> pgvector (PostgreSQL)</li>
+              <li><span class="status planned">🔲</span> FAISS (local, fast)</li>
+              <li><span class="status planned">🔲</span> Pinecone (cloud)</li>
+              <li><span class="status planned">🔲</span> Weaviate</li>
+            </ul>
+          </div>
+
+          <div class="roadmap-section">
+            <h4>Embedding Providers</h4>
+            <ul>
+              <li><span class="status done">✅</span> Azure OpenAI (current)</li>
+              <li><span class="status planned">🔲</span> OpenAI direct</li>
+              <li><span class="status planned">🔲</span> Cohere</li>
+              <li><span class="status planned">🔲</span> Local embeddings (sentence-transformers)</li>
+              <li><span class="status planned">🔲</span> Ollama embeddings</li>
+            </ul>
+          </div>
+
+          <div class="roadmap-section">
+            <h4>CLI & Developer Experience</h4>
+            <ul>
+              <li><span class="status done">✅</span> <code>soul init</code> wizard</li>
+              <li><span class="status planned">🔲</span> <code>soul chat</code> interactive CLI</li>
+              <li><span class="status planned">🔲</span> <code>soul status</code> memory stats</li>
+              <li><span class="status planned">🔲</span> <code>config.yaml</code> file support</li>
+              <li><span class="status planned">🔲</span> VSCode extension</li>
+            </ul>
+          </div>
+
+          <div class="roadmap-section">
+            <h4>Memory Features</h4>
+            <ul>
+              <li><span class="status done">✅</span> Timestamped conversation logging</li>
+              <li><span class="status done">✅</span> RAG + RLM hybrid routing</li>
+              <li><span class="status planned">🔲</span> Automatic memory summarization</li>
+              <li><span class="status planned">🔲</span> Memory importance scoring</li>
+              <li><span class="status planned">🔲</span> Tiered memory (hot/warm/cold)</li>
+              <li><span class="status planned">🔲</span> Memory export/import</li>
+            </ul>
+          </div>
+
+          <div class="roadmap-section">
+            <h4>Integrations</h4>
+            <ul>
+              <li><span class="status done">✅</span> Anthropic Claude</li>
+              <li><span class="status done">✅</span> OpenAI</li>
+              <li><span class="status done">✅</span> Ollama / OpenAI-compatible</li>
+              <li><span class="status planned">🔲</span> LangChain memory backend</li>
+              <li><span class="status planned">🔲</span> LlamaIndex integration</li>
+              <li><span class="status planned">🔲</span> n8n node (official)</li>
+            </ul>
+          </div>
+        </div>
       </div>
 
     </section>
@@ -275,6 +338,64 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .community-buzz p {
     color: var(--muted);
     margin-bottom: 1rem;
+  }
+
+  /* Roadmap */
+  .roadmap {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .roadmap > h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .roadmap > p {
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .roadmap-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .roadmap-section h4 {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    color: var(--accent);
+  }
+
+  .roadmap-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .roadmap-section li {
+    padding: 0.25rem 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .roadmap-section code {
+    background: rgba(96, 165, 250, 0.1);
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.85rem;
+  }
+
+  .status {
+    margin-right: 0.5rem;
+  }
+
+  .status.done {
+    color: #4ade80;
+  }
+
+  .status.planned {
+    color: var(--muted);
   }
 
   /* Contribute Section */
