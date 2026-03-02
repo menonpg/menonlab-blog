@@ -5,6 +5,8 @@ date: "2026-03-02"
 tags: ["soul-py", "ai-agents", "developer-tools", "tutorial", "open-source"]
 ---
 
+*Updated for v0.1.2 — now with `soul chat` CLI and ChromaDB local vector search*
+
 Your AI forgets everything when you close the terminal.
 
 You spend 10 minutes explaining your project context. The AI gives great help. You close the session. Tomorrow, it's a stranger again.
@@ -81,7 +83,11 @@ Every `agent.ask()` call reads these files, calls the LLM, and appends the excha
 
 ```bash
 pip install soul-agent
+soul init
+soul chat   # NEW in v0.1.2 — interactive CLI!
 ```
+
+Or use the Python API:
 
 ```bash
 soul init
