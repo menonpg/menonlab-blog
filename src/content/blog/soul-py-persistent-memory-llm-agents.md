@@ -155,3 +155,25 @@ soul init
 Star the repo: [github.com/menonpg/soul.py](https://github.com/menonpg/soul.py)
 
 Your AI shouldn't have amnesia. Fix it in 10 lines.
+
+---
+
+## Community Response
+
+Within hours of sharing soul.py on Reddit, it became the **#1 post of all time** on [r/ollama](https://www.reddit.com/r/ollama/) — a community of 100K+ developers running local LLMs.
+
+**The numbers (first 9 hours):**
+- 📈 **24,000+ views**
+- 🏆 **#1 post on r/ollama**
+- 🌍 Readers from 50+ countries (37% US, 7% Germany, 5% Canada)
+- 💬 Dozens of questions and feature discussions
+
+<blockquote class="reddit-embed-bq" data-embed-height="500">
+  <a href="https://www.reddit.com/r/ollama/comments/1ri4d80/soulpy_persistent_memory_for_any_llm_in_10_lines/">soul.py — Persistent memory for any LLM in 10 lines (works with Ollama, no database)</a>
+  <br>by <a href="https://www.reddit.com/user/the_ai_scientist/">u/the_ai_scientist</a> in <a href="https://www.reddit.com/r/ollama/">r/ollama</a>
+</blockquote>
+<script async src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>
+
+The response validated something we suspected: developers want memory without complexity. Not every project needs a vector database. Sometimes you just need a text file that persists.
+
+Thanks to everyone who tried it, asked questions, and pushed us to add v2.0's RAG support. This is just the beginning.
