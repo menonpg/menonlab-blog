@@ -173,4 +173,8 @@ GitHub: [github.com/menonpg/soul.py](https://github.com/menonpg/soul.py)
 
 ---
 
+**Update:** Want the fastest path to n8n + soul.py? Try [soul-stack](/blog/n8n-workflows-forget-everything-soul-stack) — a single Docker command that spins up n8n, soul.py, and Jupyter pre-configured and ready to go.
+
+---
+
 *Your AI workflows deserve memory. soul.py gives them one.*

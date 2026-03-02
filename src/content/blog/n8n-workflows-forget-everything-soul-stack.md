@@ -172,4 +172,8 @@ The image auto-updates on every push to main. Fully automated CI/CD.
 
 ---
 
+**Related:** For a deeper technical dive on integrating soul.py's HybridAgent directly into n8n Python nodes (including RAG vs RLM mode selection and cloud deployment), see [Adding Persistent Memory to n8n AI Workflows with soul.py](/blog/soul-py-n8n-persistent-memory-workflows).
+
+---
+
 Your n8n workflows shouldn't have amnesia. Give them memory.
