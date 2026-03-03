@@ -5,6 +5,8 @@ date: "2026-03-03"
 tags: ["soul-py", "ai-agents", "book", "demo", "memory", "rag", "rlm"]
 ---
 
+![soul.py logo](/images/soul-py/logo.jpg)
+
 There's something delightfully recursive about building an AI companion for a book about AI memory.
 
 The book is called *Soul: Building AI Agents That Remember Who They Are*. It teaches you how to give AI agents persistent identity and memory. And the companion we built to help readers explore the book? It's built using exactly those techniques.

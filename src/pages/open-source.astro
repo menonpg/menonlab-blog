@@ -74,8 +74,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <!-- soul.py -->
       <div class="project-card featured">
         <div class="project-header">
-          <h2>🧠 soul.py</h2>
-          <span class="badge">Featured</span>
+          <img src="/images/soul-py/logo.jpg" alt="soul.py logo" class="project-logo" />
+          <div class="project-title">
+            <h2>soul.py</h2>
+            <span class="badge">Featured</span>
+          </div>
         </div>
         <p class="tagline">Persistent identity and memory for any LLM agent</p>
         
@@ -268,6 +271,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     align-items: center;
     gap: 1rem;
     margin-bottom: 0.5rem;
+  }
+
+  .project-logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+
+  .project-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 
   .project-header h2 {
