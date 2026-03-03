@@ -78,6 +78,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <span class="badge">Featured</span>
         </div>
         <p class="tagline">Persistent identity and memory for any LLM agent</p>
+        
+        <div class="product-hunt-badge">
+          <a href="https://www.producthunt.com/products/soul-py?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-soul-py" target="_blank" rel="noopener noreferrer">
+            <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1089297&theme=dark&t=1772560457565" alt="Soul.py - Two files. Any LLM. Your AI finally remembers. | Product Hunt" width="250" height="54" />
+          </a>
+        </div>
         <p class="description">
           Your AI forgets everything when the conversation ends. soul.py fixes that — from simple markdown injection 
           to full RAG + RLM hybrid retrieval. v0.1 uses pure markdown files. v2.0 indexes those memories and 
@@ -279,6 +285,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-size: 1rem;
     margin-bottom: 1rem;
     font-style: italic;
+  }
+
+  .product-hunt-badge {
+    margin-bottom: 1.5rem;
+  }
+
+  .product-hunt-badge img {
+    transition: transform 0.2s;
+  }
+
+  .product-hunt-badge img:hover {
+    transform: scale(1.02);
   }
 
   .description {
