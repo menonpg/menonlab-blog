@@ -211,9 +211,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         All projects welcome PRs. Check the GitHub issues for good first contributions, 
         or open a discussion if you have ideas.
       </p>
-      <a href="https://github.com/menonpg" target="_blank" class="btn btn-primary">
-        View All Repos →
-      </a>
+      <div class="contribute-links">
+        <a href="https://github.com/menonpg" target="_blank" class="btn btn-primary">
+          View All Repos →
+        </a>
+        <a href="https://www.producthunt.com/@menonpg/collections/the-menon-lab" target="_blank" class="btn btn-secondary">
+          Follow on Product Hunt →
+        </a>
+      </div>
     </section>
 
   </article>
@@ -519,6 +524,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .contribute p {
     color: var(--muted);
     margin-bottom: 1.5rem;
+  }
+
+  .contribute-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   @media (max-width: 640px) {
