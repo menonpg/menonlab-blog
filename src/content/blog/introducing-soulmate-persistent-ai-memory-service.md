@@ -139,7 +139,7 @@ pip install soul-agent --upgrade
 
 ```python
 from soulmate import SoulMateClient
-# Get an API key at soulmate-api.up.railway.app/docs
+# Get an API key at soulmate-api-production.up.railway.app/docs
 ```
 
 **Enterprise:**
