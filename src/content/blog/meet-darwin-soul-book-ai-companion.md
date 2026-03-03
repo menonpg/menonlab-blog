@@ -123,6 +123,8 @@ Darwin is built with [soul.py](https://github.com/menonpg/soul.py), the same ope
 
 Two files. Any LLM. Your AI finally remembers.
 
+**Need enterprise-grade deployment?** Check out [SoulMate](https://menonpg.github.io/soulmate/) — the commercial embodiment of soul.py for high-volume customer interactions. HIPAA-compliant healthcare, telecom support at scale, financial services personalization.
+
 ---
 
 *Darwin is waiting at [soul-book.themenonlab.com](https://soul-book.themenonlab.com). Ask it anything about the book — or about itself. And if you want to understand how it works at a deeper level, the book explains everything.*
