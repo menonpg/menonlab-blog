@@ -5,7 +5,7 @@ date: "2026-03-01"
 tags: ["n8n", "automation", "soul.py", "docker", "self-hosted", "memory", "soul-stack"]
 ---
 
-*Updated March 2026: soul-stack now includes soul-agent 0.1.2 with `soul chat` CLI, ChromaDB backend, and configurable vector storage via `SOUL_BACKEND` env var.*
+*Updated March 2026: soul-stack now includes soul-agent 0.1.3 with `soul chat` CLI, ChromaDB backend, configurable vector storage via `SOUL_BACKEND` env var, and graceful Ollama/local handling.*
 
 n8n is incredible. 50,000+ GitHub stars. Self-hosted automation that rivals Zapier. Workflows that can do almost anything.
 
@@ -204,9 +204,9 @@ For completely private, offline operation — see the docker-compose section bel
 
 The image auto-updates on every push to main. Fully automated CI/CD.
 
-## New in v0.1.2: Backend Selection & CLI
+## New in v0.1.3: Backend Selection, CLI & Ollama Fix
 
-The latest soul-stack image includes **soul-agent 0.1.2** with several new options:
+The latest soul-stack image includes **soul-agent 0.1.3** with several new options:
 
 ### Choose Your Vector Backend
 
