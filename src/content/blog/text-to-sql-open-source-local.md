@@ -5,6 +5,8 @@ date: "2026-03-04"
 tags: ["ai", "sql", "open-source", "llm", "data-analysis"]
 ---
 
+*Updated: March 2026 — Added detailed explanation of how Vanna's training/indexing works and comparison to Databricks Genie.*
+
 After years of half-baked demos and cloud-only solutions, we finally have a Text-to-SQL framework that delivers on all fronts: **Vanna AI 2.0**. It's open-source (MIT license), works with local LLMs via Ollama, connects to virtually any database, and includes a production-ready web interface out of the box.
 
 ## Why This Matters
@@ -117,25 +119,150 @@ register_chat_routes(app, chat_handler)
 
 Run with `uvicorn main:app --reload`, open `localhost:8000`, and start asking questions.
 
-## Improving Accuracy with Training Data
+## How Vanna Actually Learns Your Database
 
-Vanna uses RAG (Retrieval-Augmented Generation) to improve SQL accuracy. You can train it on your schema and example queries:
+This is the critical part most tutorials gloss over: **Vanna doesn't index your actual data — it indexes metadata about your database.**
+
+When you "train" Vanna, you're teaching it three things:
+
+### 1. Schema Structure (DDL)
+
+Table names, column names, data types, and relationships:
 
 ```python
-# Train on your schema (DDL)
-vn.train(ddl="CREATE TABLE customers (id INT, name VARCHAR, region VARCHAR)")
+vn.train(ddl="""
+    CREATE TABLE customers (
+        id INT PRIMARY KEY,
+        name VARCHAR(100),
+        region VARCHAR(50),
+        created_at TIMESTAMP
+    )
+""")
 
-# Train on example question-SQL pairs
-vn.train(
-    question="How many customers do we have in Europe?",
-    sql="SELECT COUNT(*) FROM customers WHERE region = 'Europe'"
-)
-
-# Train on documentation
-vn.train(documentation="Region codes: NA=North America, EU=Europe, APAC=Asia Pacific")
+vn.train(ddl="""
+    CREATE TABLE orders (
+        id INT PRIMARY KEY,
+        customer_id INT REFERENCES customers(id),
+        total DECIMAL(10,2),
+        status VARCHAR(20)
+    )
+""")
 ```
 
-The more context you provide, the better Vanna understands your specific database schema and business terminology.
+### 2. Business Context (Documentation)
+
+Domain-specific terminology that isn't obvious from column names:
+
+```python
+vn.train(documentation="Region codes: NA=North America, EU=Europe, APAC=Asia Pacific")
+vn.train(documentation="OTIF = On Time In Full, the percentage of orders delivered on schedule")
+vn.train(documentation="A 'churned' customer has no orders in the last 90 days")
+```
+
+### 3. Example Question→SQL Pairs (Few-Shot Learning)
+
+Real examples of how questions map to queries in your specific context:
+
+```python
+vn.train(
+    question="How many customers do we have in Europe?",
+    sql="SELECT COUNT(*) FROM customers WHERE region = 'EU'"
+)
+
+vn.train(
+    question="What's our OTIF rate this month?",
+    sql="""SELECT 
+        COUNT(CASE WHEN delivered_on_time AND delivered_complete THEN 1 END) * 100.0 / COUNT(*) 
+        FROM orders WHERE order_date >= DATE_TRUNC('month', CURRENT_DATE)"""
+)
+```
+
+### The RAG Flow
+
+Here's what happens under the hood:
+
+1. **Training data gets embedded** → stored in a vector database (ChromaDB, Qdrant, Milvus, etc.)
+2. **User asks a question** → Vanna retrieves the 10 most relevant training items (DDL, docs, examples)
+3. **Context + question go to the LLM** → generates SQL using retrieved context
+4. **Your actual row data never leaves your database** — only the schema metadata
+
+### Auto-Training from INFORMATION_SCHEMA
+
+Don't want to manually write DDL? Vanna can extract it automatically:
+
+```python
+# Connect to your database first
+vn.connect_to_postgres(host='localhost', dbname='mydb', user='user', password='pass')
+
+# Pull schema from INFORMATION_SCHEMA
+df = vn.run_sql("SELECT * FROM INFORMATION_SCHEMA.COLUMNS")
+
+# Generate a training plan
+plan = vn.get_training_plan_generic(df)
+print(plan)  # Review what it found
+
+# Execute the training
+vn.train(plan=plan)
+```
+
+This extracts table structures automatically, but you'll still want to add business documentation and example queries for best results.
+
+## How This Compares to Databricks Genie
+
+If you're on Databricks, you might wonder: why not just use [AI/BI Genie](https://docs.databricks.com/aws/en/genie/)? It's a fair question — Genie takes a fundamentally different approach.
+
+### Databricks Genie: Metadata at the Source
+
+Genie leverages **Unity Catalog**, where metadata lives alongside your data:
+
+- **Column descriptions** are defined at table creation time
+- **Table comments** explain business context
+- **PK/FK relationships** are declared in the catalog
+- **Synonyms and business terms** can be added in a "knowledge store"
+
+When you point Genie at a Unity Catalog table, it *already knows* what the columns mean — because that metadata was captured when the table was created. There's no separate training step.
+
+```sql
+-- In Databricks, metadata is part of table definition
+CREATE TABLE sales.customers (
+    customer_id INT COMMENT 'Unique customer identifier',
+    region STRING COMMENT 'Geographic region: NA, EU, APAC',
+    ltv DECIMAL(10,2) COMMENT 'Lifetime value in USD'
+) COMMENT 'Master customer table, updated nightly from CRM';
+```
+
+### Vanna: Metadata as a Separate Layer
+
+Vanna works with *any* database, but that means it can't assume metadata exists. You build the semantic layer yourself:
+
+| Aspect | Databricks Genie | Vanna |
+|--------|------------------|-------|
+| **Metadata source** | Unity Catalog (built-in) | Manual training or INFORMATION_SCHEMA extraction |
+| **Setup effort** | Low if catalog is well-documented | Medium — requires explicit training |
+| **Database support** | Databricks only | Any SQL database |
+| **Business terms** | Knowledge store (UI-based) | Documentation strings in code |
+| **Example queries** | SQL examples in Genie space | `vn.train(question=..., sql=...)` |
+| **Self-improving** | Learns from user feedback | Tool Memory learns from successful queries |
+| **Cost** | Included in Databricks | Free (MIT license) |
+
+### When to Use Which
+
+**Choose Genie if:**
+- You're already on Databricks
+- Your Unity Catalog has good column/table descriptions
+- You want zero-code setup for business users
+
+**Choose Vanna if:**
+- You need to support multiple databases (Postgres, MySQL, Snowflake, etc.)
+- You want full control over the semantic layer
+- You need to run everything locally (privacy/compliance)
+- You're building a custom application, not just ad-hoc analysis
+
+### The Takeaway
+
+Genie's advantage is **metadata at the source** — if you've invested in documenting your Unity Catalog, you get Text-to-SQL almost for free. Vanna's advantage is **flexibility** — it works anywhere, with any LLM, and you own the entire stack.
+
+For teams not on Databricks, Vanna is the closest you'll get to a Genie-like experience with open-source tools.
 
 ## Benchmarks: How Does It Compare?
 
@@ -184,3 +311,5 @@ The code is on GitHub: [github.com/vanna-ai/vanna](https://github.com/vanna-ai/v
 - [DataLine](https://github.com/RamiAwar/dataline)
 - [Contextual AI: Open-Sourcing the Best Local Text-to-SQL System](https://contextual.ai/blog/open-sourcing-the-best-local-text-to-sql-system)
 - [BIRD Benchmark](https://bird-bench.github.io/)
+- [Databricks AI/BI Genie Documentation](https://docs.databricks.com/aws/en/genie/)
+- [Curate an Effective Genie Space](https://docs.databricks.com/aws/en/genie/best-practices)
