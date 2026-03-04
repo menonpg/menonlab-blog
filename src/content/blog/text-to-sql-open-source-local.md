@@ -258,11 +258,46 @@ Vanna works with *any* database, but that means it can't assume metadata exists.
 - You need to run everything locally (privacy/compliance)
 - You're building a custom application, not just ad-hoc analysis
 
+### The Honest Trade-Off: Setup Cost
+
+Let's be direct about this: **Vanna requires real work that Genie doesn't.**
+
+With Databricks Genie, if your Unity Catalog tables have good column descriptions and table comments, you're essentially done. Point Genie at the table, and it understands what "region" means, what "LTV" stands for, and how tables relate to each other. The metadata was captured when the data was modeled.
+
+With Vanna, you're recreating that semantic layer from scratch:
+
+| Task | Genie | Vanna |
+|------|-------|-------|
+| Schema structure | Already in Unity Catalog | Extract from INFORMATION_SCHEMA or write DDL manually |
+| Column descriptions | Already in Unity Catalog | Write documentation strings yourself |
+| Business terminology | Add to knowledge store (UI) | Write documentation strings yourself |
+| Example queries | Add SQL examples (UI) | Write `vn.train(question=..., sql=...)` calls |
+| Table relationships | PK/FK in Unity Catalog | Describe in DDL or documentation |
+
+For a data warehouse with 50+ tables, this isn't trivial. You're looking at:
+- Hours of writing documentation strings
+- Curating dozens of example question→SQL pairs
+- Maintaining this as your schema evolves
+
+**This is the real cost of database flexibility.** Vanna works with any database precisely because it doesn't assume a rich metadata layer exists. You build that layer yourself.
+
+### When the Trade-Off Makes Sense
+
+Despite the setup cost, Vanna wins in specific scenarios:
+
+1. **You're not on Databricks** — Postgres, MySQL, Snowflake, BigQuery, etc. don't have Unity Catalog. Vanna is your only option for a Genie-like experience.
+
+2. **Compliance/privacy requirements** — You need everything local. Vanna + Ollama means no data or queries leave your infrastructure.
+
+3. **Building a product** — You're embedding Text-to-SQL into a customer-facing application. Vanna's MIT license and API-first design make this possible.
+
+4. **You already have the metadata** — If you've built internal documentation, a data dictionary, or similar tools, you can script the training. The work isn't wasted.
+
 ### The Takeaway
 
-Genie's advantage is **metadata at the source** — if you've invested in documenting your Unity Catalog, you get Text-to-SQL almost for free. Vanna's advantage is **flexibility** — it works anywhere, with any LLM, and you own the entire stack.
+Genie's advantage is **metadata at the source** — if you've invested in documenting your Unity Catalog, you get Text-to-SQL almost for free. Vanna's advantage is **flexibility** — it works anywhere, with any LLM, and you own the entire stack. But that flexibility comes with a real setup cost.
 
-For teams not on Databricks, Vanna is the closest you'll get to a Genie-like experience with open-source tools.
+For teams not on Databricks, Vanna is the closest you'll get to a Genie-like experience with open-source tools — just know that you're signing up to build the semantic layer yourself.
 
 ## Benchmarks: How Does It Compare?
 
