@@ -197,6 +197,22 @@ The code is MIT licensed: [github.com/menonpg/soul-schema](https://github.com/me
 
 Real examples with actual output: [github.com/menonpg/soul-schema/tree/main/examples](https://github.com/menonpg/soul-schema/tree/main/examples)
 
+## What's Next
+
+Based on community feedback, here's what's coming:
+
+**Schema Diffing** — Compare baseline snapshots against current database. Detect drift: new tables, removed columns, type changes. Run `soul-schema diff --baseline v1.json --current jdbc:...` to see what changed.
+
+**PII Detection** — Automatically flag columns that look like personally identifiable information (`*_ssn`, `*_email`, phone patterns). Security teams get notified about potentially sensitive columns during documentation.
+
+**CI Integration** — GitHub Action that runs schema checks in PRs. Flag suspicious columns before merge. Pair this with schema diffing to catch "we added a column that looks like a user identifier" automatically.
+
+Full roadmap: [ROADMAP.md](https://github.com/menonpg/soul-schema/blob/main/ROADMAP.md)
+
+---
+
+*Updated: March 2026 — Added roadmap section*
+
 ---
 
 **References:**
