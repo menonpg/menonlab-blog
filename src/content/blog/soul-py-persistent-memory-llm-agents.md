@@ -195,6 +195,6 @@ The book covers:
 - The Darwinian approach to evolving agent identity
 - Complete working code in every chapter
 
-**[→ Get "Soul" on Amazon](https://a.co/d/02T0WadG)**
+**[→ Get "Soul" on Amazon](https://a.co/d/02T0WadG)** | **[→ Gumroad Bundle](https://themenonlab.gumroad.com/l/soul-agent)** (PDF + setup wizard + cheatsheets)
 
 Try the live demo: **[Ask Darwin](https://soul-book.themenonlab.com)** — an AI companion built with the same architecture the book teaches.
