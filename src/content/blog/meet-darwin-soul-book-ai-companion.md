@@ -108,7 +108,7 @@ The demo is free and requires no signup. Darwin runs on the [RAG + RLM hybrid ar
 
 If you find the conversation valuable, the full book goes much deeper:
 
-**[→ Get the Complete Soul Bundle on Gumroad](https://prahladmantra.gumroad.com/l/soul-agent)** — Includes the full book PDF, interactive setup wizard, and three cheatsheet PDFs (API reference, memory patterns, RAG vs RLM decision guide).
+**[→ Get the Complete Soul Bundle on Gumroad](https://themenonlab.gumroad.com/l/soul-agent)** — Includes the full book PDF, interactive setup wizard, and three cheatsheet PDFs (API reference, memory patterns, RAG vs RLM decision guide).
 
 The book includes complete code examples, architectural diagrams, the philosophy behind persistent AI identity, and advanced topics like multi-agent memory sharing and Darwinian evolution of agent identity that Darwin can only summarize.
 
