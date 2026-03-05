@@ -5,6 +5,8 @@ date: "2026-03-01"
 tags: ["ai-agents", "llm", "python", "open-source", "memory"]
 ---
 
+> **📚 The Book is Here!** Everything in this post (and much more) is now in *Soul: Building AI Agents That Remember Who They Are* — **[Available on Amazon →](https://a.co/d/02T0WadG)**
+
 Every AI conversation starts the same way: "Hi, I'm Claude/GPT/Llama, how can I help you today?"
 
 You've talked to this model a hundred times. You've told it your name, your projects, your preferences. It doesn't matter. The moment the session ends, it forgets everything. Tomorrow, you start from zero.
@@ -178,3 +180,21 @@ Within hours of sharing soul.py on Reddit, it became the **#1 post of all time**
 The response validated something we suspected: developers want memory without complexity. Not every project needs a vector database. Sometimes you just need a text file that persists.
 
 Thanks to everyone who tried it, asked questions, and pushed us to add v2.0's RAG support. This is just the beginning.
+
+---
+
+## The Book
+
+Everything in this post — and much more — is now in **"Soul: Building AI Agents That Remember Who They Are"**.
+
+The book covers:
+- Why agents forget (architectural deep dive)
+- Identity vs Memory (SOUL.md vs MEMORY.md philosophy)
+- The RLM Pattern (when RAG isn't enough)
+- Multi-agent identity coordination
+- The Darwinian approach to evolving agent identity
+- Complete working code in every chapter
+
+**[→ Get "Soul" on Amazon](https://a.co/d/02T0WadG)**
+
+Try the live demo: **[Ask Darwin](https://soul-book.themenonlab.com)** — an AI companion built with the same architecture the book teaches.

@@ -7,6 +7,8 @@ tags: ["soul-py", "ai-agents", "book", "demo", "memory", "rag", "rlm"]
 
 ![soul.py logo](/images/soul-py/logo.jpg)
 
+> **📚 Update (March 2026):** The book is now live on Amazon! **[Get "Soul: Building AI Agents That Remember Who They Are" →](https://a.co/d/02T0WadG)**
+
 There's something delightfully recursive about building an AI companion for a book about AI memory.
 
 The book is called *Soul: Building AI Agents That Remember Who They Are*. It teaches you how to give AI agents persistent identity and memory. And the companion we built to help readers explore the book? It's built using exactly those techniques.
@@ -107,6 +109,8 @@ Darwin answers based on the book's content, but it also demonstrates the concept
 The demo is free and requires no signup. Darwin runs on the [RAG + RLM hybrid architecture](/blog/soul-py-v2-rag-rlm-hybrid) described in the book, using the book itself as its knowledge base.
 
 If you find the conversation valuable, the full book goes much deeper:
+
+**[→ Get "Soul" on Amazon](https://a.co/d/02T0WadG)** — Now available on Kindle! The complete guide to building AI agents that remember who they are.
 
 **[→ Get the Complete Soul Bundle on Gumroad](https://themenonlab.gumroad.com/l/soul-agent)** — Includes the full book PDF, interactive setup wizard, and three cheatsheet PDFs (API reference, memory patterns, RAG vs RLM decision guide).
 
