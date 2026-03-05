@@ -15,119 +15,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <section class="projects">
 
-      <!-- soul-schema (NEW!) -->
-      <div class="project-card featured">
-        <div class="project-header">
-          <h2>🧬 soul-schema</h2>
-          <span class="badge">New</span>
-        </div>
-        <p class="tagline">Auto-document your data warehouse in 3 minutes</p>
-        <p class="description">
-          You inherit 100 tables. Zero docs. Columns named <code>cust_ltv</code>, <code>flg_b2b</code>, <code>reg_cd</code>. 
-          The person who knew what they meant left in 2019. soul-schema connects to any database, reads the schema,
-          and uses an LLM to generate human-readable descriptions for every table and column. Corrections are 
-          "locked" — future runs won't overwrite your edits. The semantic layer learns over time.
-        </p>
-
-        <div class="version-table">
-          <div class="version-row">
-            <span class="version">dbt</span>
-            <span class="desc">Export to schema.yml</span>
-          </div>
-          <div class="version-row">
-            <span class="version">Vanna</span>
-            <span class="desc">Export training data for Text-to-SQL</span>
-          </div>
-          <div class="version-row">
-            <span class="version">Ollama</span>
-            <span class="desc">Air-gapped mode, fully local</span>
-          </div>
-        </div>
-
-        <div class="project-links">
-          <a href="https://github.com/menonpg/soul-schema" target="_blank" class="btn btn-primary">
-            GitHub
-          </a>
-          <a href="https://pypi.org/project/soul-schema/" target="_blank" class="btn btn-secondary">
-            PyPI
-          </a>
-          <a href="/blog/soul-schema-auto-document-data-warehouse" class="btn btn-secondary">
-            Writeup
-          </a>
-        </div>
-
-        <div class="install-block">
-          <code>pip install soul-schema</code>
-        </div>
-
-        <div class="features-list">
-          <h3>✨ Features (v0.1.0)</h3>
-          <ul>
-            <li><strong>Any database:</strong> Postgres, MySQL, SQLite — anything SQLAlchemy supports</li>
-            <li><strong>Multi-LLM:</strong> Anthropic, OpenAI, Gemini, or Ollama (100% local)</li>
-            <li><strong>Locked corrections:</strong> Human edits are permanent, never overwritten</li>
-            <li><strong>Export formats:</strong> dbt YAML, Vanna training JSON, portable JSON</li>
-            <li><strong>Positioning:</strong> Portable Unity Catalog at 1/100th the cost of Alation</li>
-          </ul>
-        </div>
-      </div>
-      
-      <!-- soul-stack -->
-      <div class="project-card featured">
-        <div class="project-header">
-          <h2>🐳 soul-stack</h2>
-          <span class="badge">New</span>
-        </div>
-        <p class="tagline">One Docker command to give n8n persistent memory</p>
-        <p class="description">
-          n8n is stateless by design — every workflow execution starts fresh. soul-stack fixes that.
-          A single Docker container running n8n + soul.py + Jupyter Lab. Your workflows can now remember
-          previous interactions, build context over time, and make intelligent decisions based on history.
-          Works with Anthropic, OpenAI, or 100% local with Ollama.
-        </p>
-
-        <div class="version-table">
-          <div class="version-row">
-            <span class="version">Port 5678</span>
-            <span class="desc">n8n workflow automation</span>
-          </div>
-          <div class="version-row">
-            <span class="version">Port 8000</span>
-            <span class="desc">soul.py memory API</span>
-          </div>
-          <div class="version-row">
-            <span class="version">Port 8888</span>
-            <span class="desc">Jupyter Lab</span>
-          </div>
-        </div>
-
-        <div class="project-links">
-          <a href="https://hub.docker.com/r/pgmenon/soul-stack" target="_blank" class="btn btn-primary">
-            Docker Hub
-          </a>
-          <a href="https://github.com/menonpg/soul-stack" target="_blank" class="btn btn-secondary">
-            GitHub
-          </a>
-          <a href="/blog/n8n-workflows-forget-everything-soul-stack" class="btn btn-secondary">
-            Writeup
-          </a>
-        </div>
-
-        <div class="install-block">
-          <code>docker run -d -p 8000:8000 -p 8888:8888 -p 5678:5678 -e ANTHROPIC_API_KEY=sk-ant-... pgmenon/soul-stack:latest</code>
-        </div>
-
-        <div class="features-list">
-          <h3>✨ Features (v0.1.3)</h3>
-          <ul>
-            <li><strong>Multi-provider:</strong> Anthropic, OpenAI, or Ollama (100% local)</li>
-            <li><strong>Backend selection:</strong> BM25 (default), ChromaDB, or Qdrant via <code>SOUL_BACKEND</code></li>
-            <li><strong>OpenAI embeddings:</strong> Direct support, not just Azure</li>
-            <li><strong>CLI tools:</strong> <code>soul chat</code> and <code>soul status</code> with graceful Ollama handling</li>
-          </ul>
-        </div>
-      </div>
-
       <!-- soul.py -->
       <div class="project-card featured">
         <div class="project-header">
@@ -299,6 +186,91 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <li><span class="status planned">🔲</span> n8n node (official)</li>
             </ul>
           </div>
+        </div>
+      </div>
+
+      <!-- soul-schema (NEW!) -->
+      <div class="project-card featured">
+        <div class="project-header">
+          <h2>🧬 soul-schema</h2>
+          <span class="badge">New</span>
+        </div>
+        <p class="tagline">Auto-document your data warehouse in 3 minutes</p>
+        <p class="description">
+          You inherit 100 tables. Zero docs. Columns named <code>cust_ltv</code>, <code>flg_b2b</code>, <code>reg_cd</code>. 
+          The person who knew what they meant left in 2019. soul-schema connects to any database, reads the schema,
+          and uses an LLM to generate human-readable descriptions for every table and column. Corrections are 
+          "locked" — future runs won't overwrite your edits. The semantic layer learns over time.
+        </p>
+
+        <div class="version-table">
+          <div class="version-row">
+            <span class="version">dbt</span>
+            <span class="desc">Export to schema.yml</span>
+          </div>
+          <div class="version-row">
+            <span class="version">Vanna</span>
+            <span class="desc">Export training data for Text-to-SQL</span>
+          </div>
+          <div class="version-row">
+            <span class="version">Ollama</span>
+            <span class="desc">Air-gapped mode, fully local</span>
+          </div>
+        </div>
+
+      <!-- soul-stack -->
+      <div class="project-card featured">
+        <div class="project-header">
+          <h2>🐳 soul-stack</h2>
+          <span class="badge">New</span>
+        </div>
+        <p class="tagline">One Docker command to give n8n persistent memory</p>
+        <p class="description">
+          n8n is stateless by design — every workflow execution starts fresh. soul-stack fixes that.
+          A single Docker container running n8n + soul.py + Jupyter Lab. Your workflows can now remember
+          previous interactions, build context over time, and make intelligent decisions based on history.
+          Works with Anthropic, OpenAI, or 100% local with Ollama.
+        </p>
+
+        <div class="version-table">
+          <div class="version-row">
+            <span class="version">Port 5678</span>
+            <span class="desc">n8n workflow automation</span>
+          </div>
+          <div class="version-row">
+            <span class="version">Port 8000</span>
+            <span class="desc">soul.py memory API</span>
+          </div>
+          <div class="version-row">
+            <span class="version">Port 8888</span>
+            <span class="desc">Jupyter Lab</span>
+          </div>
+        </div>
+
+        <div class="project-links">
+          <a href="https://hub.docker.com/r/pgmenon/soul-stack" target="_blank" class="btn btn-primary">
+            Docker Hub
+          </a>
+          <a href="https://github.com/menonpg/soul-stack" target="_blank" class="btn btn-secondary">
+            GitHub
+          </a>
+          <a href="/blog/n8n-workflows-forget-everything-soul-stack" class="btn btn-secondary">
+            Writeup
+          </a>
+        </div>
+
+        <div class="install-block">
+          <code>docker run -d -p 8000:8000 -p 8888:8888 -p 5678:5678 -e ANTHROPIC_API_KEY=sk-ant-... pgmenon/soul-stack:latest</code>
+        </div>
+
+        <div class="features-list">
+          <h3>✨ Features (v0.1.3)</h3>
+          <ul>
+            <li><strong>Multi-provider:</strong> Anthropic, OpenAI, or Ollama (100% local)</li>
+            <li><strong>Backend selection:</strong> BM25 (default), ChromaDB, or Qdrant via <code>SOUL_BACKEND</code></li>
+            <li><strong>OpenAI embeddings:</strong> Direct support, not just Azure</li>
+            <li><strong>CLI tools:</strong> <code>soul chat</code> and <code>soul status</code> with graceful Ollama handling</li>
+          </ul>
         </div>
       </div>
 
