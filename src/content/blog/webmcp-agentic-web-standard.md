@@ -150,16 +150,56 @@ If WebMCP lands as a real standard, it changes the baseline expectation: **every
 
 The apps that win won't be the ones with the prettiest interface — they'll be the ones with the clearest tool contracts.
 
-## Try It Now
+## How to Try It
 
-1. Download [Chrome Canary](https://www.google.com/chrome/canary/)
-2. Go to `chrome://flags`, enable "WebMCP for testing"
-3. Install the [Model Context Tool Inspector Extension](https://chromewebstore.google.com/detail/model-context-tool-inspec/gbpdfapgefenggkahomfgkhfehlcenpd)
-4. Try the [live travel demo](https://travel-demo.bandarra.me/)
+Here's a walkthrough of getting WebMCP running with Google Chrome Canary:
+
+<iframe src="https://drive.google.com/file/d/1NGFAffTEoOis72mWbvpvUl0mMtUGJJvQ/preview" width="100%" height="480" allow="autoplay" style="border-radius: 8px; margin: 1.5rem 0;"></iframe>
+
+### Step 1: Download Chrome Canary
+
+First, you need [Chrome Canary](https://www.google.com/chrome/canary/) — the bleeding-edge version of Chrome. This is currently the only browser where WebMCP is available.
+
+### Step 2: Enable the WebMCP Flag
+
+Once installed, you need to enable WebMCP through a feature flag:
+
+1. Open Chrome Canary
+2. Navigate to `chrome://flags`
+3. Search for **"WebMCP for testing"**
+4. Enable it and restart the browser
+
+The explicit "for testing" name signals this is an early API that may change as it matures.
+
+### Step 3: Install the Agent Extension
+
+For now, the only way to interact with WebMCP tools is through Google's official Chrome extension:
+
+**[Model Context Tool Inspector](https://chromewebstore.google.com/detail/model-context-tool-inspec/gbpdfapgefenggkahomfgkhfehlcenpd)**
+
+This extension provides an agent that can discover and invoke WebMCP tools on any compatible page.
+
+### Step 4: Get a Gemini API Key
+
+The extension agent needs a Gemini API key to work. You can get one for free:
+
+1. Go to [Google AI Studio](https://aistudio.google.com/)
+2. Create a new project (or use an existing one)
+3. Click **"Create API key"**
+4. Copy the key and paste it into the extension settings
+
+### Step 5: Test the Demos
+
+Google has published several demo pages to try:
+
+**[WebMCP Tools Demos](https://github.com/GoogleChromeLabs/webmcp-tools/tree/main/demos/)**
+
+These include travel booking, form filling, and other examples showing how WebMCP tools work in practice. Open any demo page, click the extension, and ask the agent to perform tasks using the exposed tools.
 
 ---
 
 **Links:**
 - Chrome blog: [WebMCP Early Preview](https://developer.chrome.com/blog/webmcp-epp)
 - Spec: [github.com/webmachinelearning/webmcp](https://github.com/webmachinelearning/webmcp)
+- Demo tools: [github.com/GoogleChromeLabs/webmcp-tools](https://github.com/GoogleChromeLabs/webmcp-tools/tree/main/demos/)
 - Early Preview Program: [Join here](https://developer.chrome.com/docs/ai/join-epp)
