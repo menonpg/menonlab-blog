@@ -85,6 +85,83 @@ The spicy part: you can annotate ordinary HTML forms to become agent-callable to
 
 The browser automatically translates form fields into a structured tool schema. When an agent invokes it, the browser focuses the form and pre-fills the fields. By default, the user still clicks submit — unless you enable `toolautosubmit`.
 
+## How Tool Discovery Works
+
+This is the key part that makes WebMCP tick: **both sides need to participate.**
+
+### Website Side: Publishing Tools
+
+A website becomes WebMCP-compatible by adding specific code:
+
+- **Imperative:** Call `navigator.modelContext.registerTool()` in JavaScript
+- **Declarative:** Add `toolname` and `tooldescription` attributes to HTML forms
+
+Without this code, a page has no tools. The page looks normal to humans, but there's nothing for an agent to discover.
+
+### Client Side: Discovering Tools
+
+On the other side, you need a **WebMCP-aware client** — like the Chrome extension. Here's what it does:
+
+1. **Scans the page** — When you navigate to a site, the client checks for registered tools via `navigator.modelContext`
+2. **Reads the registry** — It pulls the list of available tools, their names, descriptions, and input schemas
+3. **Builds tool definitions** — These get formatted into the structure LLMs expect (similar to OpenAI's function calling format)
+4. **Injects into LLM context** — When you chat with the agent, it knows exactly what tools exist and how to call them
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        WEBSITE                              │
+│                                                             │
+│  navigator.modelContext.registerTool({                      │
+│    name: "book_flight",                                     │
+│    inputSchema: { ... },                                    │
+│    execute: async (params) => { ... }                       │
+│  })                                                         │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            │ Tools registered in browser API
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    WEBMCP CLIENT                            │
+│                  (Chrome Extension)                         │
+│                                                             │
+│  1. Query navigator.modelContext for tools                  │
+│  2. Extract schemas and descriptions                        │
+│  3. Format as LLM-compatible tool definitions               │
+│  4. Include in system prompt / function calls               │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            │ Tool definitions sent to LLM
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                         LLM                                 │
+│                    (Gemini API)                             │
+│                                                             │
+│  "I see you have a book_flight tool. I'll call it with:"    │
+│  { origin: "JFK", destination: "LAX", date: "2026-03-15" }  │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            │ Tool call routed back
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                        WEBSITE                              │
+│                                                             │
+│  execute() function runs, returns result to LLM             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Why Both Sides Matter
+
+This is fundamentally different from screen scraping:
+
+| Approach | Website Needs To... | Agent Needs To... |
+|----------|---------------------|-------------------|
+| **Screen Scraping** | Nothing (just exist) | Guess everything |
+| **WebMCP** | Publish tools explicitly | Discover and invoke properly |
+
+The tradeoff: WebMCP requires website adoption. But when sites do adopt it, agents get **reliable, versioned, schema-validated** interactions instead of fragile DOM guessing.
+
+**Current reality:** Very few sites have WebMCP tools yet. That's why Google published demo sites — so you can test the flow end-to-end while waiting for broader adoption.
+
 ## Agent-Aware Form Handling
 
 WebMCP adds agent-awareness to form submission:
