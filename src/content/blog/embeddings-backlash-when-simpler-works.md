@@ -5,8 +5,6 @@ date: "2026-03-04"
 tags: ["RAG", "embeddings", "retrieval", "LLM", "architecture"]
 ---
 
-# The Embeddings Backlash: When Simpler Retrieval Works Better
-
 There's a quiet rebellion happening in the RAG community.
 
 After two years of "just embed everything and throw it in a vector database," developers are discovering that simpler approaches often work better—especially for smaller document collections.
