@@ -3,6 +3,7 @@ title: "crewai-soul vs CrewAI Memory: Which Should You Use?"
 description: "A comparison of CrewAI's built-in memory system and crewai-soul's markdown-native approach. When to use each, and why you might want both."
 date: "2026-03-06"
 tags: ["crewai", "ai-agents", "memory", "soul-py", "rag"]
+pinned: true
 ---
 
 CrewAI ships with a powerful built-in memory system. So why did I build [crewai-soul](https://github.com/menonpg/crewai-soul)?
