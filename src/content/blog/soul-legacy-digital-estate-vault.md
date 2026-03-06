@@ -109,12 +109,47 @@ def auto_detect_section(text: str) -> str:
     return max(scores, key=scores.get)
 ```
 
-### Blockchain Anchoring
+### Tamper-Evident Anchoring (Two Modes)
 
-Your vault's SHA-256 fingerprint can be committed to Polygon (testnet or mainnet). This proves your documents haven't been tampered with since you signed them — useful if anyone contests authenticity.
+Soul Legacy proves your documents haven't been tampered with. You get two options:
+
+#### Option 1: Local Anchoring (Default)
+
+Out of the box, every vault action is cryptographically signed and logged locally:
+
+```python
+# LocalAnchor — no blockchain required
+class LocalAnchor:
+    def checkin(self, vault):
+        vh = compute_vault_hash(vault)        # SHA-256 of all records
+        event = {
+            "type": "CheckIn",
+            "timestamp": time.time(),
+            "vault_hash": vh
+        }
+        event["signature"] = hmac.new(        # HMAC-SHA256 signature
+            self._secret, json.dumps(event), hashlib.sha256
+        ).hexdigest()
+        self.state["log"].append(event)
+```
+
+This gives you:
+- Tamper detection (signatures break if anything changes)
+- Full audit trail of every check-in
+- Works offline, no wallet, no gas fees
+- Can export history to blockchain later
+
+**Verify integrity anytime:**
+```bash
+soul-legacy verify   # checks all signatures, detects tampering
+```
+
+#### Option 2: Polygon Blockchain (Optional)
+
+For on-chain immutability, deploy the included Solidity contract:
 
 ```solidity
-// VaultAnchor.sol — deployed on Polygon
+// VaultAnchor.sol — deploy to Polygon Amoy (testnet) or mainnet
 contract VaultAnchor {
     struct Vault {
         bytes32 vaultHash;      // SHA256 of vault contents
@@ -126,11 +161,29 @@ contract VaultAnchor {
     function checkin(bytes32 newVaultHash) external {
         vaults[msg.sender].lastCheckin = block.timestamp;
         vaults[msg.sender].vaultHash = newVaultHash;
+        emit CheckIn(msg.sender, block.timestamp, newVaultHash);
     }
 }
 ```
 
-Cost: ~$0.001 per transaction on Polygon mainnet. Optional — works fine without it.
+**Setup:**
+1. Deploy `VaultAnchor.sol` to Polygon (Remix, Hardhat, or Foundry)
+2. Configure `~/.openclaw/api_keys.json`:
+   ```json
+   {
+     "polygon": {
+       "network": "amoy",
+       "rpc_url": "https://rpc-amoy.polygon.technology",
+       "private_key": "your-wallet-private-key",
+       "contract_addr": "0xYourDeployedContract"
+     }
+   }
+   ```
+3. Now every check-in anchors on-chain automatically
+
+**Cost:** ~$0.001 per transaction on mainnet. Free on Amoy testnet.
+
+**Why bother?** If someone contests the authenticity of your will or claims documents were altered, the blockchain timestamp proves they existed in that exact state at that exact time. Courts are increasingly accepting blockchain evidence.
 
 ### The Dead Man's Switch
 
