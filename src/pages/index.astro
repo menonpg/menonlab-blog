@@ -10,11 +10,37 @@ const allPosts = (await getCollection('blog'))
 // Featured collections - curated post groups
 const collections = [
   {
+    title: "Soul Ecosystem",
+    emoji: "🧠",
+    description: "Persistent memory, estate vaults, and enterprise AI — our open-source projects",
+    slugs: [
+      "soul-py-persistent-memory-llm-agents",
+      "soul-legacy-digital-estate-vault",
+      "introducing-soulmate-persistent-ai-memory-service",
+      "soul-schema-auto-document-data-warehouse",
+      "n8n-workflows-forget-everything-soul-stack"
+    ],
+    link: "/open-source"
+  },
+  {
+    title: "Soul How-To Guides",
+    emoji: "📚",
+    description: "Tutorials, comparisons, and deep dives on using the Soul ecosystem",
+    slugs: [
+      "soul-py-v2-rag-rlm-hybrid",
+      "meet-darwin-soul-book-ai-companion",
+      "add-soul-any-repo-5-minutes",
+      "soul-py-n8n-persistent-memory-workflows",
+      "soul-py-vs-memu-agent-memory-compared",
+      "soul-py-darwin-evolution-agent-identity"
+    ],
+    link: "/open-source"
+  },
+  {
     title: "Thought Leadership",
     emoji: "💡",
     description: "Original perspectives on where AI is heading",
     slugs: [
-      "soul-py-darwin-evolution-agent-identity",
       "ai-capital-organizational-strategy",
       "human-ai-collaboration-radiology-rethinking",
       "code-vs-json-llm-tool-calling"
@@ -62,33 +88,6 @@ const collections = [
       "browser-use-ai-browser-automation",
       "unsloth-fast-llm-finetuning"
     ]
-  },
-  {
-    title: "Soul Ecosystem",
-    emoji: "🧠",
-    description: "Persistent memory, estate vaults, and enterprise AI — our open-source projects",
-    slugs: [
-      "soul-py-persistent-memory-llm-agents",
-      "soul-legacy-digital-estate-vault",
-      "introducing-soulmate-persistent-ai-memory-service",
-      "soul-schema-auto-document-data-warehouse",
-      "n8n-workflows-forget-everything-soul-stack"
-    ],
-    link: "/open-source"
-  },
-  {
-    title: "Soul How-To Guides",
-    emoji: "📚",
-    description: "Tutorials, comparisons, and deep dives on using the Soul ecosystem",
-    slugs: [
-      "soul-py-v2-rag-rlm-hybrid",
-      "meet-darwin-soul-book-ai-companion",
-      "add-soul-any-repo-5-minutes",
-      "soul-py-n8n-persistent-memory-workflows",
-      "soul-py-vs-memu-agent-memory-compared",
-      "soul-py-darwin-evolution-agent-identity"
-    ],
-    link: "/open-source"
   }
 ];
 
