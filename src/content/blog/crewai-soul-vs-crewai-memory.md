@@ -10,6 +10,8 @@ CrewAI ships with a powerful built-in memory system. So why did I build [crewai-
 
 Different problems need different solutions. Here's when to use each.
 
+> **📣 Update:** We've submitted a [PR to CrewAI](https://github.com/crewAIInc/crewAI/pull/4755) to add crewai-soul to their official documentation as a community memory backend.
+
 ## The Quick Answer
 
 | Use Case | Best Choice |
