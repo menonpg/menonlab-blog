@@ -284,6 +284,61 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
       </div>
 
+      <!-- crewai-soul -->
+      <div class="project-card featured">
+        <div class="project-header">
+          <h2>🧠 crewai-soul</h2>
+          <span class="badge">New</span>
+        </div>
+        <p class="tagline">The soul ecosystem for CrewAI agents</p>
+        <p class="description">
+          CrewAI's built-in memory is a black box. crewai-soul stores memories in human-readable markdown files 
+          you can edit and git-version. Same drop-in API, full RAG+RLM hybrid retrieval under the hood via soul-agent. 
+          Choose local (file-based) or managed (SoulMate API) — same great memory either way.
+        </p>
+
+        <div class="version-table">
+          <div class="version-row">
+            <span class="version">Local</span>
+            <span class="desc">File-based (SOUL.md + MEMORY.md)</span>
+          </div>
+          <div class="version-row">
+            <span class="version">SoulMate</span>
+            <span class="desc">Managed cloud API</span>
+          </div>
+          <div class="version-row">
+            <span class="version">Schema</span>
+            <span class="desc">Database intelligence via soul-schema</span>
+          </div>
+        </div>
+
+        <div class="project-links">
+          <a href="https://github.com/menonpg/crewai-soul" target="_blank" class="btn btn-primary">
+            GitHub
+          </a>
+          <a href="https://pypi.org/project/crewai-soul/" target="_blank" class="btn btn-secondary">
+            PyPI
+          </a>
+          <a href="/blog/crewai-soul-vs-crewai-memory" class="btn btn-secondary">
+            Comparison
+          </a>
+        </div>
+
+        <div class="install-block">
+          <code>pip install crewai-soul</code>
+        </div>
+
+        <div class="features-list">
+          <h3>✨ What's Included</h3>
+          <ul>
+            <li><strong>soul-agent:</strong> RAG + RLM hybrid memory (required dep)</li>
+            <li><strong>soul-schema:</strong> Database semantic layers (required dep)</li>
+            <li><strong>SoulMateMemory:</strong> Drop-in managed cloud backend</li>
+            <li><strong>SchemaMemory:</strong> Database context for Text-to-SQL agents</li>
+          </ul>
+        </div>
+      </div>
+
       <!-- soul-stack -->
       <div class="project-card featured">
         <div class="project-header">
