@@ -520,8 +520,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script is:inline>
+  // Load Chart.js dynamically
+  function loadChartJS() {
+    return new Promise((resolve, reject) => {
+      if (typeof Chart !== 'undefined') {
+        resolve();
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
   const WORKER_URL = 'https://blog-analytics.prahlad-menon.workers.dev/';
   const CHAT_API_URL = '/api/chat';
   
@@ -1062,5 +1076,11 @@ Daily: ${aggregateData.slice(-7).map(d => `${d.dimensions.date}: ${d.sum.pageVie
     return `${currentDays} days: <strong>${formatNumber(totals.pageViews)}</strong> views, <strong>${formatNumber(totals.visitors)}</strong> visitors. Peak: ${formatDate(peakDay.dimensions.date)}.`;
   }
 
-  fetchAnalytics();
+  // Initialize: load Chart.js first, then fetch analytics
+  loadChartJS()
+    .then(() => fetchAnalytics())
+    .catch(err => {
+      console.error('Failed to load Chart.js:', err);
+      document.getElementById('content').innerHTML = '<div class="loading-state" style="color:#ef4444">⚠️ Failed to load charting library</div>';
+    });
 </script>
