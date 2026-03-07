@@ -18,22 +18,28 @@ Built-in memory solutions are either:
 - **Too complex** — requires spinning up vector databases, managing embeddings
 - **Not human-readable** — can't inspect or edit what your agent "knows"
 
+And if your agent needs to query a database? Good luck explaining what `cust_ltv`, `flg_b2b`, and `reg_cd` mean.
+
 ## The Solution
 
 ```bash
 pip install langchain-soul   # or llamaindex-soul
 ```
 
-That's it. You get:
+That's it. You get the **entire Soul ecosystem**:
 
-| Feature | What It Does |
-|---------|--------------|
-| **soul-agent** | RAG + RLM hybrid retrieval — auto-routes queries to the right strategy |
-| **soul-schema** | Database semantic layer — your agent understands your data warehouse |
+| Component | What It Does |
+|-----------|--------------|
+| **soul-agent** | RAG + RLM hybrid retrieval — auto-routes queries to semantic search or exhaustive reasoning |
+| **soul-schema** | Database semantic layer — auto-documents tables/columns, gives agents database understanding |
 | **SoulMate API** | Managed cloud option — zero infrastructure, same interface |
 | **Markdown storage** | Human-readable, git-versionable, editable memory files |
 
-## Quick Start: LangChain
+---
+
+## 1. Persistent Memory (soul-agent)
+
+### LangChain
 
 ```python
 from langchain_soul import SoulMemory
@@ -48,15 +54,7 @@ response = chain.predict(input="Hello!")
 # Conversation saved to MEMORY.md — human-readable!
 ```
 
-For production, switch to managed cloud:
-
-```python
-from langchain_soul import SoulMateMemory
-
-memory = SoulMateMemory(api_key="your-key")  # We handle infrastructure
-```
-
-## Quick Start: LlamaIndex
+### LlamaIndex
 
 ```python
 from llamaindex_soul import SoulChatStore
@@ -75,53 +73,280 @@ agent = FunctionAgent(tools=tools, llm=llm)
 await agent.run("Hello!", memory=memory)
 ```
 
-## Database Schema Intelligence
+### What Makes It Different
 
-Both packages include **SchemaMemory** — give your agents understanding of your database:
+**RAG + RLM Hybrid Retrieval**: Queries get automatically routed to the right strategy:
+- **Factual lookups** ("What's the user's email?") → RAG (fast semantic search)
+- **Reasoning questions** ("Why did we decide X?") → RLM (exhaustive context scan)
+
+**Human-readable storage**: Your agent's memories live in `MEMORY.md`:
+
+```markdown
+## 2026-03-06 14:30:00 UTC
+**Human:** We decided to use PostgreSQL for the project.
+**AI:** Got it — PostgreSQL it is. I'll remember that for future discussions.
+```
+
+You can `cat`, `grep`, edit, and git-version these files.
+
+### Semantic Search
+
+```python
+# LangChain
+results = memory.recall("What database did we choose?")
+
+# LlamaIndex  
+results = chat_store.recall("user1", "What database did we choose?")
+
+for result in results:
+    print(f"[{result['score']:.2f}] {result['content']}")
+```
+
+---
+
+## 2. Database Schema Intelligence (soul-schema)
+
+Your agent needs to write SQL. But your database has 100 tables with columns named `cust_ltv`, `flg_b2b`, `reg_cd`. The person who knew what they meant left in 2019.
+
+**SchemaMemory** fixes this:
 
 ```python
 from langchain_soul import SchemaMemory  # or llamaindex_soul
 
-schema = SchemaMemory("postgresql://user:pass@host/db")
-schema.generate()  # Auto-generates semantic descriptions via LLM
+# Connect to any SQLAlchemy-compatible database
+schema = SchemaMemory(
+    database_url="postgresql://user:pass@host/db",
+    llm_provider="anthropic",  # or "openai", "gemini", "ollama"
+)
 
-# Get context for natural language queries
-context = schema.context_for("Show me revenue by region")
-# Returns formatted markdown with relevant tables/columns
+# Auto-generate semantic descriptions using LLM
+schema.generate(sample_rows=5)  # Samples data to understand context
 ```
 
-This is powered by [soul-schema](https://github.com/menonpg/soul-schema) — the same tool that documents data warehouses in minutes.
+### What It Does
 
-## Choose Your Backend
+1. **Connects** to your database (PostgreSQL, MySQL, SQLite, Snowflake, etc.)
+2. **Reads** table structures and samples data
+3. **Generates** human-readable descriptions using an LLM
+4. **Caches** results so you don't regenerate every time
 
-| Setup | Best For | Storage |
-|-------|----------|---------|
-| **Local** (default) | Development, git-tracked projects | `MEMORY.md` files |
-| **SoulMate** (managed) | Production, teams, zero-infra | Cloud API |
+### Query Context
 
-Both use the same soul-agent RAG+RLM under the hood. Same interface, different storage.
+```python
+# Get relevant schema for a natural language query
+context = schema.context_for("Show me revenue by region")
+```
+
+Returns formatted markdown:
+
+```markdown
+## Relevant Database Schema
+
+### sales_transactions
+Revenue and order data by transaction
+
+| Column | Type | Description |
+|--------|------|-------------|
+| revenue | DECIMAL | Transaction revenue in USD |
+| region_code | VARCHAR | Geographic region identifier |
+| transaction_date | DATE | Date of transaction |
+
+### regions
+Geographic region lookup table
+
+| Column | Type | Description |
+|--------|------|-------------|
+| region_code | VARCHAR | Region identifier (e.g., 'NA', 'EU') |
+| region_name | VARCHAR | Full region name |
+```
+
+### Use in Agent Prompts
+
+```python
+from langchain.agents import create_sql_agent
+
+# Get full schema as markdown
+schema_docs = schema.to_markdown()
+
+agent = create_sql_agent(
+    llm=llm,
+    db=db,
+    prefix=f"You have access to this database:\n\n{schema_docs}\n\n"
+)
+```
+
+### Export Formats
+
+```python
+# Save as JSON for caching
+schema.save("schema_cache.json", format="json")
+
+# Export for dbt (schema.yml)
+schema.save("models/schema.yml", format="dbt")
+
+# Export for Vanna.AI training
+schema.save("vanna_training.json", format="vanna")
+```
+
+### Describe Individual Tables
+
+```python
+# Get details for a specific table
+table_info = schema.describe("customers")
+print(table_info)
+# {
+#   "name": "customers",
+#   "description": "Customer master data including contact and segmentation info",
+#   "columns": [
+#     {"name": "customer_id", "type": "INTEGER", "description": "Unique customer identifier"},
+#     {"name": "cust_ltv", "type": "DECIMAL", "description": "Customer lifetime value in USD"},
+#     {"name": "flg_b2b", "type": "BOOLEAN", "description": "True if B2B customer, False if B2C"},
+#     ...
+#   ]
+# }
+```
+
+---
+
+## 3. Managed Cloud (SoulMate API)
+
+Don't want to manage files? **SoulMate** is the managed version — same interface, zero infrastructure:
+
+### LangChain
+
+```python
+from langchain_soul import SoulMateMemory
+
+memory = SoulMateMemory(api_key="your-key")  # We handle storage
+chain = ConversationChain(llm=llm, memory=memory)
+```
+
+### LlamaIndex
+
+```python
+from llamaindex_soul import SoulMateChatStore
+
+chat_store = SoulMateChatStore(api_key="your-key")
+memory = ChatMemoryBuffer.from_defaults(chat_store=chat_store)
+```
+
+### Factory Functions
+
+Switch backends with one line:
 
 ```python
 from langchain_soul import create_memory
 
-# Switch backends with one line
-memory = create_memory("local")      # File-based
-memory = create_memory("soulmate")   # Managed cloud
+# Development: local files
+memory = create_memory("local")
+
+# Production: managed cloud
+memory = create_memory("soulmate", api_key="...")
 ```
 
-## Why This Matters
+```python
+from llamaindex_soul import create_chat_store
 
-**Before:** Memory was an afterthought. Vector databases were a separate project.
+store = create_chat_store("local")      # File-based
+store = create_chat_store("soulmate")   # Managed cloud
+```
 
-**After:** One package handles it all — from development (markdown files you can `cat` and `grep`) to production (managed API with zero ops).
+---
 
-The Soul ecosystem now covers:
-- **[soul-agent](https://github.com/menonpg/soul.py)** — Core library, works with any LLM
-- **[crewai-soul](https://github.com/menonpg/crewai-soul)** — CrewAI integration
-- **[langchain-soul](https://github.com/menonpg/langchain-soul)** — LangChain integration (NEW)
-- **[llamaindex-soul](https://github.com/menonpg/llamaindex-soul)** — LlamaIndex integration (NEW)
-- **[soul-schema](https://github.com/menonpg/soul-schema)** — Database semantic layer
-- **[SoulMate](https://menonpg.github.io/soulmate)** — Managed cloud service
+## 4. Full Configuration Options
+
+### Memory Configuration
+
+```python
+from langchain_soul import SoulMemory
+
+memory = SoulMemory(
+    soul_path="agents/assistant/SOUL.md",      # Agent identity
+    memory_path="agents/assistant/MEMORY.md",  # Memory storage
+    provider="anthropic",                       # LLM provider
+    use_hybrid=True,                           # Enable RAG+RLM
+)
+```
+
+### Schema Configuration
+
+```python
+from langchain_soul import SchemaMemory
+
+schema = SchemaMemory(
+    database_url="postgresql://...",
+    llm_provider="anthropic",    # or "openai", "gemini", "ollama"
+    api_key=None,                # Uses env var if not provided
+    cache_path="schema.json",    # Cache generated descriptions
+)
+```
+
+### SoulMate Configuration
+
+```python
+from langchain_soul import SoulMateMemory
+
+memory = SoulMateMemory(
+    api_key="...",
+    base_url="https://your-instance.com",  # Self-hosted option
+    tenant_id="team-alpha",                 # Multi-tenant isolation
+    scope="/project/alpha",                 # Scope memories
+)
+```
+
+---
+
+## Architecture
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│              langchain-soul / llamaindex-soul                │
+│                                                              │
+│  ┌────────────────┐    ┌────────────────┐                   │
+│  │  SoulMemory    │    │ SoulMateMemory │                   │
+│  │  (local files) │    │ (managed cloud)│                   │
+│  └───────┬────────┘    └───────┬────────┘                   │
+│          │                     │                             │
+│          ▼                     ▼                             │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │            soul-agent (RAG + RLM hybrid)            │    │
+│  │  • Semantic search (RAG) for factual lookups        │    │
+│  │  • Exhaustive scan (RLM) for reasoning queries      │    │
+│  │  • Auto-routes based on query type                  │    │
+│  └─────────────────────────────────────────────────────┘    │
+│                                                              │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │            soul-schema (database intelligence)       │    │
+│  │  • Auto-generates table/column descriptions         │    │
+│  │  • Exports to dbt, Vanna, JSON                      │    │
+│  │  • Query-aware context injection                    │    │
+│  └─────────────────────────────────────────────────────┘    │
+│                                                              │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │            SoulMate API (optional managed)           │    │
+│  │  • Zero infrastructure                              │    │
+│  │  • Multi-tenant isolation                           │    │
+│  │  • Same interface as local                          │    │
+│  └─────────────────────────────────────────────────────┘    │
+└──────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## The Full Soul Ecosystem
+
+| Package | Purpose | Install |
+|---------|---------|---------|
+| **[soul-agent](https://github.com/menonpg/soul.py)** | Core RAG+RLM library | `pip install soul-agent` |
+| **[soul-schema](https://github.com/menonpg/soul-schema)** | Database semantic layer | `pip install soul-schema` |
+| **[crewai-soul](https://github.com/menonpg/crewai-soul)** | CrewAI integration | `pip install crewai-soul` |
+| **[langchain-soul](https://github.com/menonpg/langchain-soul)** | LangChain integration | `pip install langchain-soul` |
+| **[llamaindex-soul](https://github.com/menonpg/llamaindex-soul)** | LlamaIndex integration | `pip install llamaindex-soul` |
+| **[SoulMate](https://menonpg.github.io/soulmate)** | Managed cloud service | API key |
+
+When you install `langchain-soul` or `llamaindex-soul`, you get `soul-agent` and `soul-schema` automatically.
+
+---
 
 ## Get Started
 
@@ -133,14 +358,14 @@ pip install langchain-soul
 pip install llamaindex-soul
 ```
 
-PyPI:
+**PyPI:**
 - [langchain-soul](https://pypi.org/project/langchain-soul/)
 - [llamaindex-soul](https://pypi.org/project/llamaindex-soul/)
 
-GitHub:
+**GitHub:**
 - [langchain-soul](https://github.com/menonpg/langchain-soul)
 - [llamaindex-soul](https://github.com/menonpg/llamaindex-soul)
 
 Both MIT licensed. Both tested. Both ready for production.
 
-Your agents finally remember — in whatever framework you prefer.
+Your agents finally remember — and understand your data — in whatever framework you prefer.
