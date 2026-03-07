@@ -5,6 +5,8 @@ date: "2026-03-05"
 tags: ["ai-agents", "open-source", "local-llm", "personal-assistant", "comparison"]
 ---
 
+*Updated March 2026: Added Luna Agent — the no-framework alternative from AWS.*
+
 Something interesting happened in the open-source AI world over the past few months.
 
 A single project — OpenClaw — spawned an entire ecosystem of personal AI assistants. Now Alibaba has entered the race with CoPaw. And suddenly we have more options than ever for running your own AI assistant locally, with no cloud subscriptions and no data leaving your machine.
@@ -178,6 +180,46 @@ Despite being the smallest, it has 22+ providers and hardware peripheral support
 
 **Best for:** Learning how agents work, research, building custom extensions.
 
+### Luna Agent
+
+**The no-framework philosophy.**
+
+Built by Fabio Nonato (Sr. Manager Applied Science @ AWS), Luna Agent represents the most radical stance in this ecosystem: **no frameworks at all**.
+
+~1,400 lines of Python. That's it.
+
+**Why they rejected existing frameworks:**
+
+| Framework | Their Take |
+|-----------|------------|
+| **OpenClaw** | "400K lines of code, 42K exposed instances on Shodan. Too large to audit, too large to trust." |
+| **ZeroClaw** | "9 days old at time of evaluation. Too immature." |
+| **NanoClaw** | "Too thin — would need to rebuild most of it anyway." |
+
+**What Luna Agent includes:**
+
+```
+luna-agent/
+├── agent.py      # Core loop (~200 lines)
+├── llm.py        # Single LLM client, configurable endpoint
+├── memory.py     # SQLite + FTS5 + sqlite-vec hybrid search
+├── tools.py      # Native: bash, files, web fetch, web search
+├── mcp_manager.py # MCP client for community tools
+└── observe.py    # Structured JSON logging
+```
+
+**Key features:**
+- **Runs entirely local** — No cloud API costs (designed for 2x RTX 3090 + Qwen3-Coder-Next)
+- **Hybrid memory** — SQLite + FTS5 keyword search + sqlite-vec embeddings + recency scoring
+- **MCP tool integration** — Just edit JSON to add new tool servers
+- **Conversation compression** — Every N messages, LLM summarizes and extracts facts for infinite context
+- **Single insertion point** — To add an AI firewall later, change one URL
+
+**8 runtime dependencies:**
+discord.py, openai, mcp[cli], sentence-transformers, einops, sqlite-vec, html2text, duckduckgo-search
+
+**Best for:** Developers who want full understanding and control, local-only deployments, security-conscious builds where you need to audit every line.
+
 ### TinyClaw
 
 **Multi-agent orchestration.**
@@ -198,6 +240,7 @@ The odd one out. Instead of a single assistant, TinyClaw runs multiple agents as
 | **NullClaw** | Zig | ~1 MB | <2 ms | Extreme perf | Broad |
 | **IronClaw** | — | — | — | Security-first | Limited |
 | **NanoBot** | Python | ~100 MB | — | Education | Asian platforms |
+| **Luna Agent** | Python | ~50 MB | — | No-framework, local-only | Discord |
 | **TinyClaw** | — | — | — | Multi-agent | Telegram, Discord, WhatsApp |
 
 ## CoPaw vs OpenClaw vs NanoClaw: Deep Dive
@@ -251,6 +294,7 @@ These three represent the main philosophies:
 - Learning/research → NanoBot
 - Persistent memory + enterprise → CoPaw
 - Multi-agent teams → TinyClaw
+- **No frameworks, full control** → Luna Agent
 
 **Step 4: Consider cold start**
 - Need sub-millisecond startup → NullClaw
