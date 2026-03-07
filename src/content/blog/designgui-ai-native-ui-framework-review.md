@@ -179,6 +179,52 @@ Even if AI writes perfect CSS, you're still paying for those tokens. At scale:
 
 For autonomous agents generating lots of UI (think: automated prototyping, A/B testing UIs, dynamic dashboards), this adds up.
 
+## The CodeAct Connection
+
+DesignGUI's approach aligns with the **CodeAct paradigm** from Apple's research ([ICML 2024 paper](https://arxiv.org/abs/2402.01030)). The key insight:
+
+> LLM agents typically produce actions by generating JSON or text in pre-defined formats. This limits action space and flexibility. **Executable code consolidates actions into a unified, more powerful action space.**
+
+The research found:
+- **Code actions require 30% fewer steps than JSON**
+- **Up to 20% higher success rate** vs text/JSON alternatives
+- Code enables control flow (if/for), variable reuse, and tool composition
+
+### DesignGUI as CodeAct for UI
+
+Traditional UI generation:
+```json
+{
+  "action": "create_button",
+  "text": "Submit",
+  "variant": "primary",
+  "onClick": "handleSubmit"
+}
+```
+
+DesignGUI (CodeAct pattern):
+```python
+Button('Submit', variant='primary', on_click=handle_submit)
+```
+
+The Python code approach gives you:
+- **Control flow** — Loops, conditionals, function composition
+- **Variable reuse** — Store intermediate results
+- **Type safety** — IDE autocomplete, error detection
+- **Composability** — Build complex UIs from simple primitives
+
+This is why DesignGUI's token efficiency works — it's not just "shorter syntax," it's a fundamentally more expressive action space that requires fewer round trips.
+
+### CodeAct vs Constrained Vocabulary
+
+| Approach | Example | Trade-off |
+|----------|---------|-----------|
+| **JSON Actions** | `{"action": "create_button", ...}` | Rigid schema, verbose |
+| **CodeAct (open)** | Any Python code | Flexible but unpredictable |
+| **CodeAct + Constrained Vocab** (DesignGUI) | `Button('Submit')` only | Best of both: expressive + reliable |
+
+DesignGUI combines CodeAct's efficiency with a constrained vocabulary — you get executable code actions, but limited to a safe, pre-tested component library.
+
 ## Comparison: AI UI Generation Landscape
 
 | Tool | Output | Token Efficiency | Customization | Deployment |
