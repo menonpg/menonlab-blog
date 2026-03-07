@@ -348,6 +348,19 @@ When you install `langchain-soul` or `llamaindex-soul`, you get `soul-agent` and
 
 ---
 
+## Official Documentation PRs
+
+We've submitted PRs to add these integrations to the official framework documentation:
+
+| Framework | PR | Status |
+|-----------|-----|--------|
+| **LangChain** | [langchain-ai/docs#2975](https://github.com/langchain-ai/docs/pull/2975) | Under review |
+| **LlamaIndex** | [run-llama/llama_index#20908](https://github.com/run-llama/llama_index/pull/20908) | Under review |
+
+Once merged, you'll find these integrations in the official docs alongside other community packages.
+
+---
+
 ## Get Started
 
 ```bash
