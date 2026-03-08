@@ -2,8 +2,10 @@
 title: "From Fork to Industry: How OpenClaw Spawned a Market in Four Months"
 description: "The Q1 2026 Claw Market Map reveals an entire ecosystem of hosting, observability, security, and even AI social networks built around OpenClaw. Here's how a single open-source project became an industry."
 date: "2026-03-07"
-tags: ["ai-agents", "openclaw", "market-analysis", "ecosystem", "open-source"]
+tags: ["ai-agents", "openclaw", "market-analysis", "ecosystem", "open-source", "skyclaw"]
 ---
+
+*Updated March 2026: Added SkyClaw to the alternatives section.*
 
 In November 2025, Peter Steinberger released a personal AI assistant called Clawdbot. Four months later, we have managed hosting platforms, observability tools, security services, skill marketplaces, and — most bizarrely — a social network where AI agents talk to each other.
 
@@ -132,6 +134,7 @@ Not everyone wants to run OpenClaw. The "Alternatives" quadrant shows projects t
 | **NanoClaw** | Security-first, container isolation |
 | **ZeroClaw** | Rust performance (<5MB RAM) |
 | **PicoClaw** | Embedded hardware (runs on $10 boards) |
+| **SkyClaw** | Cloud-first, Telegram-native runtime |
 | **NanoBot** | Educational simplicity (~4K lines) |
 | **Luna Agent** | No frameworks at all (~1,400 lines) |
 
@@ -140,7 +143,27 @@ These aren't competitors so much as **philosophical forks**. Each makes differen
 - OpenClaw prioritizes features and integrations
 - NanoClaw prioritizes security
 - ZeroClaw prioritizes performance
+- SkyClaw prioritizes cloud deployment and zero-config operation
 - Luna Agent prioritizes auditability
+
+### SkyClaw: The VPS-Native Agent
+
+[SkyClaw](https://github.com/nagisanzenin/skyclaw) takes a different approach: instead of running on your local machine, it's designed to live on a remote server from day one.
+
+**The philosophy:** Rent a $5 VPS, deploy a single 6.9 MB binary, control it entirely from Telegram. No SSH sessions, no gateway daemons, no WebSocket routing. Telegram *is* the control plane.
+
+Key characteristics:
+- **6.9 MB static binary** — Rust, no runtime dependencies except Chrome for web browsing
+- **Zero config** — One environment variable (bot token). Paste API key in chat. Done.
+- **Self-configuring** — "Switch to claude-opus-4-6" and the agent edits its own config file
+- **Auto-security** — First Telegram user auto-whitelisted by numeric ID. Everyone else blocked.
+- **Multi-provider** — Anthropic, OpenAI, Gemini. Hot-swap without restart.
+
+The stack: Rust, Tokio, teloxide, axum, chromiumoxide, sqlx, ChaCha20-Poly1305. 13-crate workspace.
+
+What's clever is the design constraint: **no local machine running 24/7**. OpenClaw assumes you have a Mac/PC always on. SkyClaw assumes you don't. Your agent lives in the cloud, and Telegram is how you reach it.
+
+Also notable: it was built with Claude Code and the [Production Grade Plugin](https://github.com/nagisanzenin/claude-code-production-grade-plugin) — an autonomous 13-skill dev pipeline. Agents building agents.
 
 The ecosystem is big enough to support multiple approaches.
 
